@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SoftSignal — Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    background: #0a0a0a;
+  }
+  .stage {
+    width: 100%; height: 100%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(30,30,30,0.8) 0%, #0a0a0a 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 16px 28px;
+  }
+
+  /* ─── PHONE ─── */
+  .phone-outer {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .phone {
+    width: 230px; height: 470px;
+    background: #fff;
+    border-radius: 40px;
+    border: 6px solid #1a1a1a;
+    box-shadow: 0 0 0 1.5px #333, 0 30px 70px rgba(0,0,0,0.8);
+    overflow: hidden;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  /* Dynamic island */
+  .dynamic-island {
+    position: absolute; top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 72px; height: 20px;
+    background: #1a1a1a;
+    border-radius: 20px;
+    z-index: 10;
+  }
+  .phone-screen {
+    flex: 1;
+    background: #000;
+    display: flex; flex-direction: column;
+    padding: 36px 12px 0;
+    overflow: hidden;
+  }
+  /* Status bar */
+  .status-bar {
+    display: flex; justify-content: space-between;
+    font-size: 8px; font-weight: 600; color: #fff;
+    padding: 0 4px;
+    margin-bottom: 8px;
+  }
+  .status-right { display: flex; gap: 4px; align-items: center; }
+
+  /* In Progress section */
+  .section-title {
+    font-size: 13px; font-weight: 600; color: #fff;
+    margin-bottom: 8px; padding: 0 2px;
+  }
+  .progress-card {
+    background: #1c1c1e;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .progress-left { display: flex; flex-direction: column; gap: 5px; }
+  .progress-warning {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; color: #ff3b30;
+  }
+  .progress-warning-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #ff3b30;
+  }
+  .view-more {
+    background: #2c2c2e; border-radius: 6px;
+    padding: 5px 10px; font-size: 9px; color: #fff; font-weight: 500;
+    display: inline-block; width: fit-content;
+  }
+
+  /* Donut chart */
+  .donut-wrap { position: relative; width: 50px; height: 50px; flex-shrink: 0; }
+  .donut-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+  .donut-label.red { color: #ff3b30; }
+  .donut-label.green { color: #34c759; }
+  .donut-label.orange { color: #ff9500; }
+
+  /* Event History */
+  .event-list { display: flex; flex-direction: column; gap: 5px; }
+  .event-item {
+    background: #1c1c1e; border-radius: 10px;
+    padding: 8px 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .check-icon {
+    width: 20px; height: 20px; border-radius: 4px;
+    background: #2c2c2e;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: #888; flex-shrink: 0;
+  }
+  .event-info { flex: 1; min-width: 0; }
+  .event-name { font-size: 9.5px; font-weight: 500; color: #fff; }
+  .event-time { font-size: 8px; color: #666; margin-top: 1px; }
+  .event-donut { width: 32px; height: 32px; flex-shrink: 0; position: relative; }
+  .event-donut-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 700;
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    background: #000;
+    border-top: 1px solid #1c1c1e;
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 8px 0 10px;
+    flex-shrink: 0;
+  }
+  .nav-tab { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .nav-tab svg { width: 16px; height: 16px; }
+  .nav-tab-label { font-size: 7px; font-weight: 500; }
+
+  .device-label {
+    font-size: 10px; font-weight: 500;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  /* ─── WATCH GRID ─── */
+  .watch-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .watch-outer { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .watch-label-sm {
+    font-size: 8px; color: rgba(255,255,255,0.25);
+    letter-spacing: 0.06em; text-transform: uppercase; margin-top: 6px;
+  }
+
+  .watch {
+    width: 148px; height: 172px;
+    background: #1a1a1a;
+    border-radius: 34px;
+    border: 3px solid #2a2a2a;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 16px 40px rgba(0,0,0,0.7);
+    overflow: hidden; position: relative;
+  }
+  /* crown */
+  .watch::before {
+    content: '';
+    position: absolute; right: -7px; top: 42px;
+    width: 6px; height: 28px;
+    background: #2a2a2a; border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .watch-screen {
+    width: 100%; height: 100%;
+    background: #000;
+    display: flex; flex-direction: column;
+    align-items: center;
+    padding: 13px 13px 10px;
+    position: relative;
+  }
+
+  .watch-statusbar {
+    width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 8px; color: rgba(255,255,255,0.5);
+    margin-bottom: 6px;
+  }
+  .watch-gear { font-size: 9px; color: #007aff; }
+
+  /* Pressure gauge (watch) */
+  .gauge-wrap { position: relative; width: 84px; height: 84px; margin-bottom: 6px; }
+  .gauge-label {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1px;
+  }
+  .gauge-pct { font-size: 22px; font-weight: 700; line-height: 1; }
+  .gauge-pct.green { color: #34c759; }
+  .gauge-pct.red { color: #ff3b30; }
+  .gauge-sub { font-size: 7px; color: rgba(255,255,255,0.4); }
+
+  .watch-status-text {
+    font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .watch-status-text.green { color: #34c759; }
+  .watch-status-text.red { color: #ff3b30; }
+
+  /* Settings watch */
+  .watch-settings-title {
+    font-size: 11px; font-weight: 600; color: #007aff;
+    margin-bottom: 8px;
+  }
+  .toggle-row {
+    width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 6px;
+  }
+  .toggle-label { font-size: 10px; color: #fff; }
+  .toggle {
+    width: 32px; height: 18px; border-radius: 9px;
+    display: flex; align-items: center; padding: 2px;
+    flex-shrink: 0;
+  }
+  .toggle.on { background: #34c759; justify-content: flex-end; }
+  .toggle.off { background: #3a3a3c; justify-content: flex-start; }
+  .toggle-thumb {
+    width: 14px; height: 14px; border-radius: 50%; background: #fff;
+  }
+  .ai-desc {
+    font-size: 7.5px; color: rgba(255,255,255,0.4);
+    line-height: 1.4; margin-bottom: 6px; text-align: left; width: 100%;
+  }
+  .watch-btn-row { display: flex; gap: 4px; width: 100%; margin-top: auto; }
+  .w-btn {
+    flex: 1; border-radius: 7px; padding: 6px 0;
+    font-size: 9.5px; font-weight: 600; text-align: center;
+  }
+  .w-btn.cancel { background: #2c2c2e; color: #fff; }
+  .w-btn.confirm { background: #007aff; color: #fff; }
+
+  /* Right side label */
+  .right-col {
+    display: flex; flex-direction: column; gap: 16px; align-items: center;
+  }
+  .watch-col-label {
+    font-size: 10px; font-weight: 500;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- Phone -->
+  <div class="phone-outer">
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="phone-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <span>▌▌▌</span><span>WiFi</span><span>■</span>
+          </div>
+        </div>
+
+        <div class="section-title">In Progress</div>
+        <div class="progress-card">
+          <div class="progress-left">
+            <div class="progress-warning">
+              <div class="progress-warning-dot"></div>
+              Take a break
+            </div>
+            <div class="view-more">View More</div>
+          </div>
+          <div class="donut-wrap">
+            <svg width="50" height="50" viewBox="0 0 50 50">
+              <circle cx="25" cy="25" r="19" fill="none" stroke="#2c2c2e" stroke-width="5"/>
+              <circle cx="25" cy="25" r="19" fill="none" stroke="#ff3b30" stroke-width="5"
+                stroke-dasharray="83.5 119.4" stroke-dashoffset="29.8" stroke-linecap="round"/>
+            </svg>
+            <div class="donut-label red">70%</div>
+          </div>
+        </div>
+
+        <div class="section-title">Event History</div>
+        <div class="event-list">
+          <div class="event-item">
+            <div class="check-icon">✓</div>
+            <div class="event-info">
+              <div class="event-name">Team building activity</div>
+              <div class="event-time">164 minutes</div>
+            </div>
+            <div class="event-donut">
+              <svg width="32" height="32" viewBox="0 0 32 32">
+                <circle cx="16" cy="16" r="12" fill="none" stroke="#2c2c2e" stroke-width="3.5"/>
+                <circle cx="16" cy="16" r="12" fill="none" stroke="#ff3b30" stroke-width="3.5"
+                  stroke-dasharray="56.5 75.4" stroke-dashoffset="18.9" stroke-linecap="round"/>
+              </svg>
+              <div class="event-donut-label" style="color:#ff3b30">75%</div>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="check-icon">✓</div>
+            <div class="event-info">
+              <div class="event-name">Meeting</div>
+              <div class="event-time">57 minutes</div>
+            </div>
+            <div class="event-donut">
+              <svg width="32" height="32" viewBox="0 0 32 32">
+                <circle cx="16" cy="16" r="12" fill="none" stroke="#2c2c2e" stroke-width="3.5"/>
+                <circle cx="16" cy="16" r="12" fill="none" stroke="#34c759" stroke-width="3.5"
+                  stroke-dasharray="18.8 75.4" stroke-dashoffset="18.9" stroke-linecap="round"/>
+              </svg>
+              <div class="event-donut-label" style="color:#34c759">25%</div>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="check-icon">✓</div>
+            <div class="event-info">
+              <div class="event-name">Birthday party</div>
+              <div class="event-time">215 minutes</div>
+            </div>
+            <div class="event-donut">
+              <svg width="32" height="32" viewBox="0 0 32 32">
+                <circle cx="16" cy="16" r="12" fill="none" stroke="#2c2c2e" stroke-width="3.5"/>
+                <circle cx="16" cy="16" r="12" fill="none" stroke="#34c759" stroke-width="3.5"
+                  stroke-dasharray="24.9 75.4" stroke-dashoffset="18.9" stroke-linecap="round"/>
+              </svg>
+              <div class="event-donut-label" style="color:#34c759">33%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-tab">
+          <svg viewBox="0 0 24 24" fill="#007aff"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span class="nav-tab-label" style="color:#007aff">Home</span>
+        </div>
+        <div class="nav-tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <span class="nav-tab-label" style="color:#666">Settings</span>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">Mobile App</div>
+  </div>
+
+  <!-- Watches 2x2 grid -->
+  <div class="right-col">
+    <div class="watch-grid">
+
+      <!-- Watch 1: Low pressure "All good" -->
+      <div class="watch-outer">
+        <div class="watch">
+          <div class="watch-screen">
+            <div class="watch-statusbar">
+              <span class="watch-gear">⚙</span>
+              <span>9:55</span>
+            </div>
+            <div class="gauge-wrap">
+              <svg width="84" height="84" viewBox="0 0 84 84">
+                <circle cx="42" cy="42" r="34" fill="none" stroke="#1c1c1e" stroke-width="7"/>
+                <circle cx="42" cy="42" r="34" fill="none" stroke="#34c759" stroke-width="7"
+                  stroke-dasharray="25.6 213.6" stroke-dashoffset="53.4" stroke-linecap="round"/>
+              </svg>
+              <div class="gauge-label">
+                <span class="gauge-pct green">12<span style="font-size:9px">%</span></span>
+                <span class="gauge-sub">Pressure Level</span>
+              </div>
+            </div>
+            <div class="watch-status-text green">All good</div>
+          </div>
+        </div>
+        <div class="watch-label-sm">Low</div>
+      </div>
+
+      <!-- Watch 2: High pressure "Take a break" -->
+      <div class="watch-outer">
+        <div class="watch">
+          <div class="watch-screen">
+            <div class="watch-statusbar">
+              <span class="watch-gear">⚙</span>
+              <span>9:55</span>
+            </div>
+            <div class="gauge-wrap">
+              <svg width="84" height="84" viewBox="0 0 84 84">
+                <circle cx="42" cy="42" r="34" fill="none" stroke="#1c1c1e" stroke-width="7"/>
+                <circle cx="42" cy="42" r="34" fill="none" stroke="#ff3b30" stroke-width="7"
+                  stroke-dasharray="149.2 213.6" stroke-dashoffset="53.4" stroke-linecap="round"/>
+              </svg>
+              <div class="gauge-label">
+                <span class="gauge-pct red">70<span style="font-size:9px">%</span></span>
+                <span class="gauge-sub">Pressure Level</span>
+              </div>
+            </div>
+            <div class="watch-status-text red">⊙ Take a break</div>
+          </div>
+        </div>
+        <div class="watch-label-sm">High</div>
+      </div>
+
+      <!-- Watch 3: Settings - Social Mode -->
+      <div class="watch-outer">
+        <div class="watch">
+          <div class="watch-screen">
+            <div class="watch-statusbar">
+              <span style="visibility:hidden">⚙</span>
+              <span style="color:#007aff;font-size:8px;font-weight:600;">Settings</span>
+              <span>9:55</span>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Social Mode</span>
+              <div class="toggle on"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Vibrate Mode</span>
+              <div class="toggle off"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="watch-btn-row">
+              <div class="w-btn cancel">Cancel</div>
+              <div class="w-btn confirm">Confirm</div>
+            </div>
+          </div>
+        </div>
+        <div class="watch-label-sm">Settings</div>
+      </div>
+
+      <!-- Watch 4: Settings - AI Mode -->
+      <div class="watch-outer">
+        <div class="watch">
+          <div class="watch-screen">
+            <div class="watch-statusbar">
+              <span style="visibility:hidden">⚙</span>
+              <span style="color:#007aff;font-size:8px;font-weight:600;">Settings</span>
+              <span>9:55</span>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">AI Mode</span>
+              <div class="toggle on"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="ai-desc">* AI Mode analyzes real-time conversations to help users determine whether it might be a good time to leave.</div>
+            <div class="watch-btn-row">
+              <div class="w-btn cancel">Cancel</div>
+              <div class="w-btn confirm">Confirm</div>
+            </div>
+          </div>
+        </div>
+        <div class="watch-label-sm">AI Mode</div>
+      </div>
+
+    </div>
+    <div class="watch-col-label">Apple Watch</div>
+  </div>
+
+</div>
+</body>
+</html>

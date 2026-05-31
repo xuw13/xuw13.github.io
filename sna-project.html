@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SNA Smart Check-in — Xu Wang</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:    #0b0a08;
+      --bg2:   #111009;
+      --bg3:   #181610;
+      --cream:  #f0ece3;
+      --cream2: #c8c2b4;
+      --cream3: #6e6a60;
+      --gold:  #c9a96e;
+      --gold2: #8a6e40;
+      --gold3: rgba(201,169,110,0.12);
+      --border:  rgba(255,255,255,0.055);
+      --border2: rgba(201,169,110,0.22);
+      /* Z-index scale */
+      --z-nav:    100;
+      --z-cursor: 200;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Cursor ── */
+    .cursor {
+      width: 6px; height: 6px;
+      background: var(--gold); border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 200;
+      transform: translate(-50%,-50%);
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid rgba(201,169,110,0.4); border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 199;
+      transform: translate(-50%,-50%);
+      transition: transform .35s cubic-bezier(.16,1,.3,1), width .3s, height .3s;
+    }
+    .cursor-ring.hover { width: 56px; height: 56px; border-color: var(--gold); }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 3rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color .4s, background .4s;
+    }
+    nav.scrolled {
+      border-color: var(--border);
+      background: rgba(11,10,8,0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-weight: 300; letter-spacing: .15em;
+      color: var(--cream); text-decoration: none;
+    }
+    .nav-right { display: flex; align-items: center; gap: 2.5rem; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--cream3); text-decoration: none; transition: color .3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .lang-toggle {
+      display: flex; align-items: center;
+      border: 1px solid var(--border2); border-radius: 2px; overflow: hidden;
+    }
+    .lang-btn {
+      background: none; border: none; cursor: none;
+      padding: .4em .9em;
+      font-family: 'DM Sans', sans-serif; font-size: .68rem;
+      font-weight: 400; letter-spacing: .12em;
+      color: var(--cream3); transition: background .25s, color .25s;
+    }
+    .lang-btn.active { background: var(--gold); color: var(--bg); font-weight: 500; }
+    .lang-btn:not(.active):hover { background: var(--bg3); color: var(--cream); }
+    .lang-divider { width: 1px; height: 18px; background: var(--border2); }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100dvh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 0 3rem; padding-top: 5rem; gap: 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg-text {
+      position: absolute; top: 50%; left: -2%;
+      transform: translateY(-50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(100px,15vw,220px);
+      font-weight: 300; color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.035);
+      white-space: nowrap; pointer-events: none; user-select: none;
+      letter-spacing: -.04em;
+    }
+    .hero-left { position: relative; z-index: 1; }
+    .hero-tag {
+      display: inline-block; font-size: .7rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--gold);
+      border: 1px solid var(--border2); padding: .4em 1em; border-radius: 2px;
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp .8s .3s forwards;
+    }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(44px,6vw,82px); font-weight: 300;
+      line-height: .95; letter-spacing: -.02em; margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp .9s .5s forwards;
+    }
+    .hero-name em { font-style: italic; color: var(--gold); }
+    .hero-desc {
+      font-size: 1.05rem; color: var(--cream2); max-width: 400px;
+      margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp .9s .7s forwards;
+    }
+    .hero-meta {
+      display: flex; gap: 2.5rem; margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp .9s .85s forwards;
+    }
+    .hero-meta-item { }
+    .hero-meta-label {
+      font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .25rem; display: block;
+    }
+    .hero-meta-value { font-size: .82rem; color: var(--cream2); }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: .8rem;
+      font-size: .8rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--cream); text-decoration: none;
+      border-bottom: 1px solid var(--gold); padding-bottom: .3rem;
+      transition: color .3s, gap .3s;
+      opacity: 0; animation: fadeUp .9s .9s forwards;
+    }
+    .hero-cta:hover { color: var(--gold); gap: 1.2rem; }
+    .hero-cta svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* Hero right: mockup preview */
+    .hero-right {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; animation: fadeUp .9s .6s forwards;
+    }
+    .hero-mockup-wrap {
+      width: 100%; max-width: 520px;
+      border-radius: 10px; overflow: hidden;
+      box-shadow: 0 0 0 1px var(--border), 0 32px 80px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,255,255,0.04);
+      position: relative;
+    }
+    .hero-mockup-inner {
+      background: linear-gradient(160deg, #f2f4f7 0%, #e8ecf0 100%);
+      padding: 28px 32px 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    .mockup-topbar {
+      width: 100%; display: flex; justify-content: flex-end; align-items: center;
+      gap: 10px; padding-bottom: 12px;
+      border-bottom: 1px solid #dde0e5;
+      font-size: 10px; color: #666;
+    }
+    .mockup-logout {
+      width: 24px; height: 24px; border: 1.5px solid #bbb; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #666;
+    }
+    .mockup-title { font-size: 20px; font-weight: 700; color: #1a7abf; }
+    .mockup-checklist { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+    .mockup-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; color: #333; padding: 0 4px;
+    }
+    .mockup-badge {
+      width: 20px; height: 20px; border-radius: 5px; background: #2ea84e;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: #fff; font-weight: 700;
+    }
+    .mockup-progress { width: 100%; height: 8px; background: #d0d4da; border-radius: 10px; overflow: hidden; }
+    .mockup-fill { height: 100%; width: 65%; background: linear-gradient(90deg,#29b8a0,#1ec49a); border-radius: 10px; }
+    .mockup-printing { display: flex; align-items: center; gap: 16px; }
+    .mockup-spinner {
+      width: 20px; height: 20px;
+      border: 2px solid #ddd; border-top-color: #555; border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    .mockup-print-label { font-size: 14px; font-weight: 600; color: #222; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 1px solid var(--border); }
+
+    /* ── Section commons ── */
+    section { padding: 7rem 3rem; }
+    .section-label {
+      font-size: .68rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px,4.5vw,60px); font-weight: 300;
+      line-height: 1.05; letter-spacing: -.02em;
+    }
+    .section-title em { font-style: italic; }
+
+    /* ── Overview ── */
+    #overview {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 6rem; align-items: start; background: var(--bg2);
+    }
+    .overview-body {
+      font-size: 1.05rem; color: var(--cream2); line-height: 1.8; margin-bottom: 1.5rem;
+    }
+    .overview-body strong { color: var(--cream); font-weight: 400; }
+    .hmw-block {
+      margin-top: 2.5rem;
+      padding: 2rem;
+      border: 1px solid var(--border2);
+      border-left: 2px solid var(--gold);
+      border-radius: 0 3px 3px 0;
+      background: rgba(201,169,110,0.035);
+    }
+    .hmw-label {
+      font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .8rem; display: block;
+    }
+    .hmw-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem; font-style: italic; font-weight: 300;
+      color: var(--cream); line-height: 1.5;
+    }
+    .design-focus {
+      margin-top: 1.5rem;
+      padding: 1.5rem 2rem;
+      border: 1px solid var(--border);
+      border-radius: 3px; background: var(--bg3);
+    }
+    .design-focus-label {
+      font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--cream3); margin-bottom: .6rem; display: block;
+    }
+    .design-focus-text { font-size: .95rem; color: var(--cream2); line-height: 1.7; }
+
+    /* ── Research phase pills ── */
+    .phase-row {
+      display: flex; gap: 0; margin-top: 2.5rem;
+      border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+    }
+    .phase-pill {
+      flex: 1; padding: 1rem 1.2rem; background: var(--bg2); text-align: center;
+      border-right: 1px solid var(--border);
+      transition: background .3s;
+    }
+    .phase-pill:last-child { border-right: none; }
+    .phase-pill:hover { background: var(--bg3); }
+    .phase-num {
+      font-family: 'Cormorant Garamond', serif; font-size: .8rem;
+      color: var(--gold); display: block; margin-bottom: .3rem;
+    }
+    .phase-name { font-size: .72rem; letter-spacing: .08em; color: var(--cream2); }
+
+    /* ── Field Study ── */
+    #field {
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 6rem; align-items: start;
+    }
+    .observation-cards { display: flex; flex-direction: column; gap: 1px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .obs-card {
+      background: var(--bg2); padding: 1.6rem 2rem;
+      display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start;
+      transition: background .3s;
+    }
+    .obs-card:hover { background: var(--bg3); }
+    .obs-icon {
+      width: 32px; height: 32px; border: 1px solid var(--border2);
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0; margin-top: .2rem;
+    }
+    .obs-title { font-size: .82rem; font-weight: 400; color: var(--cream); margin-bottom: .4rem; }
+    .obs-text { font-size: .82rem; color: var(--cream3); line-height: 1.6; }
+    .quote-block {
+      margin-top: 2rem; padding: 1.8rem 2rem;
+      border-left: 1px solid var(--gold);
+      background: rgba(255,255,255,0.018);
+    }
+    .quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem; font-style: italic; font-weight: 300;
+      color: var(--cream2); line-height: 1.6; margin-bottom: .8rem;
+    }
+    .quote-src { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--cream3); }
+
+    /* ── Empathy Maps ── */
+    #empathy { background: var(--bg2); }
+    .empathy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 3rem; }
+    .empathy-card { background: var(--bg2); padding: 2.5rem; transition: background .3s; }
+    .empathy-card:hover { background: var(--bg3); }
+    .empathy-who {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300;
+      margin-bottom: 1.5rem; color: var(--cream);
+    }
+    .empathy-section-label {
+      font-size: .62rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .8rem; margin-top: 1.2rem;
+    }
+    .empathy-tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .etag {
+      font-size: .72rem; padding: .3em .8em; border-radius: 2px;
+      border: 1px solid var(--border); color: var(--cream2);
+    }
+    .etag.pain { border-color: rgba(220,80,60,0.3); color: #e8907e; background: rgba(220,80,60,0.06); }
+    .etag.gain { border-color: rgba(41,184,160,0.3); color: #7cd8cc; background: rgba(41,184,160,0.06); }
+    .etag.feel { border-color: rgba(180,140,220,0.3); color: #c8a8e0; background: rgba(180,140,220,0.06); }
+
+    /* ── Journey Map ── */
+    #journey { overflow-x: hidden; }
+    .journey-stages {
+      margin-top: 3rem; display: grid; grid-template-columns: repeat(6,1fr);
+      gap: 1px; background: var(--border); border-radius: 4px; overflow: hidden;
+    }
+    .stage-col { background: var(--bg2); display: flex; flex-direction: column; }
+    .stage-head {
+      background: var(--bg3); padding: 1.2rem 1rem;
+      text-align: center; border-bottom: 1px solid var(--border);
+    }
+    .stage-head-name { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--cream); font-weight: 400; }
+    .stage-body { padding: 1.2rem 1rem; flex: 1; display: flex; flex-direction: column; gap: 1.2rem; }
+    .stage-row-label {
+      font-size: .6rem; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .4rem;
+    }
+    .stage-row-val { font-size: .75rem; color: var(--cream3); line-height: 1.5; }
+    .emotion-dot {
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: middle;
+    }
+    .emotion-positive { background: #29b8a0; }
+    .emotion-neutral  { background: var(--cream3); }
+    .emotion-negative { background: #e8907e; }
+
+    /* ── Environment ── */
+    #environment { background: var(--bg2); }
+    .env-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; align-items: end; }
+    .env-text .section-label { margin-bottom: 1rem; }
+    .env-body { font-size: 1.05rem; color: var(--cream2); line-height: 1.8; margin-bottom: 1.5rem; }
+    .flow-steps { display: flex; flex-direction: column; gap: 1px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 1rem; }
+    .flow-step { background: var(--bg3); padding: 1.2rem 1.5rem; display: flex; gap: 1.2rem; align-items: flex-start; transition: background .3s; }
+    .flow-step:hover { background: rgba(41,184,160,0.06); }
+    .flow-step-num {
+      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(41,184,160,0.15); border: 1px solid rgba(41,184,160,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 600; color: #29b8a0;
+    }
+    .flow-step-text { font-size: .85rem; color: var(--cream2); line-height: 1.5; padding-top: .15rem; }
+    .flow-step-text strong { color: var(--cream); font-weight: 400; }
+    .env-mockup-wrap {
+      border-radius: 10px; overflow: hidden;
+      box-shadow: 0 0 0 1px var(--border), 0 24px 60px rgba(0,0,0,.65);
+    }
+    .env-mockup-inner {
+      background: #141820;
+      padding: 28px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .env-mock-title {
+      font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.25);
+      letter-spacing: .1em; text-transform: uppercase; text-align: center;
+    }
+
+    /* ── UI Screens ── */
+    #ui-screens {}
+    .screens-header { margin-bottom: 3rem; }
+    .screens-grid { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: 1fr 1fr; gap: 1px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .screen-card {
+      background: var(--bg2); padding: 2rem; display: flex; flex-direction: column; gap: 1rem;
+      transition: background .3s; position: relative; overflow: hidden;
+    }
+    .screen-card:hover { background: var(--bg3); }
+    .screen-card-label { font-size: .65rem; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+    .screen-card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 300; }
+    .screen-card-desc { font-size: .8rem; color: var(--cream3); line-height: 1.6; }
+    .screen-card-status {
+      font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+      padding: .3em .8em; border-radius: 2px; display: inline-block; align-self: flex-start;
+    }
+    .status-ok { background: rgba(41,184,160,0.12); color: #7cd8cc; border: 1px solid rgba(41,184,160,0.25); }
+    .status-err { background: rgba(220,80,60,0.1); color: #e8907e; border: 1px solid rgba(220,80,60,0.2); }
+    .status-wait { background: rgba(201,169,110,0.1); color: var(--gold); border: 1px solid var(--border2); }
+    .screen-mini {
+      width: 100%; border-radius: 8px; overflow: hidden;
+      border: 1px solid var(--border); background: linear-gradient(160deg,#f2f4f7,#e8ecf0);
+      padding: 14px; height: 210px; flex-shrink: 0;
+    }
+    .screen-mini-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #dde0e5;
+      font-size: 8px; color: #888;
+    }
+    .screen-mini-title { font-size: 13px; font-weight: 700; text-align: center; margin-bottom: 10px; }
+    .screen-mini-title.blue { color: #1a7abf; }
+    .screen-mini-title.green { color: #2ea84e; }
+    .screen-mini-title.red { color: #e05a3a; }
+    .screen-mini-row { display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: #444; margin: 4px 0; }
+    .screen-mini-check { width: 14px; height: 14px; border-radius: 3px; background: #2ea84e; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 8px; }
+    .screen-mini-bar { height: 6px; background: #d0d4da; border-radius: 6px; overflow: hidden; margin: 8px 0; }
+    .screen-mini-fill { height: 100%; background: linear-gradient(90deg,#29b8a0,#1ec49a); border-radius: 6px; }
+    .screen-mini-btn { background: #29b8a0; color: #fff; font-size: 9px; border-radius: 4px; padding: 5px 14px; text-align: center; margin: 8px auto 0; display: block; width: fit-content; }
+    .screen-mini-keypad { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin: 6px 0; }
+    .screen-mini-key { width: 22px; height: 18px; background: #e0e2e6; border-radius: 3px; font-size: 9px; display: flex; align-items: center; justify-content: center; color: #333; }
+    .screen-mini-input { background: #e8eaee; border-radius: 4px; padding: 5px 8px; font-size: 9px; color: #666; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+    .screen-mini-select-row { background: #e8eaee; border-radius: 4px; padding: 6px 8px; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; color: #222; margin: 4px 0; }
+    .screen-mini-select-check { width: 14px; height: 14px; border-radius: 3px; background: #2ea84e; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 8px; }
+    .screen-mini-printbtn-row { display: flex; gap: 6px; margin-top: 8px; }
+    .screen-mini-printbtn { flex: 1; border-radius: 4px; font-size: 9px; font-weight: 600; padding: 5px; text-align: center; }
+    .screen-mini-printbtn.primary { background: #444; color: #fff; }
+    .screen-mini-printbtn.secondary { background: #d0d4da; color: #555; }
+    .screen-mini-error-title { font-size: 11px; font-weight: 700; color: #e05a3a; text-align: center; margin-bottom: 4px; }
+    .screen-mini-error-sub { font-size: 8px; color: #e05a3a; text-align: center; margin-bottom: 8px; }
+    .screen-mini-badge { display: flex; align-items: center; justify-content: center; margin: 8px 0; }
+    .screen-mini-badge-icon { font-size: 24px; }
+    .screen-hover-accent {
+      position: absolute; bottom: 0; left: 0; height: 2px; width: 0;
+      background: var(--gold); transition: width .5s cubic-bezier(.16,1,.3,1);
+    }
+    .screen-card:hover .screen-hover-accent { width: 100%; }
+
+    /* ── Physical Design ── */
+    #physical { background: var(--bg2); }
+    .physical-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center; margin-top: 3rem; }
+    .physical-iframe-wrap {
+      border-radius: 10px; overflow: hidden;
+      box-shadow: 0 0 0 1px var(--border), 0 32px 80px rgba(0,0,0,.65);
+      position: relative;
+    }
+    .physical-text { }
+    .physical-body { font-size: 1.05rem; color: var(--cream2); line-height: 1.8; margin-bottom: 2rem; }
+
+    /* ── Reflection ── */
+    #reflection { }
+    .reflection-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 3rem; }
+    .reflection-card { background: var(--bg2); padding: 2rem 2.2rem; transition: background .3s; }
+    .reflection-card:hover { background: var(--bg3); }
+    .reflection-num { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 300; color: var(--gold); opacity: .4; margin-bottom: .8rem; line-height: 1; }
+    .reflection-title { font-size: .85rem; font-weight: 400; color: var(--cream); margin-bottom: .6rem; }
+    .reflection-text { font-size: .82rem; color: var(--cream3); line-height: 1.6; }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex; align-items: center; gap: .8rem;
+      font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--cream3); text-decoration: none;
+      padding: 2rem 3rem; border-bottom: 1px solid var(--border);
+      transition: color .3s, gap .3s; width: 100%;
+      background: var(--bg2);
+    }
+    .back-link:hover { color: var(--gold); gap: 1.2rem; }
+    .back-link svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 1.5rem 3rem; display: flex;
+      justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--border);
+      font-size: .7rem; letter-spacing: .08em; color: var(--cream3);
+    }
+
+    /* ── Reveal / Animations ── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes slideLine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      #hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; }
+      .hero-right { display: none; }
+      section { padding: 5rem 1.5rem; }
+      #overview, #field { grid-template-columns: 1fr; gap: 3rem; }
+      .empathy-grid { grid-template-columns: 1fr; background: transparent; gap: 1rem; }
+      .journey-stages { grid-template-columns: repeat(3,1fr); }
+      .env-grid { grid-template-columns: 1fr; }
+      .screens-grid { grid-template-columns: 1fr 1fr; }
+      .reflection-grid { grid-template-columns: 1fr; }
+      .physical-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: .5rem; text-align: center; }
+      .back-link { padding: 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      .screens-grid { grid-template-columns: 1fr; }
+      .hero-meta { flex-wrap: wrap; gap: 1.5rem; }
+      .phase-row { flex-direction: column; }
+      .phase-pill { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+
+    /* ── Grain overlay (matches index.html) ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 198;
+      pointer-events: none;
+      opacity: 0.032;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ── Hero ambient glow ── */
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: 15%;
+      right: -8%;
+      width: 55%;
+      height: 75%;
+      background: radial-gradient(ellipse at center, rgba(201,169,110,0.04) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Nav logo hover ── */
+    .nav-logo { transition: color 0.3s; }
+    .nav-logo:hover { color: var(--gold); }
+
+    /* ── Nav link underline slide-in ── */
+    .nav-links a { position: relative; }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── Back link improvements ── */
+    .back-link {
+      padding: 1.5rem 3rem;
+    }
+    .back-link:active { transform: translateX(-2px); }
+
+    /* ── hero-cta active state ── */
+    .hero-cta:active { transform: translateY(1px); }
+
+    /* ── hero-bg-text: outlined stroke style ── */
+
+    /* ── text-wrap improvements ── */
+    .hero-desc { text-wrap: pretty; }
+    .overview-body { text-wrap: pretty; max-width: 58ch; }
+    .hero-name { text-wrap: balance; }
+    .section-title { text-wrap: balance; }
+
+    /* ── Contact socials underline ── */
+    .contact-socials a { position: relative; }
+    .contact-socials a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .contact-socials a:hover { color: var(--gold); }
+    .contact-socials a:hover::after { width: 100%; }
+
+    /* ── Overview left col sticky ── */
+    #overview > div:first-child { position: sticky; top: 7rem; }
+
+    /* ── Field left col sticky ── */
+    #field > div:first-child { position: sticky; top: 7rem; }
+
+    /* ── Section commons refinements ── */
+    section { padding: 8rem 3rem; }
+    .section-label { font-size: 0.66rem; letter-spacing: 0.22em; }
+
+    /* ── Process/phase pills: horizontal slide on hover ── */
+    .phase-pill { transition: background 0.25s, padding-left 0.3s cubic-bezier(0.16,1,0.3,1); }
+    .phase-pill:hover { padding-left: 1.6rem; }
+
+    /* ── Obs cards: slide-in on hover ── */
+    .obs-card { transition: background 0.3s, padding-left 0.3s cubic-bezier(0.16,1,0.3,1); }
+    .obs-card:hover { background: var(--bg3); padding-left: 2.4rem; }
+
+    /* ── Reflection cards: bottom accent line ── */
+    .reflection-card { position: relative; overflow: hidden; }
+    .reflection-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 1px; width: 0;
+      background: var(--gold);
+      transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reflection-card:hover::after { width: 100%; }
+
+    /* ── sc-accent height: 1px for subtlety ── */
+    .sc-accent { height: 1px !important; }
+
+    /* ── Footer: add legal row ── */
+    .footer-legal { display: flex; gap: 1.5rem; align-items: center; }
+    .footer-legal a { color: var(--cream3); text-decoration: none; transition: color 0.2s; }
+    .footer-legal a:hover { color: var(--gold); }
+
+    /* ── Contact ambient glow ── */
+    #contact { position: relative; overflow: hidden; }
+    #contact::before {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70%;
+      height: 70%;
+      background: radial-gradient(ellipse at center, rgba(201,169,110,0.055) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* ── Remove border-radius from lang-toggle (2px → rect) ── */
+
+    /* ── journey map: sticky header refinement ── */
+    .stage-head-name { font-size: 0.7rem; letter-spacing: 0.1em; }
+
+    /* ── hmw-block: stronger left accent ── */
+    .hmw-block { border-left-width: 2px; }
+
+    /* ── Responsive: un-stick on mobile ── */
+    @media (max-width: 900px) {
+      #overview > div:first-child,
+      #field > div:first-child { position: static; }
+      section { padding: 5rem 1.5rem; }
+      .back-link { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Nav -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">XUW.</a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html#about"    data-zh="关于"  data-en="About">About</a></li>
+      <li><a href="index.html#projects" data-zh="作品"  data-en="Work">Work</a></li>
+      <li><a href="index.html#services" data-zh="服务"  data-en="Services">Services</a></li>
+      <li><a href="index.html#contact"  data-zh="联系"  data-en="Contact">Contact</a></li>
+    </ul>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btnEn">EN</button>
+      <div class="lang-divider"></div>
+      <button class="lang-btn" id="btnZh">中文</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Back link -->
+<a href="index.html" class="back-link">
+  <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+</a>
+
+<!-- ======================== HERO ======================== -->
+<section id="hero">
+  <div class="hero-bg-text" data-zh="机场" data-en="AIRPORT">AIRPORT</div>
+
+  <div class="hero-left">
+    <span class="hero-tag" data-zh="UX 研究 · 智能环境 · UI 设计" data-en="UX Research · Smart Environment · UI Design">
+      UX Research · Smart Environment · UI Design
+    </span>
+    <h1 class="hero-name">
+      <span data-zh="SNA<br><em>智能</em><br>值机系统" data-en="SNA<br><em>Smart</em><br>Check-in">
+        SNA<br><em>Smart</em><br>Check-in
+      </span>
+    </h1>
+    <p class="hero-desc"
+      data-zh="为约翰·韦恩机场设计的智能自助值机系统，整合自动故障处理与行李自动转运，彻底消除旅客因值机错误被迫重新排队的困境。"
+      data-en="A smart self-check-in system for John Wayne Airport that integrates automatic troubleshooting and baggage transport — eliminating the frustration of kiosk errors forcing passengers back into counter lines.">
+      A smart self-check-in system for John Wayne Airport that integrates automatic troubleshooting and baggage transport — eliminating the frustration of kiosk errors forcing passengers back into counter lines.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label" data-zh="项目类型" data-en="Type">Type</span>
+        <span class="hero-meta-value" data-zh="学术研究项目" data-en="Academic Project">Academic Project</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label" data-zh="时间" data-en="Year">Year</span>
+        <span class="hero-meta-value">Winter 2026</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label" data-zh="角色" data-en="Role">Role</span>
+        <span class="hero-meta-value" data-zh="独立研究员 / 设计师" data-en="Solo Researcher & Designer">Solo Researcher & Designer</span>
+      </div>
+    </div>
+    <a href="#overview" class="hero-cta" data-zh="阅读案例" data-en="Read Case Study">
+      Read Case Study
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+
+  <!-- Hero right: boarding pass + suitcase -->
+  <div class="hero-right">
+    <div style="width:100%;max-width:460px;position:relative;">
+      <svg viewBox="0 0 460 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <defs>
+          <filter id="s1"><feGaussianBlur stdDeviation="14"/></filter>
+          <filter id="s2"><feGaussianBlur stdDeviation="6"/></filter>
+        </defs>
+
+        <!-- Soft background glow -->
+        <ellipse cx="230" cy="200" rx="180" ry="150" fill="rgba(201,169,110,0.06)" filter="url(#s1)"/>
+
+        <!-- ═══ SUITCASE (bottom-right, slightly rotated) ═══ -->
+        <g transform="translate(248,175) rotate(6)">
+          <!-- Drop shadow -->
+          <rect x="4" y="6" width="170" height="190" rx="14" fill="rgba(0,0,0,0.35)" filter="url(#s2)"/>
+          <!-- Body -->
+          <rect width="170" height="190" rx="14"
+                fill="#1a1915" stroke="#c9a96e" stroke-width="1.5" opacity="0.95"/>
+          <!-- Corner trim lines -->
+          <rect x="10" y="10" width="150" height="170" rx="10"
+                fill="none" stroke="rgba(201,169,110,0.18)" stroke-width="0.8"/>
+          <!-- Horizontal mid-stripe -->
+          <rect x="0" y="85" width="170" height="20" rx="0"
+                fill="rgba(201,169,110,0.08)" stroke="rgba(201,169,110,0.25)" stroke-width="0.7"/>
+          <!-- Zipper dots along mid-stripe -->
+          <circle cx="22" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="34" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="46" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="58" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="70" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="82" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="94" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="106" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="118" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="130" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <circle cx="142" cy="95" r="2" fill="rgba(201,169,110,0.45)"/>
+          <!-- Handle bracket (top centre) -->
+          <path d="M 58 0 L 58 -18 Q 85 -30 112 -18 L 112 0"
+                fill="none" stroke="#c9a96e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+          <!-- Handle grip highlight -->
+          <path d="M 68 -18 Q 85 -26 102 -18"
+                fill="none" stroke="rgba(201,169,110,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- Wheels -->
+          <circle cx="30" cy="192" r="10" fill="#141310" stroke="#c9a96e" stroke-width="1.5" opacity="0.9"/>
+          <circle cx="30" cy="192" r="4" fill="rgba(201,169,110,0.2)" stroke="rgba(201,169,110,0.5)" stroke-width="1"/>
+          <circle cx="140" cy="192" r="10" fill="#141310" stroke="#c9a96e" stroke-width="1.5" opacity="0.9"/>
+          <circle cx="140" cy="192" r="4" fill="rgba(201,169,110,0.2)" stroke="rgba(201,169,110,0.5)" stroke-width="1"/>
+          <!-- Lock clasp (centre) -->
+          <rect x="74" y="108" width="22" height="16" rx="4"
+                fill="rgba(201,169,110,0.1)" stroke="#c9a96e" stroke-width="1.2"/>
+          <rect x="80" y="104" width="10" height="6" rx="3"
+                fill="none" stroke="#c9a96e" stroke-width="1.2"/>
+          <circle cx="85" cy="116" r="2" fill="#c9a96e" opacity="0.7"/>
+          <!-- Luggage tag dangling off handle -->
+          <line x1="85" y1="-18" x2="82" y2="-38" stroke="rgba(201,169,110,0.5)" stroke-width="0.8"/>
+          <rect x="72" y="-52" width="20" height="14" rx="3"
+                fill="#1a1915" stroke="rgba(201,169,110,0.5)" stroke-width="0.8"/>
+          <rect x="76" y="-49" width="8" height="2" rx="1" fill="rgba(201,169,110,0.5)"/>
+          <rect x="76" y="-45" width="12" height="2" rx="1" fill="rgba(201,169,110,0.3)"/>
+        </g>
+
+        <!-- ═══ BOARDING PASS CARD (left, slightly tilted) ═══ -->
+        <g transform="translate(30,60) rotate(-4)">
+          <!-- Drop shadow -->
+          <rect x="3" y="5" width="200" height="118" rx="10" fill="rgba(0,0,0,0.45)" filter="url(#s2)"/>
+          <!-- Card body -->
+          <rect width="200" height="118" rx="10"
+                fill="#1a1915" stroke="rgba(201,169,110,0.45)" stroke-width="1.2"/>
+          <!-- Gold header band -->
+          <rect width="200" height="26" rx="10" fill="rgba(201,169,110,0.14)"/>
+          <rect y="18" width="200" height="8" fill="rgba(201,169,110,0.14)"/>
+          <!-- "BOARDING PASS" label -->
+          <rect x="12" y="8" width="66" height="7" rx="2" fill="rgba(201,169,110,0.7)"/>
+          <!-- Gate badge -->
+          <rect x="152" y="6" width="36" height="14" rx="4"
+                fill="rgba(201,169,110,0.12)" stroke="rgba(201,169,110,0.45)" stroke-width="0.8"/>
+          <text x="170" y="16" text-anchor="middle" font-family="monospace" font-size="8" font-weight="bold" fill="#c9a96e">B14</text>
+          <!-- Flight route -->
+          <text x="14" y="52" font-family="monospace" font-size="16" font-weight="bold" fill="#c9a96e" opacity="0.95">SNA</text>
+          <text x="86" y="50" text-anchor="middle" font-family="monospace" font-size="10" fill="rgba(201,169,110,0.5)">→</text>
+          <text x="110" y="52" font-family="monospace" font-size="16" font-weight="bold" fill="#c9a96e" opacity="0.75">SEA</text>
+          <!-- Sub-labels -->
+          <text x="14" y="62" font-family="monospace" font-size="7" fill="rgba(201,169,110,0.35)">FROM</text>
+          <text x="110" y="62" font-family="monospace" font-size="7" fill="rgba(201,169,110,0.35)">TO</text>
+          <!-- Horizontal rule -->
+          <line x1="12" y1="70" x2="188" y2="70" stroke="rgba(255,255,255,0.07)" stroke-width="0.8" stroke-dasharray="4 3"/>
+          <!-- Info fields -->
+          <text x="14" y="84" font-family="monospace" font-size="7" fill="rgba(201,169,110,0.35)">PASSENGER</text>
+          <rect x="14" y="87" width="60" height="5" rx="1.5" fill="rgba(255,255,255,0.14)"/>
+          <text x="100" y="84" font-family="monospace" font-size="7" fill="rgba(201,169,110,0.35)">SEAT</text>
+          <text x="100" y="95" font-family="monospace" font-size="10" font-weight="bold" fill="#c9a96e" opacity="0.8">22A</text>
+          <!-- Perforation tear line -->
+          <line x1="146" y1="26" x2="146" y2="118" stroke="rgba(255,255,255,0.06)" stroke-width="0.7" stroke-dasharray="5 4"/>
+          <!-- Barcode area -->
+          <rect x="150" y="46" width="2.5" height="58" rx="0.4" fill="rgba(201,169,110,0.55)"/>
+          <rect x="154.5" y="46" width="1.5" height="58" rx="0.4" fill="rgba(201,169,110,0.38)"/>
+          <rect x="158" y="46" width="3" height="58" rx="0.4" fill="rgba(201,169,110,0.55)"/>
+          <rect x="163" y="46" width="1.5" height="58" rx="0.4" fill="rgba(201,169,110,0.42)"/>
+          <rect x="166.5" y="46" width="2.5" height="58" rx="0.4" fill="rgba(201,169,110,0.55)"/>
+          <rect x="171" y="46" width="1.5" height="58" rx="0.4" fill="rgba(201,169,110,0.38)"/>
+          <rect x="174.5" y="46" width="3" height="58" rx="0.4" fill="rgba(201,169,110,0.55)"/>
+          <rect x="179.5" y="46" width="2" height="58" rx="0.4" fill="rgba(201,169,110,0.42)"/>
+          <rect x="183.5" y="46" width="1.5" height="58" rx="0.4" fill="rgba(201,169,110,0.35)"/>
+          <rect x="187" y="46" width="1" height="58" rx="0.4" fill="rgba(201,169,110,0.45)"/>
+        </g>
+
+        <!-- Subtle corner registration marks -->
+        <line x1="18" y1="18" x2="38" y2="18" stroke="rgba(201,169,110,0.1)" stroke-width="0.7"/>
+        <line x1="18" y1="18" x2="18" y2="38" stroke="rgba(201,169,110,0.1)" stroke-width="0.7"/>
+        <line x1="442" y1="18" x2="422" y2="18" stroke="rgba(201,169,110,0.1)" stroke-width="0.7"/>
+        <line x1="442" y1="18" x2="442" y2="38" stroke="rgba(201,169,110,0.1)" stroke-width="0.7"/>
+        <line x1="18" y1="382" x2="38" y2="382" stroke="rgba(201,169,110,0.1)" stroke-width="0.7"/>
+        <line x1="18" y1="382" x2="18" y2="362" stroke="rgba(201,169,110,0.1)" stroke-width="0.7"/>
+        <line x1="442" y1="382" x2="422" y2="382" stroke="rgba(201,169,110,0.1)" stroke-width="0.7"/>
+        <line x1="442" y1="382" x2="442" y2="362" stroke="rgba(201,169,110,0.1)" stroke-width="0.7"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ======================== OVERVIEW ======================== -->
+<section id="overview">
+  <div>
+    <p class="section-label reveal" data-zh="项目背景" data-en="Project Background">Project Background</p>
+    <h2 class="section-title reveal">
+      <span data-zh="研究<br>起点与<br><em>问题</em>" data-en="Context<br>&amp; the<br><em>Problem</em>">
+        Context<br>&amp; the<br><em>Problem</em>
+      </span>
+    </h2>
+
+    <div class="phase-row reveal" style="margin-top: 3rem;">
+      <div class="phase-pill">
+        <span class="phase-num">01</span>
+        <span class="phase-name" data-zh="田野观察" data-en="Field Study">Field Study</span>
+      </div>
+      <div class="phase-pill">
+        <span class="phase-num">02</span>
+        <span class="phase-name" data-zh="用户访谈" data-en="Interviews">Interviews</span>
+      </div>
+      <div class="phase-pill">
+        <span class="phase-num">03</span>
+        <span class="phase-name" data-zh="共情地图" data-en="Empathy Maps">Empathy Maps</span>
+      </div>
+      <div class="phase-pill">
+        <span class="phase-num">04</span>
+        <span class="phase-name" data-zh="旅程地图" data-en="Journey Map">Journey Map</span>
+      </div>
+      <div class="phase-pill">
+        <span class="phase-num">05</span>
+        <span class="phase-name" data-zh="原型设计" data-en="Prototyping">Prototyping</span>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <p class="overview-body reveal"
+      data-zh="本项目延续了我在秋季学期对约翰·韦恩机场空间与技术设计如何影响旅客体验的研究。在实地研究中，我聚焦于旅客在机场的移动路径，以及问题在流程中的发生节点。"
+      data-en="This project builds on research conducted in the fall term studying how space and technology design affect passenger experience at John Wayne Airport (SNA) in Irvine. I focused on how passengers move through the airport and where friction points emerge in the process.">
+      This project builds on research conducted in the fall term studying how space and technology design affect passenger experience at John Wayne Airport (SNA) in Irvine. I focused on how passengers move through the airport and where friction points emerge in the process.
+    </p>
+    <p class="overview-body reveal"
+      data-zh="研究发现，旅客在使用自助值机设备时频繁遭遇屏幕卡死或因行李托运要求被迫返回人工柜台等问题。这一现象揭示了系统在可靠性与实时支持上的明显缺口。"
+      data-en="I discovered that passengers frequently encounter frozen screens or are sent back to staffed counters due to baggage drop requirements — revealing a clear gap in system reliability and real-time support.">
+      I discovered that passengers frequently encounter frozen screens or are sent back to staffed counters due to baggage drop requirements — revealing a clear gap in system reliability and real-time support.
+    </p>
+
+    <div class="hmw-block reveal">
+      <span class="hmw-label" data-zh="问题陈述" data-en="Problem Statement">Problem Statement</span>
+      <p class="hmw-text"
+        data-zh="我们如何帮助约翰·韦恩机场的旅客——当值机系统报错、行李规则迫使他们中断流程、再次等待柜台排队时——减轻他们所承受的压力？"
+        data-en="How might we help passengers at John Wayne Airport who experience stress when kiosk errors occur and baggage rules force them to stop their progress and wait in counter lines again?">
+        How might we help passengers at John Wayne Airport who experience stress when kiosk errors occur and baggage rules force them to stop their progress and wait in counter lines again?
+      </p>
+    </div>
+
+    <div class="design-focus reveal">
+      <span class="design-focus-label" data-zh="设计焦点" data-en="Design Focus">Design Focus</span>
+      <p class="design-focus-text"
+        data-zh="在约翰·韦恩机场打造一个智能自助值机区域，整合自动帮助功能与行李自动化处理，为旅客提供顺畅、轻松的机场登机体验。"
+        data-en="Create a smart self-check-in area at John Wayne Airport that combines automatic assistance and baggage care to provide a smooth, stress-free trip for passengers at the terminal.">
+        Create a smart self-check-in area at John Wayne Airport that combines automatic assistance and baggage care to provide a smooth, stress-free trip for passengers at the terminal.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ======================== FIELD STUDY ======================== -->
+<section id="field">
+  <div>
+    <p class="section-label reveal" data-zh="01 — 发现" data-en="01 — Discover">01 — Discover</p>
+    <h2 class="section-title reveal">
+      <span data-zh="田野<br>观察与<br><em>访谈</em>" data-en="Field<br>Study &amp;<br><em>Research</em>">
+        Field<br>Study &amp;<br><em>Research</em>
+      </span>
+    </h2>
+    <div class="quote-block reveal" style="margin-top: 2.5rem;">
+      <p class="quote-text"
+        data-zh=""他再次点击屏幕，身体重心在左右脚之间来回转移，不知道下一步该怎么办。最终，他放弃了，重新走向柜台排队。""
+        data-en=""He tapped again, shifting his weight from left foot to right, uncertain what to do next. Finally, he gave up and rejoined the counter line."">
+        "He tapped again, shifting his weight from left foot to right, uncertain what to do next. Finally, he gave up and rejoined the counter line."
+      </p>
+      <span class="quote-src" data-zh="— 约翰·韦恩机场观察与田野笔记" data-en="— Field Observation Notes, John Wayne Airport">
+        — Field Observation Notes, John Wayne Airport
+      </span>
+    </div>
+  </div>
+
+  <div>
+    <div class="observation-cards reveal">
+      <div class="obs-card">
+        <div class="obs-icon">🗺️</div>
+        <div>
+          <div class="obs-title" data-zh="环境分析" data-en="Environment Analysis">Environment Analysis</div>
+          <p class="obs-text"
+            data-zh="值机区是航站楼的核心入口，旅客、航空公司员工与机场地勤在此共处。高时间压力与设备的刚性数字逻辑共同塑造了这一空间的体验。"
+            data-en="The check-in zone is the terminal's first touchpoint — shared by travelers, airline staff, and airport agents. High time pressure and the rigid digital logic of kiosk interfaces together define the experience.">
+            The check-in zone is the terminal's first touchpoint — shared by travelers, airline staff, and airport agents. High time pressure and the rigid digital logic of kiosk interfaces together define the experience.
+          </p>
+        </div>
+      </div>
+      <div class="obs-card">
+        <div class="obs-icon">📱</div>
+        <div>
+          <div class="obs-title" data-zh="关键发现：值机中断" data-en="Key Finding: Check-in Interruption">Key Finding: Check-in Interruption</div>
+          <p class="obs-text"
+            data-zh="旅客选择自助设备是为了节省时间，但行李托运要求或设备报错却迫使大量旅客中断流程，重新回到柜台排队——这打破了他们对流程快速顺畅的预期，显著加剧了焦虑情绪。"
+            data-en="Passengers choose self-service to save time, yet baggage-drop requirements or kiosk errors force many back to counter lines — breaking their expected fast, seamless flow and significantly amplifying frustration.">
+            Passengers choose self-service to save time, yet baggage-drop requirements or kiosk errors force many back to counter lines — breaking their expected fast, seamless flow and significantly amplifying frustration.
+          </p>
+        </div>
+      </div>
+      <div class="obs-card">
+        <div class="obs-icon">👁️</div>
+        <div>
+          <div class="obs-title" data-zh="环境痛点" data-en="Physical Space Observations">Physical Space Observations</div>
+          <p class="obs-text"
+            data-zh="从停车场出电梯后标识不清晰，导致方向感缺失；大厅座位有限；自助设备旁缺少足够的等待与操作空间；托运行李无法在值机设备处完成处理。"
+            data-en="Signage is not visible from elevator exits. Limited seating in the lobby. Self-check-in kiosks allow boarding pass printing but checked baggage must still be processed at the staffed counter — a fundamental friction point.">
+            Signage is not visible from elevator exits. Limited seating in the lobby. Self-check-in kiosks allow boarding pass printing but checked baggage must still be processed at the staffed counter — a fundamental friction point.
+          </p>
+        </div>
+      </div>
+      <div class="obs-card">
+        <div class="obs-icon">🤝</div>
+        <div>
+          <div class="obs-title" data-zh="访谈洞察：操作员视角" data-en="Interview Insight: Operator Perspective">Interview Insight: Operator Perspective</div>
+          <p class="obs-text"
+            data-zh="机场工作人员在高峰时段面临巨大的支持压力。他们往往在设备已出现问题后才得知情况，导致反应滞后。手动重置硬件、引导旅客到柜台占据了大量时间，而这些本可以通过自动化系统解决。"
+            data-en="Airport staff face intense support pressure during peak hours — often learning of kiosk failures only after they occur. Manually resetting hardware and redirecting passengers consumes time that automated systems could reclaim.">
+            Airport staff face intense support pressure during peak hours — often learning of kiosk failures only after they occur. Manually resetting hardware and redirecting passengers consumes time that automated systems could reclaim.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ======================== EMPATHY MAPS ======================== -->
+<section id="empathy">
+  <div style="max-width: 600px;">
+    <p class="section-label reveal" data-zh="02 — 定义" data-en="02 — Define">02 — Define</p>
+    <h2 class="section-title reveal">
+      <span data-zh="用户<br><em>共情地图</em>" data-en="User<br><em>Empathy Maps</em>">
+        User<br><em>Empathy Maps</em>
+      </span>
+    </h2>
+    <p class="overview-body reveal" style="margin-top:1.5rem;"
+      data-zh="通过构建两类核心用户的共情地图，我深入理解了旅客与机场操作员在值机场景下的思维、感受、行为与需求。"
+      data-en="By mapping two distinct user types, I developed a nuanced understanding of the mental models, emotional states, and unmet needs driving each side of the check-in experience.">
+      By mapping two distinct user types, I developed a nuanced understanding of the mental models, emotional states, and unmet needs driving each side of the check-in experience.
+    </p>
+  </div>
+
+  <div class="empathy-grid">
+    <!-- Passenger -->
+    <div class="empathy-card reveal">
+      <div class="empathy-who" data-zh="旅客" data-en="Passenger">Passenger</div>
+
+      <div class="empathy-section-label" data-zh="内心想法" data-en="Thinks">Thinks</div>
+      <div class="empathy-tags">
+        <span class="etag" data-zh="值机机器真的更快吗？" data-en="Is the kiosk actually faster?">Is the kiosk actually faster?</span>
+        <span class="etag" data-zh="为什么屏幕卡了？" data-en="Why is the screen frozen?">Why is the screen frozen?</span>
+        <span class="etag" data-zh="能赶上飞机吗？" data-en="Will I make my flight?">Will I make my flight?</span>
+      </div>
+
+      <div class="empathy-section-label" data-zh="情绪感受" data-en="Feels">Feels</div>
+      <div class="empathy-tags">
+        <span class="etag feel" data-zh="沮丧" data-en="Frustrated">Frustrated</span>
+        <span class="etag feel" data-zh="犹豫" data-en="Hesitant">Hesitant</span>
+        <span class="etag feel" data-zh="急迫" data-en="Rushed">Rushed</span>
+        <span class="etag feel" data-zh="焦虑" data-en="Anxious">Anxious</span>
+      </div>
+
+      <div class="empathy-section-label" data-zh="痛点" data-en="Pains">Pains</div>
+      <div class="empathy-tags">
+        <span class="etag pain" data-zh="屏幕卡死无响应" data-en="Frozen / unresponsive screen">Frozen / unresponsive screen</span>
+        <span class="etag pain" data-zh="被迫重新排柜台队" data-en="Forced to re-queue at counter">Forced to re-queue at counter</span>
+        <span class="etag pain" data-zh="行李托运流程不清晰" data-en="Unclear baggage drop process">Unclear baggage drop process</span>
+        <span class="etag pain" data-zh="登机前时间压力大" data-en="Time pressure before boarding">Time pressure before boarding</span>
+      </div>
+
+      <div class="empathy-section-label" data-zh="期望收益" data-en="Gains">Gains</div>
+      <div class="empathy-tags">
+        <span class="etag gain" data-zh="快速自助值机" data-en="Fast self check-in">Fast self check-in</span>
+        <span class="etag gain" data-zh="清晰的逐步引导" data-en="Clear step-by-step feedback">Clear step-by-step feedback</span>
+        <span class="etag gain" data-zh="行李顺畅处理" data-en="Bag drop handled smoothly">Bag drop handled smoothly</span>
+        <span class="etag gain" data-zh="无需重新排队即可恢复" data-en="Quick recovery without re-queuing">Quick recovery without re-queuing</span>
+      </div>
+    </div>
+
+    <!-- Operator -->
+    <div class="empathy-card reveal">
+      <div class="empathy-who" data-zh="操作员（机场工作人员）" data-en="Operator (Airport Staff)">Operator (Airport Staff)</div>
+
+      <div class="empathy-section-label" data-zh="内心想法" data-en="Thinks">Thinks</div>
+      <div class="empathy-tags">
+        <span class="etag" data-zh="系统怎么了？" data-en="What happened to the system?">What happened to the system?</span>
+        <span class="etag" data-zh="为什么不工作？" data-en="Why isn't this working?">Why isn't this working?</span>
+        <span class="etag" data-zh="那位旅客看起来很困惑" data-en="That traveler looks confused">That traveler looks confused</span>
+      </div>
+
+      <div class="empathy-section-label" data-zh="情绪感受" data-en="Feels">Feels</div>
+      <div class="empathy-tags">
+        <span class="etag feel" data-zh="疲惫" data-en="Tired">Tired</span>
+        <span class="etag feel" data-zh="受限" data-en="Restricted">Restricted</span>
+        <span class="etag feel" data-zh="压力大" data-en="Under pressure">Under pressure</span>
+      </div>
+
+      <div class="empathy-section-label" data-zh="痛点" data-en="Pains">Pains</div>
+      <div class="empathy-tags">
+        <span class="etag pain" data-zh="设备故障感知滞后" data-en="Delayed awareness of kiosk failures">Delayed awareness of kiosk failures</span>
+        <span class="etag pain" data-zh="行李工作流程分散" data-en="Fragmented baggage workflow">Fragmented baggage workflow</span>
+        <span class="etag pain" data-zh="设备故障时人群拥堵" data-en="Crowding around broken kiosks">Crowding around broken kiosks</span>
+        <span class="etag pain" data-zh="高峰期支持压力巨大" data-en="High support pressure during peak hours">High support pressure during peak hours</span>
+      </div>
+
+      <div class="empathy-section-label" data-zh="期望收益" data-en="Gains">Gains</div>
+      <div class="empathy-tags">
+        <span class="etag gain" data-zh="实时设备状态可见" data-en="Real-time kiosk status visibility">Real-time kiosk status visibility</span>
+        <span class="etag gain" data-zh="减少柜台重排队" data-en="Fewer counter re-queues">Fewer counter re-queues</span>
+        <span class="etag gain" data-zh="远程问题处理" data-en="Remote issue resolution">Remote issue resolution</span>
+        <span class="etag gain" data-zh="降低前台工作量" data-en="Lower frontline workload">Lower frontline workload</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ======================== JOURNEY MAP ======================== -->
+<section id="journey">
+  <div style="max-width: 600px;">
+    <p class="section-label reveal" data-zh="02 — 定义（续）" data-en="02 — Define (cont.)">02 — Define (cont.)</p>
+    <h2 class="section-title reveal">
+      <span data-zh="旅客<br><em>旅程地图</em>" data-en="Passenger<br><em>Journey Map</em>">
+        Passenger<br><em>Journey Map</em>
+      </span>
+    </h2>
+    <p class="overview-body reveal" style="margin-top:1.5rem;"
+      data-zh="旅程地图追踪了旅客从抵达机场到登机全过程的思维、情绪与触点变化，识别了情绪波谷与设计机遇。"
+      data-en="The journey map traces passenger thoughts, emotions, and touchpoints from arrival through boarding — identifying the emotional low points and the design opportunities hidden within them.">
+      The journey map traces passenger thoughts, emotions, and touchpoints from arrival through boarding — identifying the emotional low points and the design opportunities hidden within them.
+    </p>
+  </div>
+
+  <div class="journey-stages reveal" style="margin-top: 3rem;">
+    <!-- Stage 1: Arrival -->
+    <div class="stage-col">
+      <div class="stage-head">
+        <div class="stage-head-name" data-zh="抵达" data-en="Arrival">Arrival</div>
+      </div>
+      <div class="stage-body">
+        <div>
+          <div class="stage-row-label" data-zh="想法" data-en="Thoughts">Thoughts</div>
+          <div class="stage-row-val" data-zh="值机在哪里？我得找到设备。" data-en='"Where is check-in? I need to find the kiosk."'>"Where is check-in? I need to find the kiosk."</div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="情绪" data-en="Emotion">Emotion</div>
+          <div class="stage-row-val"><span class="emotion-dot emotion-neutral"></span><span data-zh="中性 · 轻微紧迫" data-en="Neutral · Slightly rushed">Neutral · Slightly rushed</span></div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="机会" data-en="Opportunity">Opportunity</div>
+          <div class="stage-row-val" data-zh="改善导航与标识清晰度" data-en="Improve navigation & signage clarity">Improve navigation & signage clarity</div>
+        </div>
+      </div>
+    </div>
+    <!-- Stage 2: Self Check-in -->
+    <div class="stage-col">
+      <div class="stage-head">
+        <div class="stage-head-name" data-zh="自助值机" data-en="Self Check-in">Self Check-in</div>
+      </div>
+      <div class="stage-body">
+        <div>
+          <div class="stage-row-label" data-zh="想法" data-en="Thoughts">Thoughts</div>
+          <div class="stage-row-val" data-zh="应该很快。扫描护照就好。" data-en='"This should be quick. Just scan my passport."'>"This should be quick. Just scan my passport."</div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="情绪" data-en="Emotion">Emotion</div>
+          <div class="stage-row-val"><span class="emotion-dot emotion-positive"></span><span data-zh="自信 · 期待" data-en="Confident · Expectant">Confident · Expectant</span></div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="机会" data-en="Opportunity">Opportunity</div>
+          <div class="stage-row-val" data-zh="将行李托运整合进设备" data-en="Integrate bag drop with kiosk">Integrate bag drop with kiosk</div>
+        </div>
+      </div>
+    </div>
+    <!-- Stage 3: System Error -->
+    <div class="stage-col">
+      <div class="stage-head" style="border-bottom: 2px solid rgba(220,80,60,0.4);">
+        <div class="stage-head-name" style="color:#e8907e;" data-zh="系统错误" data-en="System Error">System Error</div>
+      </div>
+      <div class="stage-body">
+        <div>
+          <div class="stage-row-label" data-zh="想法" data-en="Thoughts">Thoughts</div>
+          <div class="stage-row-val" data-zh="屏幕为什么卡了？是我的问题吗？" data-en='"Why is the screen frozen? Did I do something wrong?"'>"Why is the screen frozen? Did I do something wrong?"</div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="情绪" data-en="Emotion">Emotion</div>
+          <div class="stage-row-val"><span class="emotion-dot emotion-negative"></span><span data-zh="困惑 · 恼怒" data-en="Confused · Annoyed">Confused · Annoyed</span></div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="机会" data-en="Opportunity">Opportunity</div>
+          <div class="stage-row-val" data-zh="提供实时错误提示 · 自动重启" data-en="Real-time error alerts · Auto-restart">Real-time error alerts · Auto-restart</div>
+        </div>
+      </div>
+    </div>
+    <!-- Stage 4: Seeking Help -->
+    <div class="stage-col">
+      <div class="stage-head">
+        <div class="stage-head-name" data-zh="寻求帮助" data-en="Seeking Help">Seeking Help</div>
+      </div>
+      <div class="stage-body">
+        <div>
+          <div class="stage-row-label" data-zh="想法" data-en="Thoughts">Thoughts</div>
+          <div class="stage-row-val" data-zh="有人能帮我吗？我需要帮助。" data-en='"Is there anyone who can help? I need assistance."'>"Is there anyone who can help? I need assistance."</div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="情绪" data-en="Emotion">Emotion</div>
+          <div class="stage-row-val"><span class="emotion-dot emotion-negative"></span><span data-zh="沮丧 · 焦虑" data-en="Frustrated · Anxious">Frustrated · Anxious</span></div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="机会" data-en="Opportunity">Opportunity</div>
+          <div class="stage-row-val" data-zh="设备上增加求助按钮 · 主动推送通知" data-en="Add help button · Enable staff alerts">Add help button · Enable staff alerts</div>
+        </div>
+      </div>
+    </div>
+    <!-- Stage 5: Manual Check-in -->
+    <div class="stage-col">
+      <div class="stage-head">
+        <div class="stage-head-name" data-zh="人工柜台" data-en="Manual Check-in">Manual Check-in</div>
+      </div>
+      <div class="stage-body">
+        <div>
+          <div class="stage-row-label" data-zh="想法" data-en="Thoughts">Thoughts</div>
+          <div class="stage-row-val" data-zh="希望不会误机。这队好长。" data-en='"I hope I don\'t miss my flight. This line is long."'>"I hope I don't miss my flight. This line is long."</div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="情绪" data-en="Emotion">Emotion</div>
+          <div class="stage-row-val"><span class="emotion-dot emotion-negative"></span><span data-zh="紧张 · 不耐烦" data-en="Stressed · Impatient">Stressed · Impatient</span></div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="机会" data-en="Opportunity">Opportunity</div>
+          <div class="stage-row-val" data-zh="自动转移数据 · 快速通道服务" data-en="Auto-transfer data · Fast-track line">Auto-transfer data · Fast-track line</div>
+        </div>
+      </div>
+    </div>
+    <!-- Stage 6: Boarding -->
+    <div class="stage-col">
+      <div class="stage-head">
+        <div class="stage-head-name" data-zh="登机" data-en="Boarding">Boarding</div>
+      </div>
+      <div class="stage-body">
+        <div>
+          <div class="stage-row-label" data-zh="想法" data-en="Thoughts">Thoughts</div>
+          <div class="stage-row-val" data-zh="终于完成了。现在可以放松了。" data-en='"Finally it\'s done. Now I can relax."'>"Finally it's done. Now I can relax."</div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="情绪" data-en="Emotion">Emotion</div>
+          <div class="stage-row-val"><span class="emotion-dot emotion-positive"></span><span data-zh="如释重负 · 放松" data-en="Relieved · Relaxed">Relieved · Relaxed</span></div>
+        </div>
+        <div>
+          <div class="stage-row-label" data-zh="机会" data-en="Opportunity">Opportunity</div>
+          <div class="stage-row-val" data-zh="减少等待时间 · 改善旅客流程" data-en="Reduce waiting · Improve passenger flow">Reduce waiting · Improve passenger flow</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ======================== SMART ENVIRONMENT ======================== -->
+<section id="environment">
+  <div class="env-grid" style="margin-top: 0;">
+    <!-- Left: label + title + body text -->
+    <div class="env-text reveal">
+      <p class="section-label" data-zh="03 — 开发" data-en="03 — Develop">03 — Develop</p>
+      <h2 class="section-title" style="margin-bottom:2rem;">
+        <span data-zh="智能<br>环境<br><em>可视化</em>" data-en="Smart<br>Environment<br><em>Design</em>">
+          Smart<br>Environment<br><em>Design</em>
+        </span>
+      </h2>
+      <p class="env-body"
+        data-zh="智能值机系统在物理空间与数字界面之间建立无缝连接。旅客与操作员的数据实时共享，设备故障自动检测并上报，行李由 AGV 智能小车自动转运至托运区，实现全流程的闭环智能化。"
+        data-en="The smart check-in system creates a seamless link between physical space and digital interface. Passenger and operator data flows in real time, kiosk failures are automatically detected and reported, and baggage is transported by AGV cart to the drop zone — closing the loop on the entire check-in process.">
+        The smart check-in system creates a seamless link between physical space and digital interface. Passenger and operator data flows in real time, kiosk failures are automatically detected and reported, and baggage is transported by AGV cart to the drop zone — closing the loop on the entire check-in process.
+      </p>
+      <p class="env-body" style="margin-top:1rem;"
+        data-zh="当值机设备发生故障时，系统会自动检测问题并立即通知工作人员，同时将旅客的值机信息上传至快速服务通道，无需旅客重新排队等待。"
+        data-en="When a kiosk error occurs, the system automatically detects the issue and alerts staff — simultaneously uploading the passenger's check-in data to the fast-track counter, so no re-queuing is needed.">
+        When a kiosk error occurs, the system automatically detects the issue and alerts staff — simultaneously uploading the passenger's check-in data to the fast-track counter, so no re-queuing is needed.
+      </p>
+    </div>
+
+    <!-- Embedded AGV diagram mockup -->
+    <div class="reveal">
+      <div class="env-mockup-wrap">
+        <div style="background:#141820;padding:24px 20px 20px;">
+          <div style="font-size:10px;font-weight:500;color:rgba(255,255,255,0.3);letter-spacing:.1em;text-transform:uppercase;text-align:center;margin-bottom:14px;" data-zh="行李自动转运流程" data-en="Baggage Automated Transport">Baggage Automated Transport</div>
+          <svg width="100%" viewBox="0 58 290 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="14" y="75" width="44" height="62" rx="4" fill="#2a2f3e" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+            <rect x="18" y="80" width="36" height="28" rx="3" fill="#1a7abf" opacity="0.9"/>
+            <line x1="24" y1="87" x2="48" y2="87" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <line x1="24" y1="92" x2="44" y2="92" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+            <line x1="24" y1="97" x2="48" y2="97" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+            <text x="36" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="rgba(255,255,255,0.4)">Kiosk</text>
+            <rect x="87" y="118" width="44" height="9" rx="3" fill="#29b8a0" opacity="0.7"/>
+            <rect x="93" y="127" width="3.5" height="12" rx="1" fill="rgba(41,184,160,0.4)"/>
+            <rect x="124" y="127" width="3.5" height="12" rx="1" fill="rgba(41,184,160,0.4)"/>
+            <rect x="93" y="100" width="30" height="19" rx="4" fill="#c9a96e" opacity="0.85"/>
+            <rect x="97" y="96" width="22" height="5" rx="2.5" fill="#a88050" opacity="0.7"/>
+            <path d="M102 96 Q109 91 114 96" stroke="#a88050" stroke-width="1.8" fill="none"/>
+            <text x="109" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="rgba(255,255,255,0.4)">Weight</text>
+            <rect x="161" y="122" width="40" height="15" rx="4" fill="#1e2a3a" stroke="rgba(41,184,160,0.6)" stroke-width="1.5"/>
+            <rect x="159" y="118" width="44" height="6" rx="2" fill="#253040" stroke="rgba(41,184,160,0.35)" stroke-width="1"/>
+            <circle cx="169" cy="139" r="4" fill="#141c28" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+            <circle cx="169" cy="139" r="1.5" fill="rgba(41,184,160,0.6)"/>
+            <circle cx="193" cy="139" r="4" fill="#141c28" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+            <circle cx="193" cy="139" r="1.5" fill="rgba(41,184,160,0.6)"/>
+            <circle cx="199" cy="127" r="2.5" fill="rgba(41,184,160,0.9)"/>
+            <rect x="164" y="100" width="28" height="19" rx="3" fill="#c9a96e" opacity="0.8"/>
+            <text x="181" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="rgba(255,255,255,0.4)">AGV Cart</text>
+            <rect x="232" y="100" width="44" height="42" rx="5" fill="#1a2235" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+            <line x1="254" y1="109" x2="254" y2="124" stroke="rgba(41,184,160,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M246 118 L254 128 L262 118" stroke="rgba(41,184,160,0.7)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <text x="254" y="136" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="rgba(255,255,255,0.35)">Drop</text>
+            <text x="254" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="rgba(255,255,255,0.4)">Drop Zone</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-width environment visualization -->
+  <div style="margin-top:3.5rem;" class="reveal">
+    <p class="section-label" style="margin-bottom:1.5rem;" data-zh="完整系统可视化" data-en="Full System Visualization">Full System Visualization</p>
+    <div style="
+      border-radius:12px; overflow:hidden;
+      border:1px solid var(--border);
+      box-shadow:0 32px 80px rgba(0,0,0,0.6);
+      padding: 2rem;
+      background: var(--bg2);
+    ">
+      <img src="env-viz.png" alt="Smart Environment Visualization" style="width:85%;height:auto;display:block;margin:0 auto;border-radius:8px;"/>
+    </div>
+  </div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ======================== UI SCREENS ======================== -->
+<section id="ui-screens">
+  <div class="screens-header">
+    <p class="section-label reveal" data-zh="03 — 开发（续）" data-en="03 — Develop (cont.)">03 — Develop (cont.)</p>
+    <h2 class="section-title reveal">
+      <span data-zh="高保真<br><em>界面设计</em>" data-en="High-Fidelity<br><em>UI Screens</em>">
+        High-Fidelity<br><em>UI Screens</em>
+      </span>
+    </h2>
+    <p class="overview-body reveal" style="margin-top:1.5rem;max-width:640px;"
+      data-zh="基于用户旅程图与共情地图，我设计了覆盖值机全流程的六个核心界面——从身份识别登录、选择服务、打印等待，到成功完成与错误恢复，构建完整的交互闭环。"
+      data-en="Informed by the journey map and empathy maps, I designed six core UI screens covering the complete check-in flow — from identity entry through service selection, printing, success, and two error-recovery states.">
+      Informed by the journey map and empathy maps, I designed six core UI screens covering the complete check-in flow — from identity entry through service selection, printing, success, and two error-recovery states.
+    </p>
+  </div>
+
+  <style>
+    .sc-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; background:transparent; border-radius:4px; overflow:visible; margin-top:3rem; }
+    .sc { background:var(--bg2); display:flex; flex-direction:column; position:relative; overflow:hidden; transition:background .4s; border-radius:3px; border:1px solid var(--border); }
+    .sc:hover { background:var(--bg3); }
+    .sc svg { display:block; width:100%; }
+    .sc-info { padding:1.4rem 1.8rem 1.8rem; display:flex; flex-direction:column; gap:.55rem; }
+    .sc-num { font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); }
+    .sc-name { font-family:"Cormorant Garamond",serif; font-size:1.2rem; font-weight:300; }
+    .sc-desc { font-size:.78rem; color:var(--cream3); line-height:1.55; }
+    .sc-badge { font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; padding:.28em .75em; border-radius:2px; display:inline-block; align-self:flex-start; margin-top:.2rem; }
+    .sc-badge.ok  { background:rgba(41,184,160,.1);  color:#7cd8cc; border:1px solid rgba(41,184,160,.25); }
+    .sc-badge.err { background:rgba(220,80,60,.09); color:#e8907e; border:1px solid rgba(220,80,60,.2); }
+    .sc-badge.wait{ background:rgba(201,169,110,.1); color:var(--gold); border:1px solid rgba(201,169,110,.25); }
+    .sc-accent { position:absolute; bottom:0; left:0; height:2px; width:0; background:var(--gold); transition:width .5s cubic-bezier(.16,1,.3,1); }
+    .sc:hover .sc-accent { width:100%; }
+    @media(max-width:900px){ .sc-grid{ grid-template-columns:1fr; } }
+  </style>
+
+  <div class="sc-grid">
+
+    <!-- ── Screen 01: Welcome ── -->
+    <div class="sc reveal">
+      <svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bg01" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e2330"/><stop offset="100%" stop-color="#171c28"/></linearGradient>
+        </defs>
+        <!-- bg -->
+        <rect width="480" height="300" fill="url(#bg01)"/>
+        <!-- plane watermark -->
+        <g opacity="0.055" transform="translate(290,70)">
+          <path d="M0 50 L110 15 L148 35 L108 44 L88 75 L68 70 L84 44 L24 52 L16 66 L4 63 L8 50Z" fill="#000"/>
+        </g>
+        <!-- top bar -->
+        <rect width="480" height="34" fill="rgba(18,22,34,0.97)"/>
+        <line x1="0" y1="34" x2="480" y2="34" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <text x="16" y="22" font-family="Inter,sans-serif" font-size="10.5" fill="rgba(160,170,200,0.55)" letter-spacing="0.03em">22 February, 2026</text>
+        <text x="158" y="22" font-family="Inter,sans-serif" font-size="10.5" fill="rgba(140,155,190,0.45)">11:26am</text>
+        <!-- flag -->
+        <rect x="440" y="10" width="26" height="14" rx="2" fill="#012169"/>
+        <line x1="440" y1="10" x2="466" y2="24" stroke="#fff" stroke-width="2"/>
+        <line x1="466" y1="10" x2="440" y2="24" stroke="#fff" stroke-width="2"/>
+        <line x1="440" y1="10" x2="466" y2="24" stroke="#C8102E" stroke-width="1.2"/>
+        <line x1="466" y1="10" x2="440" y2="24" stroke="#C8102E" stroke-width="1.2"/>
+        <line x1="440" y1="17" x2="466" y2="17" stroke="#fff" stroke-width="3"/>
+        <line x1="453" y1="10" x2="453" y2="24" stroke="#fff" stroke-width="3"/>
+        <line x1="440" y1="17" x2="466" y2="17" stroke="#C8102E" stroke-width="1.8"/>
+        <line x1="453" y1="10" x2="453" y2="24" stroke="#C8102E" stroke-width="1.8"/>
+        <!-- title -->
+        <text x="240" y="72" text-anchor="middle" font-family="Inter,sans-serif" font-size="20" font-weight="700" fill="#1a7abf" letter-spacing="-0.01em">Welcome to SNA</text>
+        <text x="240" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(160,175,220,0.5)">Please scan your ID or enter your ticket number</text>
+        <!-- input field -->
+        <rect x="130" y="104" width="220" height="30" rx="6" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <!-- doc icon -->
+        <rect x="144" y="112" width="10" height="13" rx="1.5" fill="none" stroke="rgba(160,170,200,0.4)" stroke-width="1.2"/>
+        <line x1="147" y1="115" x2="151" y2="115" stroke="rgba(160,170,200,0.3)" stroke-width="1"/>
+        <line x1="147" y1="118" x2="153" y2="118" stroke="rgba(160,170,200,0.3)" stroke-width="1"/>
+        <line x1="147" y1="121" x2="151" y2="121" stroke="rgba(160,170,200,0.3)" stroke-width="1"/>
+        <text x="162" y="123" font-family="Inter,sans-serif" font-size="10" fill="rgba(160,170,200,0.45)">ID / Enter Ticket</text>
+        <!-- keypad -->
+        <g font-family="Inter,sans-serif" font-size="11" fill="rgba(200,210,235,0.85)" text-anchor="middle">
+          <!-- row 1: 0-4 -->
+          <rect x="114" y="144" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="136" y="162">0</text>
+          <rect x="166" y="144" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="188" y="162">1</text>
+          <rect x="218" y="144" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="240" y="162">2</text>
+          <rect x="270" y="144" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="292" y="162">3</text>
+          <rect x="322" y="144" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="344" y="162">4</text>
+          <!-- row 2: 5-9 -->
+          <rect x="114" y="180" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="136" y="198">5</text>
+          <rect x="166" y="180" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="188" y="198">6</text>
+          <rect x="218" y="180" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="240" y="198">7</text>
+          <rect x="270" y="180" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="292" y="198">8</text>
+          <rect x="322" y="180" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="344" y="198">9</text>
+          <!-- row 3: symbols -->
+          <rect x="114" y="216" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="136" y="234">#</text>
+          <rect x="166" y="216" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="188" y="234">*</text>
+          <rect x="218" y="216" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="240" y="234">-</text>
+          <rect x="270" y="216" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="292" y="234">@</text>
+          <rect x="322" y="216" width="44" height="28" rx="5" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/><text x="344" y="234">A</text>
+          <!-- Done / Return -->
+          <rect x="130" y="254" width="96" height="30" rx="6" fill="rgba(255,255,255,0.12)"/><text x="178" y="273" fill="rgba(200,210,235,0.8)" font-size="11">Return</text>
+          <rect x="254" y="254" width="96" height="30" rx="6" fill="rgba(255,255,255,0.18)"/><text x="302" y="273" fill="rgba(200,210,235,0.9)" font-size="11">Done</text>
+        </g>
+      </svg>
+      <div class="sc-info">
+        <div class="sc-num" data-zh="屏幕 01" data-en="Screen 01">Screen 01</div>
+        <div class="sc-name" data-zh="欢迎登录" data-en="Welcome / Login">Welcome / Login</div>
+        <div class="sc-desc" data-zh="支持扫码或手动输入票号，右上角显示时间与语言切换。" data-en="Supports QR scan or manual ticket entry. Date/time and language selector shown in the top bar.">Supports QR scan or manual ticket entry. Date/time and language selector shown in the top bar.</div>
+        <span class="sc-badge wait" data-zh="输入" data-en="Input">Input</span>
+      </div>
+      <div class="sc-accent"></div>
+    </div>
+
+    <!-- ── Screen 02: Hi Carson ── -->
+    <div class="sc reveal">
+      <svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bg02" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e2330"/><stop offset="100%" stop-color="#171c28"/></linearGradient></defs>
+        <rect width="480" height="300" fill="url(#bg02)"/>
+        <g opacity="0.055" transform="translate(290,70)"><path d="M0 50 L110 15 L148 35 L108 44 L88 75 L68 70 L84 44 L24 52 L16 66 L4 63 L8 50Z" fill="#fff"/></g>
+        <!-- top bar -->
+        <rect width="480" height="34" fill="rgba(18,22,34,0.97)"/>
+        <line x1="0" y1="34" x2="480" y2="34" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <text x="16" y="22" font-family="Inter,sans-serif" font-size="10.5" fill="rgba(160,170,200,0.55)">22 February, 2026  11:26am</text>
+        <!-- logout icon -->
+        <rect x="440" y="7" width="20" height="20" rx="5" fill="none" stroke="rgba(160,170,200,0.35)" stroke-width="1.5"/>
+        <polyline points="451,12 456,17 451,22" fill="none" stroke="rgba(160,170,200,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="445" y1="17" x2="456" y2="17" stroke="rgba(160,170,200,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- title -->
+        <text x="240" y="72" text-anchor="middle" font-family="Inter,sans-serif" font-size="22" font-weight="700" fill="#1a7abf" letter-spacing="-0.01em">Hi Carson</text>
+        <text x="240" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" fill="rgba(160,175,220,0.5)">Please select a service</text>
+        <!-- option 1 -->
+        <rect x="100" y="108" width="280" height="44" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="114" y="120" width="20" height="20" rx="5" fill="#2ea84e"/>
+        <path d="M119 130 L124 135 L130 126" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="146" y="134" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="rgba(220,230,255,0.9)">Boarding Pass</text>
+        <!-- option 2 -->
+        <rect x="100" y="160" width="280" height="44" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="114" y="172" width="20" height="20" rx="5" fill="#2ea84e"/>
+        <path d="M119 182 L124 187 L130 178" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="146" y="186" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="rgba(220,230,255,0.9)">Baggage Ticket</text>
+        <!-- buttons -->
+        <rect x="100" y="218" width="130" height="36" rx="7" fill="rgba(255,255,255,0.15)"/>
+        <text x="165" y="240" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="rgba(220,230,255,0.9)">Print</text>
+        <rect x="250" y="218" width="130" height="36" rx="7" fill="rgba(255,255,255,0.06)"/>
+        <text x="315" y="240" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="rgba(160,170,200,0.5)">Cancel</text>
+      </svg>
+      <div class="sc-info">
+        <div class="sc-num" data-zh="屏幕 02" data-en="Screen 02">Screen 02</div>
+        <div class="sc-name" data-zh="选择服务" data-en="Select Service">Select Service</div>
+        <div class="sc-desc" data-zh="旅客可同时选择打印登机牌和行李标签，系统自动预填已验证的个人信息。" data-en="Passenger selects boarding pass and/or baggage tag. System pre-fills verified passenger info automatically.">Passenger selects boarding pass and/or baggage tag. System pre-fills verified info automatically.</div>
+        <span class="sc-badge wait" data-zh="选择" data-en="Selection">Selection</span>
+      </div>
+      <div class="sc-accent"></div>
+    </div>
+
+    <!-- ── Screen 03: Please Wait ── -->
+    <div class="sc reveal">
+      <svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bg03" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e2330"/><stop offset="100%" stop-color="#171c28"/></linearGradient></defs>
+        <rect width="480" height="300" fill="url(#bg03)"/>
+        <g opacity="0.055" transform="translate(290,70)"><path d="M0 50 L110 15 L148 35 L108 44 L88 75 L68 70 L84 44 L24 52 L16 66 L4 63 L8 50Z" fill="#fff"/></g>
+        <rect width="480" height="34" fill="rgba(18,22,34,0.97)"/>
+        <line x1="0" y1="34" x2="480" y2="34" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <text x="16" y="22" font-family="Inter,sans-serif" font-size="10.5" fill="rgba(160,170,200,0.55)">22 February, 2026  11:26am</text>
+        <rect x="440" y="7" width="20" height="20" rx="5" fill="none" stroke="rgba(160,170,200,0.35)" stroke-width="1.5"/>
+        <polyline points="451,12 456,17 451,22" fill="none" stroke="rgba(160,170,200,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="445" y1="17" x2="456" y2="17" stroke="rgba(160,170,200,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- title -->
+        <text x="240" y="72" text-anchor="middle" font-family="Inter,sans-serif" font-size="22" font-weight="700" fill="#1a7abf">Please Wait...</text>
+        <!-- check rows -->
+        <rect x="120" y="88" width="20" height="20" rx="5" fill="#2ea84e"/>
+        <path d="M125 98 L130 103 L136 93" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="150" y="102" font-family="Inter,sans-serif" font-size="12" fill="rgba(190,200,230,0.75)">Passenger Information</text>
+        <rect x="120" y="116" width="20" height="20" rx="5" fill="#2ea84e"/>
+        <path d="M125 126 L130 131 L136 121" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="150" y="130" font-family="Inter,sans-serif" font-size="12" fill="rgba(190,200,230,0.75)">Baggage Check</text>
+        <!-- printer icon (SVG drawn) -->
+        <g transform="translate(160,152)">
+          <!-- printer body -->
+          <rect x="0" y="14" width="60" height="38" rx="5" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.12)" stroke-width="1.2"/>
+          <!-- paper slot -->
+          <rect x="8" y="8" width="44" height="28" rx="3" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <!-- paper coming out -->
+          <rect x="14" y="2" width="32" height="18" rx="2" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <line x1="19" y1="7" x2="41" y2="7" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <line x1="19" y1="11" x2="37" y2="11" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <line x1="19" y1="15" x2="41" y2="15" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <!-- button dot -->
+          <circle cx="48" cy="33" r="4" fill="#2ea84e" opacity="0.8"/>
+        </g>
+        <!-- "Printing" label + spinner dots -->
+        <text x="248" y="170" font-family="Inter,sans-serif" font-size="16" font-weight="600" fill="rgba(210,220,250,0.85)">Printing</text>
+        <circle cx="250" cy="186" r="3.5" fill="rgba(160,175,220,0.55)"/>
+        <circle cx="263" cy="186" r="3.5" fill="rgba(140,155,200,0.35)"/>
+        <circle cx="276" cy="186" r="3.5" fill="rgba(120,135,185,0.2)"/>
+        <!-- progress bar -->
+        <rect x="100" y="210" width="280" height="10" rx="5" fill="rgba(255,255,255,0.1)"/>
+        <rect x="100" y="210" width="182" height="10" rx="5" fill="url(#pg03)"/>
+        <defs><linearGradient id="pg03" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#29b8a0"/><stop offset="100%" stop-color="#1ec49a"/></linearGradient></defs>
+      </svg>
+      <div class="sc-info">
+        <div class="sc-num" data-zh="屏幕 03" data-en="Screen 03">Screen 03</div>
+        <div class="sc-name" data-zh="打印中" data-en="Printing / Wait">Printing / Wait</div>
+        <div class="sc-desc" data-zh="实时进度条显示打印状态，完成项用绿色勾选标注，降低旅客的不确定感。" data-en="Live progress bar communicates printing status. Completed steps are checked off, reducing passenger uncertainty.">Live progress bar and checked steps reduce uncertainty during the printing wait.</div>
+        <span class="sc-badge wait" data-zh="处理中" data-en="Processing">Processing</span>
+      </div>
+      <div class="sc-accent"></div>
+    </div>
+
+    <!-- ── Screen 04: Success ── -->
+    <div class="sc reveal">
+      <svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bg04" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e2330"/><stop offset="100%" stop-color="#171c28"/></linearGradient></defs>
+        <rect width="480" height="300" fill="url(#bg04)"/>
+        <g opacity="0.055" transform="translate(290,70)"><path d="M0 50 L110 15 L148 35 L108 44 L88 75 L68 70 L84 44 L24 52 L16 66 L4 63 L8 50Z" fill="#fff"/></g>
+        <rect width="480" height="34" fill="rgba(18,22,34,0.97)"/>
+        <line x1="0" y1="34" x2="480" y2="34" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <text x="16" y="22" font-family="Inter,sans-serif" font-size="10.5" fill="rgba(160,170,200,0.55)">22 February, 2026  11:26am</text>
+        <rect x="440" y="7" width="20" height="20" rx="5" fill="none" stroke="rgba(160,170,200,0.35)" stroke-width="1.5"/>
+        <polyline points="451,12 456,17 451,22" fill="none" stroke="rgba(160,170,200,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="445" y1="17" x2="456" y2="17" stroke="rgba(160,170,200,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- title -->
+        <text x="240" y="72" text-anchor="middle" font-family="Inter,sans-serif" font-size="24" font-weight="700" fill="#2ea84e">Success</text>
+        <!-- instructions -->
+        <text x="240" y="96" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="rgba(200,215,250,0.8)">Please collect your boarding pass and baggage tag</text>
+        <text x="240" y="114" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="rgba(160,175,220,0.5)">Follow the instruction and put it on the bag</text>
+        <!-- check circle icon -->
+        <circle cx="240" cy="168" r="36" fill="rgba(46,168,78,0.1)" stroke="#2ea84e" stroke-width="2.5"/>
+        <circle cx="240" cy="168" r="26" fill="rgba(46,168,78,0.08)"/>
+        <!-- ID card inside circle -->
+        <rect x="224" y="154" width="24" height="30" rx="3" fill="none" stroke="#2ea84e" stroke-width="2"/>
+        <circle cx="236" cy="161" r="4" fill="none" stroke="#2ea84e" stroke-width="1.5"/>
+        <line x1="228" y1="170" x2="244" y2="170" stroke="#2ea84e" stroke-width="1.5"/>
+        <line x1="228" y1="175" x2="244" y2="175" stroke="#2ea84e" stroke-width="1.5"/>
+        <!-- outer check -->
+        <circle cx="256" cy="184" r="9" fill="#2ea84e"/>
+        <path d="M251 184 L255 188 L261 180" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- CTA button -->
+        <rect x="150" y="220" width="180" height="40" rx="8" fill="#29b8a0"/>
+        <text x="240" y="244" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="#fff">Exit to Security</text>
+      </svg>
+      <div class="sc-info">
+        <div class="sc-num" data-zh="屏幕 04" data-en="Screen 04">Screen 04</div>
+        <div class="sc-name" data-zh="完成" data-en="Success">Success</div>
+        <div class="sc-desc" data-zh="流程完成后，系统提示旅客领取凭证，并提供一键导航至安检口的操作按钮。" data-en="Clear completion state guides passengers to collect documents and proceed to security with a single CTA.">Clear completion state guides passengers to collect documents and proceed to security.</div>
+        <span class="sc-badge ok" data-zh="成功" data-en="Success">Success</span>
+      </div>
+      <div class="sc-accent"></div>
+    </div>
+
+    <!-- ── Screen 05: Error – Troubleshooting ── -->
+    <div class="sc reveal">
+      <svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bg05" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e2330"/><stop offset="100%" stop-color="#171c28"/></linearGradient></defs>
+        <rect width="480" height="300" fill="url(#bg05)"/>
+        <g opacity="0.055" transform="translate(290,70)"><path d="M0 50 L110 15 L148 35 L108 44 L88 75 L68 70 L84 44 L24 52 L16 66 L4 63 L8 50Z" fill="#fff"/></g>
+        <!-- top bar with warning -->
+        <rect width="480" height="34" fill="rgba(18,22,34,0.97)"/>
+        <line x1="0" y1="34" x2="480" y2="34" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <text x="16" y="22" font-family="Inter,sans-serif" font-size="10.5" fill="rgba(160,170,200,0.55)">22 February, 2026  11:26am</text>
+        <!-- warning triangle icon top-right -->
+        <polygon points="453,8 466,30 440,30" fill="#f5a623" opacity="0.9"/>
+        <text x="453" y="25" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#fff">!</text>
+        <!-- title -->
+        <text x="240" y="72" text-anchor="middle" font-family="Inter,sans-serif" font-size="22" font-weight="700" fill="#e05a3a">Error Detected</text>
+        <text x="240" y="94" text-anchor="middle" font-family="Inter,sans-serif" font-size="12.5" fill="rgba(160,175,220,0.5)">Troubleshooting...</text>
+        <!-- gear + magnifier SVG icon -->
+        <g transform="translate(195,112)">
+          <!-- gear body -->
+          <circle cx="45" cy="45" r="18" fill="none" stroke="rgba(120,140,185,0.6)" stroke-width="3"/>
+          <circle cx="45" cy="45" r="9" fill="none" stroke="rgba(120,140,185,0.6)" stroke-width="2.5"/>
+          <!-- gear teeth (8 rectangles rotated) -->
+          <rect x="42" y="24" width="6" height="9" rx="2" fill="rgba(120,140,185,0.55)" transform="rotate(0 45 45)"/>
+          <rect x="42" y="24" width="6" height="9" rx="2" fill="rgba(120,140,185,0.55)" transform="rotate(45 45 45)"/>
+          <rect x="42" y="24" width="6" height="9" rx="2" fill="rgba(120,140,185,0.55)" transform="rotate(90 45 45)"/>
+          <rect x="42" y="24" width="6" height="9" rx="2" fill="rgba(120,140,185,0.55)" transform="rotate(135 45 45)"/>
+          <rect x="42" y="24" width="6" height="9" rx="2" fill="rgba(120,140,185,0.55)" transform="rotate(180 45 45)"/>
+          <rect x="42" y="24" width="6" height="9" rx="2" fill="rgba(120,140,185,0.55)" transform="rotate(225 45 45)"/>
+          <rect x="42" y="24" width="6" height="9" rx="2" fill="rgba(120,140,185,0.55)" transform="rotate(270 45 45)"/>
+          <rect x="42" y="24" width="6" height="9" rx="2" fill="rgba(120,140,185,0.55)" transform="rotate(315 45 45)"/>
+          <!-- magnifier -->
+          <circle cx="14" cy="16" r="12" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+          <circle cx="14" cy="16" r="7" fill="rgba(192,57,43,0.1)"/>
+          <line x1="23" y1="25" x2="34" y2="36" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/>
+          <!-- ! in magnifier -->
+          <text x="14" y="21" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#c0392b">!</text>
+        </g>
+        <!-- progress bar -->
+        <rect x="100" y="230" width="280" height="10" rx="5" fill="rgba(255,255,255,0.1)"/>
+        <rect x="100" y="230" width="112" height="10" rx="5" fill="url(#pg05)"/>
+        <defs><linearGradient id="pg05" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#29b8a0"/><stop offset="100%" stop-color="#1ec49a"/></linearGradient></defs>
+      </svg>
+      <div class="sc-info">
+        <div class="sc-num" data-zh="屏幕 05" data-en="Screen 05">Screen 05</div>
+        <div class="sc-name" data-zh="错误检测中" data-en="Error Detected">Error Detected</div>
+        <div class="sc-desc" data-zh="系统自动检测到设备问题，立即尝试自动修复，无需旅客干预。" data-en="When an error is detected, the system immediately attempts an automatic restart before escalating — no action required from the passenger.">System auto-detects the error and attempts a restart before escalating to staff.</div>
+        <span class="sc-badge err" data-zh="自动修复" data-en="Auto-fixing">Auto-fixing</span>
+      </div>
+      <div class="sc-accent"></div>
+    </div>
+
+    <!-- ── Screen 06: Error Upload / Fast-track ── -->
+    <div class="sc reveal">
+      <svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="bg06" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e2330"/><stop offset="100%" stop-color="#171c28"/></linearGradient></defs>
+        <rect width="480" height="300" fill="url(#bg06)"/>
+        <g opacity="0.055" transform="translate(290,70)"><path d="M0 50 L110 15 L148 35 L108 44 L88 75 L68 70 L84 44 L24 52 L16 66 L4 63 L8 50Z" fill="#fff"/></g>
+        <rect width="480" height="34" fill="rgba(18,22,34,0.97)"/>
+        <line x1="0" y1="34" x2="480" y2="34" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <text x="16" y="22" font-family="Inter,sans-serif" font-size="10.5" fill="rgba(160,170,200,0.55)">22 February, 2026  11:26am</text>
+        <polygon points="453,8 466,30 440,30" fill="#f5a623" opacity="0.9"/>
+        <text x="453" y="25" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#fff">!</text>
+        <!-- title + sub -->
+        <text x="240" y="68" text-anchor="middle" font-family="Inter,sans-serif" font-size="22" font-weight="700" fill="#e05a3a">Error Detected</text>
+        <text x="240" y="88" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" font-weight="600" fill="#e05a3a">Kiosk #2 — Status: missing printing paper</text>
+        <!-- upload icon: doc + arrow -->
+        <g transform="translate(195,106)">
+          <!-- doc -->
+          <rect x="20" y="8" width="50" height="62" rx="5" fill="none" stroke="rgba(120,140,185,0.5)" stroke-width="2.5"/>
+          <path d="M46 8 L46 0 L70 0 L70 8" fill="none" stroke="rgba(120,140,185,0.5)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="30" y1="28" x2="60" y2="28" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+          <line x1="30" y1="36" x2="55" y2="36" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+          <line x1="30" y1="44" x2="60" y2="44" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+          <!-- upload arrow circle -->
+          <circle cx="65" cy="55" r="18" fill="rgba(41,184,160,0.12)" stroke="#29b8a0" stroke-width="2"/>
+          <line x1="65" y1="63" x2="65" y2="47" stroke="#29b8a0" stroke-width="2.5" stroke-linecap="round"/>
+          <polyline points="58,54 65,47 72,54" fill="none" stroke="#29b8a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <!-- labels -->
+        <text x="240" y="196" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="rgba(200,215,250,0.85)">Uploading Information</text>
+        <!-- progress bar -->
+        <rect x="100" y="210" width="280" height="10" rx="5" fill="rgba(255,255,255,0.1)"/>
+        <rect x="100" y="210" width="154" height="10" rx="5" fill="url(#pg06)"/>
+        <defs><linearGradient id="pg06" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#29b8a0"/><stop offset="100%" stop-color="#1ec49a"/></linearGradient></defs>
+        <text x="240" y="242" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="rgba(160,175,220,0.65)">Please head to fast line to check-in</text>
+      </svg>
+      <div class="sc-info">
+        <div class="sc-num" data-zh="屏幕 06" data-en="Screen 06">Screen 06</div>
+        <div class="sc-name" data-zh="数据上传 · 快速通道" data-en="Upload & Fast-track">Upload & Fast-track</div>
+        <div class="sc-desc" data-zh="无法自动修复时，系统自动将旅客信息上传给工作人员，并引导旅客前往快速通道——避免重新排队。" data-en="When auto-fix fails, passenger data is uploaded to staff automatically and the passenger is routed to the fast-track counter.">When auto-fix fails, data is uploaded to staff and the passenger is routed to fast-track — no re-queuing.</div>
+        <span class="sc-badge err" data-zh="数据移交" data-en="Escalating">Escalating</span>
+      </div>
+      <div class="sc-accent"></div>
+    </div>
+
+  </div>
+</section>
+<hr class="divider">
+
+<!-- ======================== REFLECTION ======================== -->
+<section id="reflection" style="background:var(--bg2);">
+  <div style="max-width:560px;">
+    <p class="section-label reveal" data-zh="04 — 回顾" data-en="04 — Reflect">04 — Reflect</p>
+    <h2 class="section-title reveal">
+      <span data-zh="设计<br><em>反思</em>" data-en="Key<br><em>Takeaways</em>">
+        Key<br><em>Takeaways</em>
+      </span>
+    </h2>
+  </div>
+  <div class="reflection-grid">
+    <div class="reflection-card reveal">
+      <div class="reflection-num">01</div>
+      <div class="reflection-title" data-zh="田野观察的力量" data-en="The power of field observation">The power of field observation</div>
+      <p class="reflection-text"
+        data-zh="亲眼观察旅客在设备前反复点击、最终放弃排队，这一幕远比任何调研数据更有说服力。真实场景中的细节——肢体语言、等待时的犹豫——正是设计洞察的来源。"
+        data-en="Watching a passenger tap the screen repeatedly before giving up and re-queuing made the problem viscerally real. Field notes and direct observation surface details — body language, hesitation — that surveys never capture.">
+        Watching a passenger tap the screen before giving up and re-queuing made the problem viscerally real. Field notes surface details surveys never capture.
+      </p>
+    </div>
+    <div class="reflection-card reveal">
+      <div class="reflection-num">02</div>
+      <div class="reflection-title" data-zh="双端用户视角缺一不可" data-en="Both sides of the system matter">Both sides of the system matter</div>
+      <p class="reflection-text"
+        data-zh="将旅客与操作员的共情地图并列分析，揭示了系统的双重失效：旅客感到迷失无助，而工作人员则处于信息盲区、被动应对。好的系统设计必须同时服务两端用户。"
+        data-en="Mapping both the passenger and operator revealed a two-sided failure: passengers felt lost, operators were reactive and information-blind. Good system design must serve both ends simultaneously.">
+        Mapping both users revealed a two-sided failure. Good system design must serve passengers and operators simultaneously.
+      </p>
+    </div>
+    <div class="reflection-card reveal">
+      <div class="reflection-num">03</div>
+      <div class="reflection-title" data-zh="系统错误不能是终点" data-en="Errors should never be dead ends">Errors should never be dead ends</div>
+      <p class="reflection-text"
+        data-zh="设计中最关键的决策是：将错误从"终止节点"转变为"过渡节点"——系统自动接管、数据无缝流转，旅客被引导到下一步，而非被迫重新开始。这才是真正的弹性体验设计。"
+        data-en="The most important design decision was treating errors as transitions, not dead ends — auto-recovery, seamless data handoff, and clear re-routing. Resilience by design, not recovery by luck.">
+        The most important decision was treating errors as transitions, not dead ends — auto-recovery, data handoff, and clear re-routing.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span data-zh="© 2026 Xu Wang. 保留所有权利." data-en="© 2026 Xu Wang. All rights reserved.">© 2026 Xu Wang. All rights reserved.</span>
+  <div class="footer-legal">
+    <a href="index.html#projects">Back to Work</a>
+    <a href="index.html#contact">Contact</a>
+    <span>SNA Smart Check-in · Winter 2026</span>
+  </div>
+</footer>
+
+<script>
+/* ── Cursor ── */
+const cur  = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+document.querySelectorAll('a, button, .screen-card, .obs-card, .empathy-card, .reflection-card, .tool-pill, .flow-step').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+});
+(function loop() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  cur.style.left  = mx + 'px'; cur.style.top  = my + 'px';
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(loop);
+})();
+
+/* ── Nav scroll ── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ── Scroll reveal ── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.style.transitionDelay = (i % 5) * 0.08 + 's';
+  observer.observe(el);
+});
+
+/* ── Language toggle ── */
+const btnEn = document.getElementById('btnEn');
+const btnZh = document.getElementById('btnZh');
+function applyLang(l) {
+  btnEn.classList.toggle('active', l === 'en');
+  btnZh.classList.toggle('active', l === 'zh');
+  document.documentElement.lang = l === 'zh' ? 'zh' : 'en';
+  document.querySelectorAll('[data-zh][data-en]').forEach(el => {
+    const val = el.getAttribute('data-' + l);
+    if (!val) return;
+    const richTags = ['SPAN','P','H1','H2','H3','A','DIV'];
+    if (richTags.includes(el.tagName)) el.innerHTML = val;
+    else el.textContent = val;
+  });
+}
+btnEn.addEventListener('click', () => applyLang('en'));
+btnZh.addEventListener('click', () => applyLang('zh'));
+applyLang('en');
+</script>
+</body>
+</html>

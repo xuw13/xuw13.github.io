@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xu Wang — UI/UX Designer & Software Engineer</title>
+  <meta name="description" content="UI/UX Designer and Software Engineer crafting intuitive digital experiences. Portfolio of product design, interaction design, and full-stack development.">
+  <meta property="og:title" content="Xu Wang — UI/UX Designer">
+  <meta property="og:description" content="Crafting intuitive digital experiences centered on real human needs.">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">XUW.</a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#about"    data-zh="关于"  data-en="About">About</a></li>
+        <li><a href="#projects" data-zh="作品"  data-en="Work">Work</a></li>
+        <li><a href="#services" data-zh="能力"  data-en="Services">Services</a></li>
+        <li><a href="#contact"  data-zh="联系"  data-en="Contact">Contact</a></li>
+      </ul>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btnEn">EN</button>
+        <div class="lang-divider"></div>
+        <button class="lang-btn" id="btnZh">中文</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section id="hero">
+    <div class="hero-bg-text" data-zh="设计" data-en="DESIGN">DESIGN</div>
+
+    <div class="hero-left">
+      <span class="hero-tag"
+        data-zh="UI/UX 设计师 · 软件工程师"
+        data-en="UI/UX Designer · Software Engineer">
+        UI/UX Designer · Software Engineer
+      </span>
+
+      <h1 class="hero-name">
+        <span
+          data-zh="用设计<br><em>连接</em><br>人与世界"
+          data-en="Designing<br><em>Human</em><br>Experiences">
+          Designing<br><em>Human</em><br>Experiences
+        </span>
+      </h1>
+
+      <p class="hero-desc"
+        data-zh="专注于以用户为中心的数字产品设计，将复杂的问题化解为清晰直觉的体验，让每次交互都恰到好处。"
+        data-en="Crafting intuitive digital experiences centered on real human needs — turning complex problems into clear, elegant interactions that just feel right.">
+        Crafting intuitive digital experiences centered on real human needs — turning complex problems into clear, elegant interactions that just feel right.
+      </p>
+
+      <a href="#projects" class="hero-cta" data-zh="查看作品" data-en="View Work">
+        View Work
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <div class="hero-right">
+      <canvas class="dot-field" id="dotField"></canvas>
+      <div class="hero-scroll-hint">
+        <div class="scroll-line"></div>
+        <span data-zh="向下滚动" data-en="Scroll down">Scroll down</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ===================== ABOUT ===================== -->
+  <section id="about">
+    <div>
+      <p class="section-label reveal" data-zh="关于我" data-en="About Me">About Me</p>
+      <h2 class="section-title reveal">
+        <span data-zh="好的体验<br>源于<em>理解</em>" data-en="Great UX<br>starts with<br><em>empathy</em>">
+          Great UX<br>starts with<br><em>empathy</em>
+        </span>
+      </h2>
+    </div>
+
+    <div class="reveal">
+      <p class="about-body"
+        data-zh="你好，我是 <strong>王煦</strong>，一位连接用户洞察与产品思维的 UI/UX 设计师。"
+        data-en="Hi, I'm <strong>Xu Wang</strong>, a UI/UX designer who bridges user insight and product thinking.">
+        Hi, I'm <strong>Xu Wang</strong>, a UI/UX designer who bridges user insight and product thinking.
+      </p>
+
+      <p class="about-body"
+        data-zh="我的学术背景始于软件工程，在那里建立了扎实的编程、算法与系统逻辑基础。在这段经历中，我逐渐被技术背后的人性化一面所吸引，并开始深入探索人机交互领域。我拥有 <strong>UC Irvine 软件工程学士学位</strong>，以及<strong>人机交互与设计硕士学位</strong>。"
+        data-en="My academic background began in Software Engineering, where I developed a strong foundation in coding, algorithms, and system logic. Through that experience, I became increasingly drawn to the human side of technology, leading me to pursue a deeper focus in human-computer interaction. I hold a <strong>B.S. in Software Engineering from UC Irvine</strong> and a <strong>Master's in Human-Computer Interaction &amp; Design</strong>.">
+        My academic background began in Software Engineering, where I developed a strong foundation in coding, algorithms, and system logic. Through that experience, I became increasingly drawn to the human side of technology, leading me to pursue a deeper focus in human-computer interaction. I hold a <strong>B.S. in Software Engineering from UC Irvine</strong> and a <strong>Master's in Human-Computer Interaction &amp; Design</strong>.
+      </p>
+
+      <p class="about-body"
+        data-zh="我专注于将用户需求、产品目标与视觉体验融为一体，设计出兼具美感与易用性的数字产品。从研究到交付，我全程参与设计循环——梳理心智模型、厘清业务逻辑、构建用户流程，并打磨精致的界面。我相信：<strong>好的设计应该让人感到自然直觉</strong>，用户体验到的是清晰、轻松与价值，而非背后的复杂。"
+        data-en="I focus on connecting user needs, product goals, and visual experience to design digital products that are both appealing and easy to use. From research to delivery, I own the full design loop: mapping mental models, untangling business logic, architecting user flows, and shipping polished interfaces. I believe <strong>great design should feel intuitive</strong> — users experience clarity, ease, and value, not the complexity behind the craft.">
+        I focus on connecting user needs, product goals, and visual experience to design digital products that are both appealing and easy to use. From research to delivery, I own the full design loop: mapping mental models, untangling business logic, architecting user flows, and shipping polished interfaces. I believe <strong>great design should feel intuitive</strong> — users experience clarity, ease, and value, not the complexity behind the craft.
+      </p>
+
+      <p class="section-label" style="margin-top: 2.5rem;"
+        data-zh="设计流程" data-en="My Process">My Process</p>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="process-step-num">01</div>
+          <div class="process-step-name" data-zh="发现 · 用户研究" data-en="Discover · User Research">Discover · User Research</div>
+        </div>
+        <div class="process-step">
+          <div class="process-step-num">02</div>
+          <div class="process-step-name" data-zh="定义 · 问题框架" data-en="Define · Problem Framing">Define · Problem Framing</div>
+        </div>
+        <div class="process-step">
+          <div class="process-step-num">03</div>
+          <div class="process-step-name" data-zh="设计 · 原型迭代" data-en="Design · Prototype & Iterate">Design · Prototype &amp; Iterate</div>
+        </div>
+        <div class="process-step">
+          <div class="process-step-num">04</div>
+          <div class="process-step-name" data-zh="交付 · 开发协作" data-en="Deliver · Dev Handoff">Deliver · Dev Handoff</div>
+        </div>
+      </div>
+
+      <p class="section-label" style="margin-top: 2.5rem;"
+        data-zh="使用工具" data-en="Tools">Tools</p>
+      <div class="tools-row">
+        <span class="tool-pill">Figma</span>
+        <span class="tool-pill">Protopie</span>
+        <span class="tool-pill">Framer</span>
+        <span class="tool-pill">Maze</span>
+        <span class="tool-pill">Miro</span>
+        <span class="tool-pill">Notion</span>
+        <span class="tool-pill">Zeplin</span>
+        <span class="tool-pill">After Effects</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ===================== PROJECTS ===================== -->
+  <section id="projects">
+    <div class="projects-header">
+      <div>
+        <p class="section-label reveal" data-zh="经历" data-en="Selected Work">Selected Work</p>
+        <h2 class="section-title reveal" data-zh="设计产品" data-en="What I've Built">What I've Built</h2>
+      </div>
+      <a href="#contact" class="hero-cta reveal" style="animation: none; opacity: 1;"
+        data-zh="全部项目" data-en="All Projects">
+        All Projects
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- 01 SoftSignal — Featured -->
+      <div class="project-card large reveal">
+        <div>
+          <div class="project-num" data-zh="01 — UX 研究 & HCI" data-en="01 — UX Research & HCI">01 — UX Research & HCI</div>
+          <span class="project-tag">UX / Wearable / AI</span>
+          <h3 class="project-title"
+            data-zh="SoftSignal<br>AI 社交焦虑辅助系统"
+            data-en="SoftSignal<br>AI-Assisted Exit Cues">
+            SoftSignal<br>AI-Assisted Exit Cues
+          </h3>
+          <p class="project-desc"
+            data-zh="为社交焦虑人群设计的 AI 辅助系统——通过可穿戴设备检测压力信号，在达到超负荷之前以隐蔽、有尊严的方式提示用户离场。完整 UX 流程：研究洞察 → 共情地图 → JTBD 框架 → 用户流程 → Wizard of Oz 原型测试。"
+            data-en="An AI-assisted system for people with social anxiety — detecting stress via wearables and delivering discreet, empathetic exit cues before overload. Full UX process: research insights, empathy map, JTBD framework, user flow, and Wizard of Oz prototyping.">
+            An AI-assisted system for people with social anxiety — detecting stress via wearables and delivering discreet, empathetic exit cues before overload. Full UX process: research insights, empathy map, JTBD framework, user flow, and Wizard of Oz prototyping.
+          </p>
+          <div class="project-meta">
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="角色" data-en="Role">Role</span>
+              <span data-zh="UX 研究员 & 设计师" data-en="UX Researcher & Designer">UX Researcher & Designer</span>
+            </div>
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="类型" data-en="Type">Type</span>
+              <span data-zh="学术项目 · HCI" data-en="Academic · HCI">Academic · HCI</span>
+            </div>
+          </div>
+          <a href="https://youtu.be/tfy3Ol7rqrs" target="_blank" class="project-link" data-zh="查看演示视频" data-en="View Demo Video">
+            View Demo Video
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="project-img" id="ssImgWrap" style="overflow:hidden; border-radius:3px; position:relative; background:#0e1117;">
+          <iframe
+            id="ssIframe"
+            src="softsignal-mockup.html"
+            scrolling="no"
+            style="position:absolute; top:0; left:0; width:900px; height:560px; border:none; transform-origin:top left; pointer-events:none;"
+          ></iframe>
+        </div>
+        <script>
+          (function(){
+            function scaleSS(){
+              var wrap = document.getElementById('ssImgWrap');
+              var iframe = document.getElementById('ssIframe');
+              if(!wrap||!iframe) return;
+              var s = wrap.clientWidth / 900;
+              iframe.style.transform = 'scale('+s+')';
+              wrap.style.height = Math.round(560 * s) + 'px';
+            }
+            scaleSS();
+            window.addEventListener('resize', scaleSS);
+            document.getElementById('ssIframe').addEventListener('load', scaleSS);
+          })();
+        </script>
+        <div class="project-hover-accent"></div>
+      </div>
+
+      <!-- 02 SNA Smart Check-in -->
+      <div class="project-card large reveal" onclick="window.location='sna-project.html'" style="cursor:pointer;">
+        <div>
+          <div class="project-num" data-zh="02 — UX 研究 & 原型" data-en="02 — UX Research & Prototype">02 — UX Research & Prototype</div>
+          <span class="project-tag">UX / Kiosk / Airport</span>
+          <h3 class="project-title"
+            data-zh="Airport Smart Check-in<br>机场值机系统重设计"
+            data-en="Airport Smart Check-in<br>Kiosk Redesign">
+            Airport Smart Check-in<br>Kiosk Redesign
+          </h3>
+          <p class="project-desc"
+            data-zh="针对 John Wayne 机场(SNA)自助值机流程中的痛点——屏幕卡死、被迫返回人工柜台——重新设计了提供故障排除与行李协助的智能 kiosk 系统。涵盖研究再入 → 问题定义 → 用户流程 → 高保真原型。"
+            data-en="Redesigning the self-check-in kiosk at John Wayne Airport (SNA) to address frozen screens and forced staff redirects. Delivered a smart system with real-time troubleshooting and baggage assistance. Process: research re-entry, problem framing, user flow, and high-fidelity prototype.">
+            Redesigning the self-check-in kiosk at John Wayne Airport (SNA) to address frozen screens and forced staff redirects. Delivered a smart system with real-time troubleshooting and baggage assistance. Process: research re-entry, problem framing, user flow, and high-fidelity prototype.
+          </p>
+          <div class="project-meta">
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="角色" data-en="Role">Role</span>
+              <span data-zh="UX 研究员 & 设计师" data-en="UX Researcher & Designer">UX Researcher & Designer</span>
+            </div>
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="课程" data-en="Course">Course</span>
+              <span data-zh="高级设计与原型 · 2026" data-en="Advanced Design & Prototype · 2026">Advanced Design & Prototype · 2026</span>
+            </div>
+          </div>
+          <a href="sna-project.html" class="project-link" data-zh="查看案例" data-en="View Case Study">
+            View Case Study
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="project-img" id="snaImgWrap" style="overflow:hidden; border-radius:3px; position:relative; background:#141820;">
+          <iframe
+            id="snaIframe"
+            src="sna-checkin-mockup.html"
+            scrolling="no"
+            style="position:absolute; top:0; left:0; width:900px; height:560px; border:none; transform-origin:top left; pointer-events:none;"
+          ></iframe>
+        </div>
+        <script>
+          (function(){
+            function scaleSNA(){
+              var wrap = document.getElementById('snaImgWrap');
+              var iframe = document.getElementById('snaIframe');
+              if(!wrap||!iframe) return;
+              var s = wrap.clientWidth / 900;
+              iframe.style.transform = 'scale('+s+')';
+              wrap.style.height = Math.round(560 * s) + 'px';
+            }
+            scaleSNA();
+            window.addEventListener('resize', scaleSNA);
+            document.getElementById('snaIframe').addEventListener('load', scaleSNA);
+          })();
+        </script>
+        <div class="project-hover-accent"></div>
+      </div>
+
+      <!-- 03 Mercari UX Research -->
+      <div class="project-card large reveal">
+        <div>
+          <div class="project-num" data-zh="03 — UX 研究与评估" data-en="03 — UX Research & Evaluation">03 — UX Research & Evaluation</div>
+          <span class="project-tag">UX Research / Evaluation</span>
+          <h3 class="project-title"
+            data-zh="Mercari<br>导航体验研究报告"
+            data-en="Mercari<br>Navigation UX Report">
+            Mercari<br>Navigation UX Report
+          </h3>
+          <p class="project-desc"
+            data-zh="针对电商平台 Mercari 现有导航结构进行全套 UX 研究——启发式评估、竞品分析、定性测试、树形测试、卡片分类、定量测试。重新设计 8 个顶级分类后，任务成功率提升 28%, CSAT 达到 91%。"
+            data-en="Full-cycle UX evaluation of Mercari's navigation — heuristic evaluation, competitive analysis, qualitative testing, tree testing, card sort, and quantitative Maze testing (n=21). Redesigning into 8 top-level categories yielded a 28% task success increase and a 91% CSAT score.">
+            Full-cycle UX evaluation of Mercari's navigation — heuristic evaluation, competitive analysis, qualitative testing, tree testing, card sort, and quantitative Maze testing (n=21). Redesigning into 8 top-level categories yielded a 28% task success increase and a 91% CSAT score.
+          </p>
+          <div class="project-meta">
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="角色" data-en="Role">Role</span>
+              <span data-zh="UX 研究员 & 设计师" data-en="UX Researcher & Designer">UX Researcher & Designer</span>
+            </div>
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="规模" data-en="Scale">Scale</span>
+              <span data-zh="n=21 参与者" data-en="n=21 participants">n=21 participants</span>
+            </div>
+          </div>
+          <a href="#" class="project-link" data-zh="查看案例" data-en="View Case Study">
+            View Case Study
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="project-img" id="mercariImgWrap" style="overflow:hidden; border-radius:3px; position:relative; background:#0f0f1a;">
+          <iframe
+            id="mercariIframe"
+            src="mercari-mockup.html"
+            scrolling="no"
+            style="position:absolute; top:0; left:0; width:900px; height:560px; border:none; transform-origin:top left; pointer-events:none;"
+          ></iframe>
+        </div>
+        <script>
+          (function(){
+            function scaleMercari(){
+              var wrap = document.getElementById('mercariImgWrap');
+              var iframe = document.getElementById('mercariIframe');
+              if(!wrap||!iframe) return;
+              var s = wrap.clientWidth / 900;
+              iframe.style.transform = 'scale('+s+')';
+              wrap.style.height = Math.round(560 * s) + 'px';
+            }
+            scaleMercari();
+            window.addEventListener('resize', scaleMercari);
+            document.getElementById('mercariIframe').addEventListener('load', scaleMercari);
+          })();
+        </script>
+        <div class="project-hover-accent"></div>
+      </div>
+
+      <!-- 04 Pocket Market -->
+      <div class="project-card large reveal">
+        <div>
+          <div class="project-num" data-zh="04 — 移动端 UX & 产品设计" data-en="04 — Mobile UX & Product Design">04 — Mobile UX & Product Design</div>
+          <span class="project-tag">Mobile / Consumer / Food</span>
+          <h3 class="project-title"
+            data-zh="Pocket Market<br>智能购物清单"
+            data-en="Pocket Market<br>Smart Grocery App">
+            Pocket Market<br>Smart Grocery App
+          </h3>
+          <p class="project-desc"
+            data-zh="面向多店购物者的移动端 App，整合多家超市价格数据，支持按商品自动拆单。5 人团队主导 UX 研究与界面设计，实现总购物成本降低。"
+            data-en="A mobile app for multi-store shoppers that consolidates grocery prices across stores and auto-splits shopping lists by location. Led UX research and UI design across a 5-person team, reducing total grocery spend through informed routing.">
+            A mobile app for multi-store shoppers that consolidates grocery prices across stores and auto-splits shopping lists by location. Led UX research and UI design across a 5-person team, reducing total grocery spend through informed routing.
+          </p>
+          <div class="project-meta">
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="角色" data-en="Role">Role</span>
+              <span data-zh="UX 负责人 & 产品设计师" data-en="UX Lead & Product Designer">UX Lead & Product Designer</span>
+            </div>
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="团队" data-en="Team">Team</span>
+              <span data-zh="5 人小组" data-en="5-person team">5-person team</span>
+            </div>
+          </div>
+          <a href="#" class="project-link" data-zh="查看案例" data-en="View Case Study">
+            View Case Study
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="project-img" id="pmImgWrap" style="overflow:hidden; border-radius:3px; position:relative; background:#141310;">
+          <iframe
+            id="pmIframe"
+            src="pocket-market-mockup.html"
+            scrolling="no"
+            style="position:absolute; top:0; left:0; width:900px; height:560px; border:none; transform-origin:top left; pointer-events:none;"
+          ></iframe>
+        </div>
+        <script>
+          (function(){
+            function scalePM(){
+              var wrap = document.getElementById('pmImgWrap');
+              var iframe = document.getElementById('pmIframe');
+              if(!wrap||!iframe) return;
+              var s = wrap.clientWidth / 900;
+              iframe.style.transform = 'scale('+s+')';
+              wrap.style.height = Math.round(560 * s) + 'px';
+            }
+            scalePM();
+            window.addEventListener('resize', scalePM);
+            document.getElementById('pmIframe').addEventListener('load', scalePM);
+          })();
+        </script>
+        <div class="project-hover-accent"></div>
+      </div>
+
+      <!-- 05 Token ATM -->
+      <div class="project-card large reveal">
+        <div>
+          <div class="project-num" data-zh="05 — 全栈 & UX" data-en="05 — Full Stack & UX">05 — Full Stack & UX</div>
+          <span class="project-tag">Web App / EdTech</span>
+          <h3 class="project-title"
+            data-zh="Token ATM<br>教育代币管理"
+            data-en="Token ATM<br>EdTech Platform">
+            Token ATM<br>EdTech Platform
+          </h3>
+          <p class="project-desc"
+            data-zh="帮助教师管理规范评分代币的 Web 应用，集成 Canvas 与 Qualtrics, 支持最多 1300 名学生。负责后端开发(Python/Flask)、Figma 界面设计及前端组件（React + Tailwind）。"
+            data-en="A web app for instructors to manage specification-grading tokens, integrated with Canvas & Qualtrics — supporting classes of up to 1,300 students. Responsibilities spanned backend (Python/Flask), Figma UI design, and React/Tailwind frontend components.">
+            A web app for instructors to manage specification-grading tokens, integrated with Canvas & Qualtrics — supporting classes of up to 1,300 students. Responsibilities spanned backend (Python/Flask), Figma UI design, and React/Tailwind frontend components.
+          </p>
+          <div class="project-meta">
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="角色" data-en="Role">Role</span>
+              <span data-zh="全栈 & UX 设计师" data-en="Full Stack & UX Designer">Full Stack & UX Designer</span>
+            </div>
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="合作方" data-en="Partner">Partner</span>
+              <span data-zh="Dr. Kimberly Edwards" data-en="Dr. Kimberly Edwards">Dr. Kimberly Edwards</span>
+            </div>
+          </div>
+          <a href="#" class="project-link" data-zh="查看案例" data-en="View Case Study">
+            View Case Study
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="project-img" id="tokenImgWrap" style="overflow:hidden; border-radius:3px; position:relative; aspect-ratio:16/10;">
+          <iframe
+            id="tokenIframe"
+            src="token-atm-mockup.html"
+            scrolling="no"
+            style="position:absolute; top:0; left:0; width:900px; height:560px; border:none; transform-origin:top left; pointer-events:none;"
+          ></iframe>
+        </div>
+        <script>
+          (function(){
+            function scale(){
+              var wrap = document.getElementById('tokenImgWrap');
+              var iframe = document.getElementById('tokenIframe');
+              if(!wrap||!iframe) return;
+              var s = wrap.clientWidth / 900;
+              iframe.style.transform = 'scale('+s+')';
+              iframe.style.height = (wrap.clientHeight / s) + 'px';
+            }
+            scale();
+            window.addEventListener('resize', scale);
+            document.getElementById('tokenIframe').addEventListener('load', scale);
+          })();
+        </script>
+        <div class="project-hover-accent"></div>
+      </div>
+
+      <!-- 06 ChattNoww -->
+      <div class="project-card large reveal">
+        <div>
+          <div class="project-num" data-zh="06 — 全栈 & UX" data-en="06 — Full Stack & UX">06 — Full Stack & UX</div>
+          <span class="project-tag">Web App / Real-time</span>
+          <h3 class="project-title"
+            data-zh="ChattNoww<br>即时聊天平台"
+            data-en="ChattNoww<br>Real-time Chat App">
+            ChattNoww<br>Real-time Chat App
+          </h3>
+          <p class="project-desc"
+            data-zh="基于地理位置的即时聊天 Web 应用，支持创建群组、公开/PIN/审批多种加入方式, PWA 离线可用。技术栈: React + GraphQL + Redis + AWS + Terraform。"
+            data-en="A geolocation-based real-time chat platform for campus and in-person communities. Features group chats, PIN-based or public join, offline PWA support. Stack: React, GraphQL, Redis, Node.js, AWS + Terraform.">
+            A geolocation-based real-time chat platform for campus and in-person communities. Features group chats, PIN-based or public join, offline PWA support. Stack: React, GraphQL, Redis, Node.js, AWS + Terraform.
+          </p>
+          <div class="project-meta">
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="角色" data-en="Role">Role</span>
+              <span data-zh="全栈 & UX 设计师" data-en="Full Stack & UX Designer">Full Stack & UX Designer</span>
+            </div>
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="状态" data-en="Status">Status</span>
+              <span data-zh="已上线" data-en="Live">Live</span>
+            </div>
+          </div>
+          <a href="https://Chattnoww.online" target="_blank" class="project-link" data-zh="访问网站" data-en="Visit Live Site">
+            Visit Live Site
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="project-img" id="cnImgWrap" style="overflow:hidden; border-radius:3px; position:relative; background:#141310;">
+          <iframe
+            id="cnIframe"
+            src="chattnoww-mockup.html"
+            scrolling="no"
+            style="position:absolute; top:0; left:0; width:900px; height:560px; border:none; transform-origin:top left; pointer-events:none;"
+          ></iframe>
+        </div>
+        <script>
+          (function(){
+            function scaleCN(){
+              var wrap = document.getElementById('cnImgWrap');
+              var iframe = document.getElementById('cnIframe');
+              if(!wrap||!iframe) return;
+              var s = wrap.clientWidth / 900;
+              iframe.style.transform = 'scale('+s+')';
+              wrap.style.height = Math.round(560 * s) + 'px';
+            }
+            scaleCN();
+            window.addEventListener('resize', scaleCN);
+            document.getElementById('cnIframe').addEventListener('load', scaleCN);
+          })();
+        </script>
+        <div class="project-hover-accent"></div>
+      </div>
+
+      <!-- 07 TMGE -->
+      <div class="project-card large reveal">
+        <div>
+          <div class="project-num" data-zh="07 — 全栈 & 游戏设计" data-en="07 — Full Stack & Game Design">07 — Full Stack & Game Design</div>
+          <span class="project-tag">Python / Game Framework</span>
+          <h3 class="project-title"
+            data-zh="TMGE<br>瓦片匹配游戏框架"
+            data-en="TMGE<br>Tile-Matching Game Engine">
+            TMGE<br>Tile-Matching Game Engine
+          </h3>
+          <p class="project-desc"
+            data-zh="用 Python 3.12 构建的可扩展游戏框架，驱动 Tetris 与 Candy Crush 两款游戏。采用命令、观察者、组合三种设计模式，支持最多 3 名玩家实时对战，含完整的 UML 类图与序列图。"
+            data-en="An extensible tile-matching game framework in Python 3.12, powering Tetris and Candy Crush. Implements Command, Observer, and Composite design patterns. Supports up to 3-player multiplayer with persistent player profiles and full UML documentation.">
+            An extensible tile-matching game framework in Python 3.12, powering Tetris and Candy Crush. Implements Command, Observer, and Composite design patterns. Supports up to 3-player multiplayer with persistent player profiles and full UML documentation.
+          </p>
+          <div class="project-meta">
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="角色" data-en="Role">Role</span>
+              <span data-zh="全栈 & UI 设计师" data-en="Full Stack & UI Designer">Full Stack & UI Designer</span>
+            </div>
+            <div class="project-meta-item">
+              <span style="display:block;color:var(--cream3);font-size:0.66rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;" data-zh="技术" data-en="Stack">Stack</span>
+              <span data-zh="Python 3.12 · tkinter" data-en="Python 3.12 · tkinter">Python 3.12 · tkinter</span>
+            </div>
+          </div>
+          <a href="#" class="project-link" data-zh="查看 GitHub" data-en="View on GitHub">
+            View on GitHub
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="project-img" id="tmgeImgWrap" style="overflow:hidden; border-radius:3px; position:relative; background:#16213e;">
+          <iframe
+            id="tmgeIframe"
+            src="tmge-mockup.html"
+            scrolling="no"
+            style="position:absolute; top:0; left:0; width:900px; height:560px; border:none; transform-origin:top left; pointer-events:none;"
+          ></iframe>
+        </div>
+        <script>
+          (function(){
+            function scaleTMGE(){
+              var wrap = document.getElementById('tmgeImgWrap');
+              var iframe = document.getElementById('tmgeIframe');
+              if(!wrap||!iframe) return;
+              var s = wrap.clientWidth / 900;
+              iframe.style.transform = 'scale('+s+')';
+              wrap.style.height = Math.round(560 * s) + 'px';
+            }
+            scaleTMGE();
+            window.addEventListener('resize', scaleTMGE);
+            document.getElementById('tmgeIframe').addEventListener('load', scaleTMGE);
+          })();
+        </script>
+        <div class="project-hover-accent"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ===================== SERVICES ===================== -->
+  <section id="services">
+    <div>
+      <p class="section-label reveal" data-zh="能力" data-en="Services">Services</p>
+      <h2 class="section-title reveal">
+        <span data-zh="设计<br><em>能力</em>" data-en="How I<br>can<br><em>help you</em>">
+          How I<br>can<br><em>help you</em>
+        </span>
+      </h2>
+    </div>
+
+    <ul class="services-list">
+      <li class="service-item reveal">
+        <span class="service-num">01</span>
+        <div>
+          <h3 class="service-name" data-zh="用户体验设计" data-en="UX Design">UX Design</h3>
+          <p class="service-desc"
+            data-zh="用研访谈、竞品分析、用户旅程图、信息架构、线框图与交互原型——从用户出发，打造逻辑清晰的产品体验。"
+            data-en="User interviews, competitive analysis, journey mapping, IA, wireframes, and interactive prototypes — experience-first, data-informed design.">
+            User interviews, competitive analysis, journey mapping, IA, wireframes, and interactive prototypes — experience-first, data-informed design.
+          </p>
+        </div>
+      </li>
+      <li class="service-item reveal">
+        <span class="service-num">02</span>
+        <div>
+          <h3 class="service-name" data-zh="界面视觉设计" data-en="UI Visual Design">UI Visual Design</h3>
+          <p class="service-desc"
+            data-zh="高保真界面设计、组件规范、动效设计，将交互逻辑转化为精致美观的视觉界面，兼顾美感与可用性。"
+            data-en="High-fidelity UI, component libraries, and micro-interactions — translating UX logic into polished, pixel-perfect interfaces.">
+            High-fidelity UI, component libraries, and micro-interactions — translating UX logic into polished, pixel-perfect interfaces.
+          </p>
+        </div>
+      </li>
+      <li class="service-item reveal">
+        <span class="service-num">03</span>
+        <div>
+          <h3 class="service-name" data-zh="设计系统搭建" data-en="Design System">Design System</h3>
+          <p class="service-desc"
+            data-zh="构建可扩展的 Figma 设计系统，涵盖 Token 体系、组件库与使用文档，帮助团队保持一致性并加速产品迭代。"
+            data-en="Scalable Figma design systems with tokens, component libraries, and documentation — built to grow with your product.">
+            Scalable Figma design systems with tokens, component libraries, and documentation — built to grow with your product.
+          </p>
+        </div>
+      </li>
+      <li class="service-item reveal">
+        <span class="service-num">04</span>
+        <div>
+          <h3 class="service-name" data-zh="可用性测试 & 优化" data-en="Usability Testing">Usability Testing</h3>
+          <p class="service-desc"
+            data-zh="通过可用性测试、热力图分析与 A/B 测试发现体验断点，基于数据提出有针对性的设计优化方案。"
+            data-en="Usability testing, heatmap analysis, and A/B testing to uncover friction points and drive measurable UX improvements.">
+            Usability testing, heatmap analysis, and A/B testing to uncover friction points and drive measurable UX improvements.
+          </p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact">
+    <p class="contact-pre reveal" data-zh="准备好了吗" data-en="Ready to work together?">Ready to work together?</p>
+    <h2 class="contact-title reveal">
+      <span data-zh="开始<br><em>合作</em>" data-en="Let's<br><em>Connect</em>">
+        Let's<br><em>Connect</em>
+      </span>
+    </h2>
+    <a href="mailto:miragew13@gmail.com" class="contact-email reveal">miragew13@gmail.com</a>
+    <div class="contact-socials reveal">
+      <a href="#">Behance</a>
+      <a href="#">Dribbble</a>
+      <a href="#">LinkedIn</a>
+      <a href="#" data-zh="微信" data-en="WeChat">WeChat</a>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <span data-zh="© 2026 Xu Wang. 保留所有权利." data-en="© 2026 Xu Wang. All rights reserved.">© 2026 Xu Wang. All rights reserved.</span>
+    <div class="footer-legal">
+      <a href="#">Privacy</a>
+      <a href="#">Portfolio</a>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+
+</body>
+</html>

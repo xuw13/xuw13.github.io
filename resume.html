@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xu Wang — UI/UX Designer Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0f0f0f; --gray1: #1e1e1e; --gray2: #444;
+    --gray3: #888; --gray4: #bbb; --gray5: #e8e8e8;
+    --white: #fafafa; --rule: #e0e0e0;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: var(--white); color: var(--black); line-height: 1.6; min-height: 100vh; }
+
+  /* Lang toggle */
+  .lang-bar {
+    max-width: 940px; margin: 0 auto;
+    padding: 14px 40px 0;
+    display: flex; justify-content: flex-end;
+  }
+  .lang-toggle { display: flex; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+  .lang-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 4px 12px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem; letter-spacing: 0.1em; color: var(--gray3);
+    transition: background 0.2s, color 0.2s;
+  }
+  .lang-btn.active { background: var(--black); color: #fff; }
+  .lang-btn:not(.active):hover { background: var(--gray5); color: var(--gray2); }
+  .lang-divider { width: 1px; background: var(--rule); }
+
+  .page { max-width: 940px; margin: 0 auto; padding: 32px 40px 72px; }
+
+  header {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: end; padding-bottom: 24px;
+    border-bottom: 1.5px solid var(--black);
+    margin-bottom: 36px; gap: 24px;
+  }
+  .name { font-family: 'DM Serif Display', serif; font-size: 3rem; font-weight: 400; letter-spacing: -0.02em; line-height: 1.05; }
+  .name em { font-style: italic; color: var(--gray2); }
+  .title-line { margin-top: 6px; font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray3); font-weight: 400; }
+  .contact-block { display: flex; flex-direction: column; gap: 3px; align-items: flex-end; }
+  .contact-item { font-size: 0.78rem; color: var(--gray2); }
+  .contact-item a { color: var(--gray2); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  .contact-item a:hover { border-color: var(--gray2); }
+  .contact-placeholder { display: inline-block; width: 140px; height: 11px; background: var(--gray5); border-radius: 2px; vertical-align: middle; }
+
+  .body-grid { display: grid; grid-template-columns: 1fr 195px; gap: 0 40px; }
+
+  .section { margin-bottom: 32px; }
+  .section-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; color: var(--gray3); margin-bottom: 14px; padding-bottom: 7px; border-bottom: 1px solid var(--rule); }
+
+  .entry { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--gray5); }
+  .entry:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .entry-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; gap: 12px; }
+  .entry-title { font-family: 'DM Serif Display', serif; font-size: 1rem; font-weight: 400; }
+  .entry-meta { font-size: 0.72rem; color: var(--gray3); white-space: nowrap; flex-shrink: 0; }
+  .entry-sub { font-size: 0.78rem; color: var(--gray3); margin-bottom: 6px; }
+  .entry-tag { display: inline-block; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--rule); padding: 2px 7px; border-radius: 2px; color: var(--gray3); margin-right: 4px; margin-bottom: 6px; }
+  .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .bullet-list li { font-size: 0.82rem; color: var(--gray2); line-height: 1.6; padding-left: 12px; position: relative; }
+  .bullet-list li::before { content: '—'; position: absolute; left: 0; color: var(--gray4); }
+
+  .edu-entry { margin-bottom: 14px; }
+  .edu-school { font-family: 'DM Serif Display', serif; font-size: 0.9rem; font-weight: 400; line-height: 1.3; }
+  .edu-degree { font-size: 0.78rem; color: var(--gray2); margin-top: 2px; }
+  .edu-year { font-size: 0.72rem; color: var(--gray3); margin-top: 1px; }
+
+  .skill-group { margin-bottom: 12px; }
+  .skill-group-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray3); margin-bottom: 5px; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .skill-tag { font-size: 0.72rem; background: var(--gray5); color: var(--gray2); padding: 3px 8px; border-radius: 2px; }
+
+  .lang-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--gray2); margin-bottom: 5px; }
+  .lang-level { color: var(--gray3); font-size: 0.72rem; }
+
+  @media (max-width: 680px) {
+    .lang-bar { padding: 12px 24px 0; }
+    .page { padding: 24px 24px 48px; }
+    .body-grid { grid-template-columns: 1fr; }
+    header { grid-template-columns: 1fr; }
+    .contact-block { align-items: flex-start; }
+    .name { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Language Toggle -->
+<div class="lang-bar">
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btnEn">EN</button>
+    <div class="lang-divider"></div>
+    <button class="lang-btn" id="btnZh">中文</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div>
+      <h1 class="name" data-en="Xu Wang" data-zh="王煦">Xu Wang</h1>
+      <div class="title-line" data-en="UI/UX Designer · UX Researcher · Software Engineer" data-zh="UI/UX 设计师 · 用户体验研究员 · 软件工程师">UI/UX Designer · UX Researcher · Software Engineer</div>
+    </div>
+    <div>
+      <div class="contact-block">
+        <div class="contact-item">miragew13@gmail.com</span></div>
+        <div class="contact-item">
+          <a href="https://xuw.info" target="_blank" data-en="xuw.info" data-zh="作品集网站: xuw.info">xuw.info</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="body-grid">
+
+    <!-- MAIN -->
+    <main>
+
+      <!-- Profile -->
+      <div class="section">
+        <div class="section-label" data-en="Profile" data-zh="个人简介">Profile</div>
+        <p class="bullet-list" style="list-style:none; padding:0;">
+          <span class="entry-desc" style="font-size:0.82rem; color:var(--gray2); line-height:1.65;"
+            data-en="UI/UX designer and UX researcher with a foundation in Software Engineering and a Master's in Human-Computer Interaction &amp; Design from UC Irvine. I bridge user insight, product thinking, and technical understanding to design digital experiences that are both intuitive and visually refined — from wearable AI systems and airport kiosks to full-stack web applications."
+            data-zh="UI/UX 设计师与用户体验研究员，拥有 UC Irvine 软件工程本科背景及人机交互与设计硕士学位。我连接用户洞察、产品思维与技术理解，设计兼具直觉性与视觉精致感的数字体验——从可穿戴 AI 系统、机场自助值机到全栈 Web 应用。">
+            UI/UX designer and UX researcher with a foundation in Software Engineering and a Master's in Human-Computer Interaction &amp; Design from UC Irvine. I bridge user insight, product thinking, and technical understanding to design digital experiences that are both intuitive and visually refined — from wearable AI systems and airport kiosks to full-stack web applications.
+          </span>
+        </p>
+      </div>
+
+      <!-- Experience -->
+      <div class="section">
+        <div class="section-label" data-en="Experience" data-zh="工作经历">Experience</div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <div class="entry-title" data-en="Company: Braeburn System LLC" data-zh="公司: Company: Braeburn System LLC">Braeburn</div>
+            <div class="entry-meta" data-en="Feb 2026 - Sep 2026" data-zh="2026 年 2 月 - 9 月">Feb 2026 - Sep 2026</div>
+          </div>
+          <div class="entry-sub"
+            data-en="UX Researcher &amp; Designer · Thermostat Application"
+            data-zh="用户体验研究员与设计师 · 智能恒温器应用">
+            UX Researcher &amp; Designer · Thermostat Application
+          </div>
+          <span class="entry-tag">Heuristic Eval</span>
+          <span class="entry-tag">User Interview</span>
+          <span class="entry-tag">Survey</span>
+          <span class="entry-tag">Competitive Analysis</span>
+          <span class="entry-tag">Literature Review</span>
+          <ul class="bullet-list">
+            <li data-en="Leading UX research for Braeburn's smart thermostat application — conducting heuristic evaluation, user interviews, surveys, competitive analysis, and literature review"
+                data-zh="主导 Braeburn 智能恒温器应用的 UX 研究，开展启发式评估、用户访谈、问卷调查、竞品分析与文献综述">
+              Leading UX research for Braeburn's smart thermostat application — conducting heuristic evaluation, user interviews, surveys, competitive analysis, and literature review
+            </li>
+            <li data-en="Translating research findings into actionable design insights to improve usability and overall user experience of the thermostat app"
+                data-zh="将研究发现转化为可执行的设计建议，提升恒温器应用的易用性与整体用户体验">
+              Translating research findings into actionable design insights to improve usability and overall user experience of the thermostat app
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Projects -->
+      <div class="section">
+        <div class="section-label" data-en="Selected Projects" data-zh="项目经历">Selected Projects</div>
+
+        <!-- SoftSignal -->
+        <div class="entry">
+          <div class="entry-header">
+            <div class="entry-title">SoftSignal — AI-Assisted Exit Cues</div>
+            <div class="entry-meta">2025</div>
+          </div>
+          <div class="entry-sub"
+            data-en="UX Research &amp; Design · Wearable / AI / HCI"
+            data-zh="用户体验研究与设计 · 可穿戴 / AI / HCI">
+            UX Research &amp; Design · Wearable / AI / HCI
+          </div>
+          <span class="entry-tag">Empathy Map</span>
+          <span class="entry-tag">JTBD</span>
+          <span class="entry-tag">Wizard of Oz</span>
+          <ul class="bullet-list">
+            <li data-en="Designed an AI-assisted wearable system for people with social anxiety, delivering discreet exit cues before overload via smartwatch and mobile app"
+                data-zh="为社交焦虑人群设计 AI 辅助可穿戴系统，通过智能手表与手机 App 在超负荷前发出隐蔽离场提示">
+              Designed an AI-assisted wearable system for people with social anxiety, delivering discreet exit cues before overload via smartwatch and mobile app
+            </li>
+            <li data-en="Conducted IDEO user research, built empathy maps, defined JTBD framework, and validated with Wizard of Oz prototyping"
+                data-zh="运用 IDEO 用户研究方法, 构建共情地图、JTBD 框架，并通过 Wizard of Oz 原型测试进行验证">
+              Conducted IDEO user research, built empathy maps, defined JTBD framework, and validated with Wizard of Oz prototyping
+            </li>
+          </ul>
+        </div>
+
+        <!-- SNA -->
+        <div class="entry">
+          <div class="entry-header">
+            <div class="entry-title">SNA Smart Check-in System</div>
+            <div class="entry-meta">2026</div>
+          </div>
+          <div class="entry-sub"
+            data-en="UX Research &amp; Prototype · Airport Kiosk Redesign"
+            data-zh="用户体验研究与原型 · 机场自助值机重设计">
+            UX Research &amp; Prototype · Airport Kiosk Redesign
+          </div>
+          <span class="entry-tag">User Flow</span>
+          <span class="entry-tag">Field Study</span>
+          <span class="entry-tag">Interview</span>
+          <span class="entry-tag">Figma</span>
+          <span class="entry-tag">Hi-Fi Prototype</span>
+          <span class="entry-tag">Figma</span>
+          <ul class="bullet-list">
+            <li data-en="Redesigned self-check-in kiosks at John Wayne Airport to resolve frozen screens and forced staff redirects"
+                data-zh="重新设计 John Wayne 机场自助值机系统,解决屏幕卡死与被迫返回人工柜台的问题">
+              Redesigned self-check-in kiosks at John Wayne Airport to resolve frozen screens and forced staff redirects
+            </li>
+            <li data-en="Delivered high-fidelity Figma prototype covering success flow, error detection, and automated baggage transport (AGV cart)"
+                data-zh="交付高保真 Figma 原型，涵盖成功流程、错误检测与 AGV 自动行李运输系统">
+              Delivered high-fidelity Figma prototype covering success flow, error detection, and automated baggage transport (AGV cart)
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mercari -->
+        <div class="entry">
+          <div class="entry-header">
+            <div class="entry-title">Mercari Navigation UX Report</div>
+            <div class="entry-meta">2025</div>
+          </div>
+          <div class="entry-sub"
+            data-en="UX Research &amp; Evaluation · Executive Summary"
+            data-zh="用户体验研究与评估 · 执行摘要报告">
+            UX Research &amp; Evaluation · Executive Summary
+          </div>
+          <span class="entry-tag">Heuristic Eval</span>
+          <span class="entry-tag">Tree Testing</span>
+          <span class="entry-tag">Card Sort</span>
+          <span class="entry-tag">Maze</span>
+          <ul class="bullet-list">
+            <li data-en="Led 6-method UX evaluation of Mercari's navigation: heuristic evaluation, competitive analysis, qualitative testing, tree testing, card sort, and quantitative test"
+                data-zh="主导 6 种方法的 UX 综合评估：启发式评估、竞品分析、定性测试、树形测试、卡片分类及定量测试">
+              Led 6-method UX evaluation of Mercari's navigation: heuristic evaluation, competitive analysis, qualitative testing, tree testing, card sort, and quantitative test
+            </li>
+            <li data-en="Redesigned into 8 user mental-model-based categories — achieved 83% task success rate and 91% CSAT score, a 28% improvement"
+                data-zh="基于用户心智模型重新设计 8 个顶级分类，任务成功率达 83%、CSAT 评分 91%，较原版提升 28%">
+              Redesigned into 8 user mental-model-based categories — achieved <strong>83% task success rate</strong> and <strong>91% CSAT score</strong>, a 28% improvement
+            </li>
+          </ul>
+        </div>
+
+        <!-- Token ATM -->
+        <div class="entry">
+          <div class="entry-header">
+            <div class="entry-title">Token ATM — EdTech Platform</div>
+            <div class="entry-meta">2023</div>
+          </div>
+          <div class="entry-sub"
+            data-en="Full Stack &amp; UI/UX · Web App (UCI, Dr. Kimberly Edwards)"
+            data-zh="全栈开发与 UI/UX · Web 应用(UCI,合作导师 Dr. Kimberly Edwards)">
+            Full Stack &amp; UI/UX · Web App (UCI, Dr. Kimberly Edwards)
+          </div>
+          <span class="entry-tag">Python / Flask</span>
+          <span class="entry-tag">React</span>
+          <span class="entry-tag">Canvas API</span>
+          <ul class="bullet-list">
+            <li data-en="Designed Figma wireframes and React/Tailwind UI components for student and instructor dashboards"
+                data-zh="设计学生端与教师端的 Figma 线框图及 React/Tailwind UI 组件">
+              Designed Figma wireframes and React/Tailwind UI components for student and instructor dashboards
+            </li>
+            <li data-en="Built backend token logic in Python/Flask with Canvas &amp; Qualtrics API integration, supporting up to 1,300 students"
+                data-zh="使用 Python/Flask 构建后端代币逻辑，集成 Canvas 与 Qualtrics API, 支持最多 1,300 名学生">
+              Built backend token logic in Python/Flask with Canvas &amp; Qualtrics API integration, supporting up to 1,300 students
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="section">
+        <div class="section-label" data-en="Education" data-zh="教育背景">Education</div>
+        <div class="edu-entry">
+          <div class="edu-school" data-en="University of California, Irvine" data-zh="加州大学欧文分校">UC Irvine</div>
+          <div class="edu-degree"
+            data-en="M.S. Human-Computer Interaction &amp; Design"
+            data-zh="人机交互与设计 理学硕士">
+            M.S. Human-Computer Interaction &amp; Design
+          </div>
+          <div class="edu-year">2025 - 2026</div>
+        </div>
+        <div class="edu-entry">
+          <div class="edu-school" data-en="University of California, Irvine" data-zh="加州大学欧文分校">UC Irvine</div>
+          <div class="edu-degree"
+            data-en="B.S. Software Engineering"
+            data-zh="软件工程 理学学士">
+            B.S. Software Engineering
+          </div>
+          <div class="edu-year">2019 - 2024</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label" data-en="Skills" data-zh="技能">Skills</div>
+        <div class="skill-group">
+          <div class="skill-group-label" data-en="Design" data-zh="设计工具">Design</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Figma</span>
+            <span class="skill-tag">Protopie</span>
+            <span class="skill-tag">Framer</span>
+            <span class="skill-tag">Spectrum</span>
+            <span class="skill-tag">Google Stitch</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label" data-en="Research" data-zh="研究方法">Research</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Usability Testing</span>
+            <span class="skill-tag">Tree Testing</span>
+            <span class="skill-tag">Card Sort</span>
+            <span class="skill-tag">Heuristic Eval</span>
+            <span class="skill-tag">Competitive analysis</span>
+            <span class="skill-tag">Qualitative/Quantitative testing</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label" data-en="Development" data-zh="开发技能">Development</div>
+          <div class="skill-tags">
+            <span class="skill-tag">React</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Java</span>
+            <span class="skill-tag">C/C++</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">HTML / CSS</span>
+            <span class="skill-tag">Node.js</span>
+            <span class="skill-tag">Flask</span>
+            <span class="skill-tag">Git</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label" data-en="Languages" data-zh="语言能力">Languages</div>
+        <div class="lang-row">
+          <span data-en="English" data-zh="英语">English</span>
+          <span class="lang-level" data-en="Fluent" data-zh="流利">Fluent</span>
+        </div>
+        <div class="lang-row">
+          <span data-en="Chinese" data-zh="中文">Chinese</span>
+          <span class="lang-level" data-en="Native" data-zh="母语">Native</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label" data-en="Portfolio" data-zh="作品集">Portfolio</div>
+        <div style="font-size:0.78rem; color:var(--gray2);">
+          <a href="https://xuw.info" target="_blank" style="color:var(--gray2); border-bottom:1px solid var(--rule); text-decoration:none;">网址: xuw.info</a>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<script>
+  const btnEn = document.getElementById('btnEn');
+  const btnZh = document.getElementById('btnZh');
+
+  function applyLang(l) {
+    btnEn.classList.toggle('active', l === 'en');
+    btnZh.classList.toggle('active', l === 'zh');
+    document.documentElement.lang = l === 'zh' ? 'zh' : 'en';
+
+    document.querySelectorAll('[data-en][data-zh]').forEach(el => {
+      const val = el.getAttribute('data-' + l);
+      if (!val) return;
+      if (['SPAN','P','DIV','LI','H1','H2'].includes(el.tagName)) {
+        el.innerHTML = val;
+      } else {
+        el.textContent = val;
+      }
+    });
+  }
+
+  btnEn.addEventListener('click', () => applyLang('en'));
+  btnZh.addEventListener('click', () => applyLang('zh'));
+  applyLang('en');
+</script>
+</body>
+</html>
