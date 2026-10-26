@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mercari UX Research — Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    background: #0f0f1a;
+  }
+
+  .stage {
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(ellipse at 15% 50%, rgba(99,97,255,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 30%, rgba(80,70,200,0.08) 0%, transparent 50%),
+      #0f0f1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 28px;
+    gap: 16px;
+  }
+
+  /* ── LEFT PANEL: Brand + Stats ── */
+  .left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 200px;
+    flex-shrink: 0;
+  }
+
+  .brand-card {
+    background: #4541e8;
+    border-radius: 12px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mercari-m {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .mercari-wordmark {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .brand-tag {
+    margin-top: 4px;
+    font-size: 9px;
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.8);
+    padding: 3px 8px;
+    border-radius: 20px;
+    width: fit-content;
+    letter-spacing: 0.06em;
+  }
+
+  .stat-card {
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .stat-num {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+  }
+
+  .stat-num.purple { color: #a09bff; }
+  .stat-num.green  { color: #4ade80; }
+
+  .stat-desc {
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .stat-row-mini {
+    display: flex;
+    gap: 8px;
+  }
+
+  .stat-mini {
+    flex: 1;
+    border-radius: 10px;
+    padding: 10px 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .stat-mini-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .stat-mini-num.up { color: #4ade80; }
+
+  .stat-mini-label {
+    font-size: 8px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+
+  /* ── MIDDLE: Methods grid ── */
+  .mid-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mid-header {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .methods-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .method-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 11px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .method-icon {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .method-name {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #e0deff;
+  }
+
+  .method-desc {
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.45;
+  }
+
+  .method-badge {
+    display: inline-block;
+    font-size: 7.5px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-top: 2px;
+    width: fit-content;
+  }
+
+  .badge-purple { background: rgba(99,97,255,0.25); color: #a09bff; }
+  .badge-green  { background: rgba(74,222,128,0.18); color: #4ade80; }
+  .badge-blue   { background: rgba(56,189,248,0.18); color: #38bdf8; }
+
+  /* ── RIGHT: Findings + Recs ── */
+  .right-col {
+    width: 195px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .finding-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px 13px;
+  }
+
+  .finding-title {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 8px;
+  }
+
+  .finding-item {
+    display: flex;
+    gap: 7px;
+    align-items: flex-start;
+    margin-bottom: 6px;
+  }
+
+  .finding-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #4541e8;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .finding-dot.red    { background: #f87171; }
+  .finding-dot.green  { background: #4ade80; }
+  .finding-dot.yellow { background: #fbbf24; }
+
+  .finding-text {
+    font-size: 9.5px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.45;
+  }
+
+  .rec-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .rec-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .rec-tag {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  .tag-s { background: rgba(74,222,128,0.2); color: #4ade80; }
+  .tag-m { background: rgba(251,191,36,0.2);  color: #fbbf24; }
+  .tag-l { background: rgba(248,113,113,0.2); color: #f87171; }
+
+  .rec-text {
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- Left: Brand + Key Stats -->
+  <div class="left-col">
+    <div class="brand-card">
+      <div class="mercari-m">M</div>
+      <div class="mercari-wordmark">Mercari</div>
+      <div class="brand-tag">UX Research Report</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-num purple">91%</div>
+      <div class="stat-desc">CSAT Score<br>Customer Satisfaction</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-num green">83%</div>
+      <div class="stat-desc">Task Success Rate<br>Navigation Finding</div>
+    </div>
+
+    <div class="stat-row-mini">
+      <div class="stat-mini">
+        <div class="stat-mini-num up">+28%</div>
+        <div class="stat-mini-label">Task Success Increase</div>
+      </div>
+      <div class="stat-mini">
+        <div class="stat-mini-num">21</div>
+        <div class="stat-mini-label">Test Participants</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Middle: Research Methods -->
+  <div class="mid-col">
+    <div class="mid-header">Research Methods</div>
+    <div class="methods-grid">
+      <div class="method-card">
+        <div class="method-icon">🔍</div>
+        <div class="method-name">Heuristic Evaluation</div>
+        <div class="method-desc">Expert review of Mercari's navigation using Nielsen's 10 heuristics</div>
+        <div class="method-badge badge-purple">Expert</div>
+      </div>
+      <div class="method-card">
+        <div class="method-icon">📊</div>
+        <div class="method-name">Competitive Analysis</div>
+        <div class="method-desc">Benchmarked against leading resale marketplace platforms</div>
+        <div class="method-badge badge-blue">Market</div>
+      </div>
+      <div class="method-card">
+        <div class="method-icon">🗣️</div>
+        <div class="method-name">Qualitative Testing</div>
+        <div class="method-desc">Think-aloud sessions to uncover navigation pain points</div>
+        <div class="method-badge badge-purple">User</div>
+      </div>
+      <div class="method-card">
+        <div class="method-icon">🌳</div>
+        <div class="method-name">Tree Testing</div>
+        <div class="method-desc">Validated information architecture findability without UI</div>
+        <div class="method-badge badge-green">IA</div>
+      </div>
+      <div class="method-card">
+        <div class="method-icon">🃏</div>
+        <div class="method-name">Card Sort</div>
+        <div class="method-desc">Mapped users' mental models for category groupings</div>
+        <div class="method-badge badge-blue">Mental Model</div>
+      </div>
+      <div class="method-card">
+        <div class="method-icon">📐</div>
+        <div class="method-name">Quantitative Test</div>
+        <div class="method-desc">Maze prototype test with 21 users, age 18–39</div>
+        <div class="method-badge badge-green">Maze · n=21</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Findings + Recommendations -->
+  <div class="right-col">
+    <div class="finding-card">
+      <div class="finding-title">Key Findings</div>
+      <div class="finding-item">
+        <div class="finding-dot red"></div>
+        <div class="finding-text">Category structure causes <strong style="color:rgba(255,255,255,0.7)">decision fatigue</strong></div>
+      </div>
+      <div class="finding-item">
+        <div class="finding-dot red"></div>
+        <div class="finding-text">Navigation inconsistent before & after login</div>
+      </div>
+      <div class="finding-item">
+        <div class="finding-dot yellow"></div>
+        <div class="finding-text">High redundancy across top-level categories</div>
+      </div>
+      <div class="finding-item">
+        <div class="finding-dot green"></div>
+        <div class="finding-text">Redesigned 8 categories improved clarity significantly</div>
+      </div>
+    </div>
+
+    <div class="finding-title" style="padding: 0 2px; font-size:9px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.3);">Recommendations</div>
+    <div class="rec-row">
+      <div class="rec-item">
+        <div class="rec-tag tag-s">Short</div>
+        <div class="rec-text">Consistent nav bar before & after login</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-tag tag-m">Mid</div>
+        <div class="rec-text">Reduce high-level categories to improve scanability</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-tag tag-l">Long</div>
+        <div class="rec-text">Add suggestive keyword search within categories</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

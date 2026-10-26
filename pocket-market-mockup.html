@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pocket Market — Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #141310;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stage {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 24px;
+    padding: 40px 48px;
+    width: 100%;
+  }
+
+  /* Phone frame */
+  .phone {
+    flex-shrink: 0;
+    width: 240px;
+    height: 480px;
+    border-radius: 32px;
+    background: #fff;
+    overflow: hidden;
+    border: 6px solid #1e1d1a;
+    box-shadow:
+      0 0 0 1.5px rgba(255,255,255,0.08),
+      0 40px 80px rgba(0,0,0,0.6),
+      0 8px 20px rgba(0,0,0,0.4);
+    position: relative;
+    transition: transform 0.3s;
+  }
+
+  /* Middle phone sits taller */
+  .phone.center {
+    height: 500px;
+    z-index: 2;
+  }
+
+  .phone.left  { transform: rotate(-3deg) translateY(12px); }
+  .phone.right { transform: rotate(3deg) translateY(12px); }
+
+  /* Notch */
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 22px;
+    background: #1e1d1a;
+    border-radius: 0 0 14px 14px;
+    z-index: 10;
+  }
+
+  /* ===== SCREEN CONTENTS ===== */
+  .screen {
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-size: 11px;
+    overflow: hidden;
+  }
+
+  /* Shared teal header */
+  .app-header {
+    background: #b2f0f0;
+    padding: 28px 12px 8px;
+    flex-shrink: 0;
+  }
+
+  .app-header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .app-logo-text {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #111;
+  }
+
+  .search-bar {
+    flex: 1;
+    background: #fff;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 9.5px;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #ddd;
+  }
+
+  .search-icon { color: #aaa; font-size: 10px; }
+
+  .categories {
+    display: flex;
+    gap: 10px;
+    overflow: hidden;
+  }
+
+  .cat {
+    font-size: 9px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    padding-bottom: 2px;
+  }
+
+  .cat.active {
+    color: #111;
+    border-bottom: 2px solid #111;
+  }
+
+  /* Scrollable content */
+  .content {
+    flex: 1;
+    overflow: hidden;
+    padding: 10px 12px;
+    background: #fff;
+  }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 6px;
+  }
+
+  .sub-title {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  .recent-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .recent-item {
+    flex: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eee;
+  }
+
+  .recent-label {
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 7px;
+    font-weight: 500;
+    padding: 2px 5px;
+    text-align: center;
+  }
+
+  .recent-img {
+    height: 50px;
+    object-fit: cover;
+    width: 100%;
+    display: block;
+  }
+
+  /* Emoji placeholder images */
+  .emoji-img {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+  }
+
+  .store-card {
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    height: 36px;
+    border: 1px solid #eee;
+  }
+
+  .hmart  { background: #e8f8f8; color: #e0252b; letter-spacing: -0.02em; }
+  .albsn  { background: #e8f0f8; color: #1a4fa0; }
+  .add-store {
+    background: #b2f0f0;
+    color: #444;
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    background: #fff;
+    border-top: 1px solid #e8e8e8;
+    display: flex;
+    padding: 6px 0 8px;
+    flex-shrink: 0;
+  }
+
+  .nav-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 8px;
+    color: #aaa;
+    font-weight: 500;
+  }
+
+  .nav-tab.active { color: #111; }
+  .nav-icon { font-size: 14px; line-height: 1; }
+
+  /* ===== SPLASH SCREEN ===== */
+  .splash {
+    width: 100%; height: 100%;
+    background: linear-gradient(160deg, #d4f5c4 0%, #b8f0d8 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .splash-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .splash-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: -0.03em;
+  }
+
+  .splash-tagline {
+    font-size: 9px;
+    color: #555;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ===== MY LIST SCREEN ===== */
+  .list-header {
+    background: #b2f0f0;
+    padding: 28px 14px 10px;
+    flex-shrink: 0;
+  }
+
+  .list-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .items-label {
+    font-size: 9.5px;
+    color: #555;
+    margin-top: 2px;
+  }
+
+  .list-content {
+    flex: 1;
+    overflow: hidden;
+    background: #fff;
+    padding: 0;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .item-emoji {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .item-info { flex: 1; min-width: 0; }
+
+  .item-name {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: #111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-store {
+    font-size: 8px;
+    color: #888;
+    margin-top: 1px;
+  }
+
+  .item-price {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: #333;
+    flex-shrink: 0;
+  }
+
+  .trash-icon { font-size: 10px; color: #ccc; flex-shrink: 0; }
+
+  .total-bar {
+    padding: 10px 12px 6px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    flex-shrink: 0;
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .total-label { font-size: 13px; font-weight: 700; color: #111; }
+  .total-value { font-size: 13px; font-weight: 700; color: #111; }
+
+  .finalize-btn {
+    width: 100%;
+    background: #fff;
+    border: 1.5px solid #111;
+    border-radius: 20px;
+    padding: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #111;
+    text-align: center;
+    cursor: default;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- LEFT: Home Screen -->
+  <div class="phone left">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="app-header">
+        <div class="app-header-row">
+          <div class="app-logo-text">Pocket<br>Market</div>
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            Search Pocket Market
+          </div>
+        </div>
+        <div class="categories">
+          <span class="cat active">Fruits</span>
+          <span class="cat">Vegetables</span>
+          <span class="cat">Meats</span>
+          <span class="cat">Grains</span>
+          <span class="cat">H…</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="section-title">Home</div>
+        <div class="sub-title">Recently Purchased</div>
+        <div class="recent-row">
+          <div class="recent-item">
+            <div class="recent-label">Zucchini (H-Mart)</div>
+            <div class="emoji-img">🥒</div>
+          </div>
+          <div class="recent-item">
+            <div class="recent-label">Oranges (99 Ranch)</div>
+            <div class="emoji-img">🍊</div>
+          </div>
+        </div>
+
+        <div class="sub-title">My Stores</div>
+        <div class="store-card hmart">H‑MART</div>
+        <div class="store-card albsn">Albertsons</div>
+        <div class="store-card add-store">+</div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-tab active"><span class="nav-icon">🏠</span>Home</div>
+        <div class="nav-tab"><span class="nav-icon">≡</span>My List</div>
+        <div class="nav-tab"><span class="nav-icon">⚙</span>Settings</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: Splash Screen -->
+  <div class="phone center">
+    <div class="notch"></div>
+    <div class="splash">
+      <!-- Pocket Market SVG logo recreation -->
+      <svg class="splash-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Bag body -->
+        <rect x="12" y="28" width="76" height="62" rx="12" fill="#FF8C2A" stroke="#111" stroke-width="3"/>
+        <!-- Bag flap -->
+        <path d="M12 40 Q14 28 28 28 H72 Q86 28 88 40 Z" fill="#FF7A10" stroke="#111" stroke-width="2.5"/>
+        <!-- Handle left -->
+        <path d="M35 28 Q35 14 50 14" stroke="#111" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        <!-- Handle right -->
+        <path d="M65 28 Q65 14 50 14" stroke="#111" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        <!-- Green leaf top -->
+        <ellipse cx="56" cy="42" rx="14" ry="10" fill="#4DC94D" stroke="#111" stroke-width="2" transform="rotate(-20 56 42)"/>
+        <!-- Red apple -->
+        <circle cx="44" cy="56" r="10" fill="#E83030" stroke="#111" stroke-width="2"/>
+        <!-- Bread/baguette -->
+        <rect x="52" y="52" width="22" height="9" rx="4" fill="#D4A04A" stroke="#111" stroke-width="2" transform="rotate(-15 52 52)"/>
+        <!-- Dashed line on bag -->
+        <path d="M20 54 Q50 60 80 54" stroke="#111" stroke-width="1.5" stroke-dasharray="4 3" fill="none" opacity="0.35"/>
+      </svg>
+      <div class="splash-name">Pocket Market</div>
+      <div class="splash-tagline">Shop smart · Save more</div>
+    </div>
+  </div>
+
+  <!-- RIGHT: My List Screen -->
+  <div class="phone right">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="list-header">
+        <div class="list-title">My List (6)</div>
+        <div class="items-label">Items (6)</div>
+      </div>
+
+      <div class="list-content">
+        <div class="list-item">
+          <div class="item-emoji">🍣</div>
+          <div class="item-info">
+            <div class="item-name">Wild Caught Atlantic Salmon</div>
+            <div class="item-store">From Albertsons</div>
+          </div>
+          <div class="item-price">$16.99</div>
+          <div class="trash-icon">🗑</div>
+        </div>
+        <div class="list-item">
+          <div class="item-emoji">🌽</div>
+          <div class="item-info">
+            <div class="item-name">Corn</div>
+            <div class="item-store">From H-Mart</div>
+          </div>
+          <div class="item-price">$0.99</div>
+          <div class="trash-icon">🗑</div>
+        </div>
+        <div class="list-item">
+          <div class="item-emoji">🍞</div>
+          <div class="item-info">
+            <div class="item-name">Sourdough bread w/ walnuts</div>
+            <div class="item-store">From Albertsons</div>
+          </div>
+          <div class="item-price">$2.00</div>
+          <div class="trash-icon">🗑</div>
+        </div>
+        <div class="list-item">
+          <div class="item-emoji">🫐</div>
+          <div class="item-info">
+            <div class="item-name">Blueberries (1 lb)</div>
+            <div class="item-store">From Albertsons</div>
+          </div>
+          <div class="item-price">$3.99</div>
+          <div class="trash-icon">🗑</div>
+        </div>
+      </div>
+
+      <div class="total-bar">
+        <div class="total-row">
+          <span class="total-label">Total:</span>
+          <span class="total-value">$38.94</span>
+        </div>
+        <div class="finalize-btn">Finalize</div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-tab"><span class="nav-icon">🏠</span>Home</div>
+        <div class="nav-tab active"><span class="nav-icon">≡</span>My List</div>
+        <div class="nav-tab"><span class="nav-icon">⚙</span>Settings</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

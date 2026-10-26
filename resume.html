@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xu Wang — UI/UX Designer Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0f0f0f; --gray1: #1e1e1e; --gray2: #444;
+    --gray3: #888; --gray4: #bbb; --gray5: #e8e8e8;
+    --white: #fafafa; --rule: #e0e0e0;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: var(--white); color: var(--black); line-height: 1.6; min-height: 100vh; }
+
+  /* Lang toggle */
+  .lang-bar {
+    max-width: 940px; margin: 0 auto;
+    padding: 14px 40px 0;
+    display: flex; justify-content: flex-end;
+  }
+  .lang-toggle { display: flex; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+  .lang-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 4px 12px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem; letter-spacing: 0.1em; color: var(--gray3);
+    transition: background 0.2s, color 0.2s;
+  }
+  .lang-btn.active { background: var(--black); color: #fff; }
+  .lang-btn:not(.active):hover { background: var(--gray5); color: var(--gray2); }
+  .lang-divider { width: 1px; background: var(--rule); }
+
+  .page { max-width: 940px; margin: 0 auto; padding: 32px 40px 72px; }
+
+  header {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: end; padding-bottom: 24px;
+    border-bottom: 1.5px solid var(--black);
+    margin-bottom: 36px; gap: 24px;
+  }
+  .name { font-family: 'DM Serif Display', serif; font-size: 3rem; font-weight: 400; letter-spacing: -0.02em; line-height: 1.05; }
+  .name em { font-style: italic; color: var(--gray2); }
+  .title-line { margin-top: 6px; font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray3); font-weight: 400; }
+  .contact-block { display: flex; flex-direction: column; gap: 3px; align-items: flex-end; }
+  .contact-item { font-size: 0.78rem; color: var(--gray2); }
+  .contact-item a { color: var(--gray2); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  .contact-item a:hover { border-color: var(--gray2); }
+  .contact-placeholder { display: inline-block; width: 140px; height: 11px; background: var(--gray5); border-radius: 2px; vertical-align: middle; }
+
+  .body-grid { display: grid; grid-template-columns: 1fr 195px; gap: 0 40px; }
+
+  .section { margin-bottom: 32px; }
+  .section-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; color: var(--gray3); margin-bottom: 14px; padding-bottom: 7px; border-bottom: 1px solid var(--rule); }
+
+  .entry { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--gray5); }
+  .entry:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .entry-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; gap: 12px; }
+  .entry-title { font-family: 'DM Serif Display', serif; font-size: 1rem; font-weight: 400; }
+  .entry-meta { font-size: 0.72rem; color: var(--gray3); white-space: nowrap; flex-shrink: 0; }
+  .entry-sub { font-size: 0.78rem; color: var(--gray3); margin-bottom: 6px; }
+  .entry-tag { display: inline-block; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--rule); padding: 2px 7px; border-radius: 2px; color: var(--gray3); margin-right: 4px; margin-bottom: 6px; }
+  .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .bullet-list li { font-size: 0.82rem; color: var(--gray2); line-height: 1.6; padding-left: 12px; position: relative; }
+  .bullet-list li::before { content: '—'; position: absolute; left: 0; color: var(--gray4); }
+
+  .edu-entry { margin-bottom: 14px; }
+  .edu-school { font-family: 'DM Serif Display', serif; font-size: 0.9rem; font-weight: 400; line-height: 1.3; }
+  .edu-degree { font-size: 0.78rem; color: var(--gray2); margin-top: 2px; }
+  .edu-year { font-size: 0.72rem; color: var(--gray3); margin-top: 1px; }
+
+  .skill-group { margin-bottom: 12px; }
+  .skill-group-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray3); margin-bottom: 5px; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .skill-tag { font-size: 0.72rem; background: var(--gray5); color: var(--gray2); padding: 3px 8px; border-radius: 2px; }
+
+  .lang-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--gray2); margin-bottom: 5px; }
+  .lang-level { color: var(--gray3); font-size: 0.72rem; }
+
+  @media (max-width: 680px) {
+    .lang-bar { padding: 12px 24px 0; }
+    .page { padding: 24px 24px 48px; }
+    .body-grid { grid-template-columns: 1fr; }
+    header { grid-template-columns: 1fr; }
+    .contact-block { align-items: flex-start; }
+    .name { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Language Toggle -->
+<div class="lang-bar">
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btnEn">EN</button>
+    <div class="lang-divider"></div>
+    <button class="lang-btn" id="btnZh">中文</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div>
+      <h1 class="name" data-en="Xu Wang" data-zh="王煦">Xu Wang</h1>
+      <div class="title-line" data-en="AI Product Designer · UI/UX · UX Research · Software Engineering" data-zh="AI 产品设计 · UI/UX · 用户研究 · 软件工程">AI Product Designer · UI/UX · UX Research · Software Engineering</div>
+    </div>
+    <div>
+      <div class="contact-block">
+        <div class="contact-item">miragew13@gmail.com</span></div>
+        <div class="contact-item">
+          <a href="https://xuw.info" target="_blank" data-en="xuw.info" data-zh="作品集网站: xuw.info">xuw.info</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="body-grid">
+
+    <!-- MAIN -->
+    <main>
+
+      <!-- Profile -->
+      <div class="section">
+        <div class="section-label" data-en="Profile" data-zh="个人简介">Profile</div>
+        <p class="bullet-list" style="list-style:none; padding:0;">
+          <span class="entry-desc" style="font-size:0.82rem; color:var(--gray2); line-height:1.65;"
+            data-en="AI and complex-systems UI/UX designer with a B.S. in Software Engineering and an M.S. in Human-Computer Interaction &amp; Design. I turn qualitative and quantitative research into information architecture, user flows, high-fidelity prototypes, and validated product decisions. I care about privacy, user autonomy, and low-interruption AI experiences, and use Codex Design, Claude, and Google Stitch to rapidly build interactive prototypes."
+            data-zh="面向 AI 与复杂系统的 UI/UX 设计师，具备软件工程本科与人机交互设计硕士背景。擅长将定性与定量研究转化为信息架构、用户流程、高保真原型和设计系统，并通过可用性测试持续验证。关注 AI 提示中的隐私、用户自主权与低打扰体验，能够理解研发约束，使用 Codex Design、Claude、Google Stitch 等工具快速构建可交互原型。">
+            AI and complex-systems UI/UX designer with a B.S. in Software Engineering and an M.S. in Human-Computer Interaction &amp; Design. I turn qualitative and quantitative research into information architecture, user flows, high-fidelity prototypes, and validated product decisions. I care about privacy, user autonomy, and low-interruption AI experiences, and use Codex Design, Claude, and Google Stitch to rapidly build interactive prototypes.
+          </span>
+        </p>
+      </div>
+
+      <!-- Experience -->
+      <div class="section">
+        <div class="section-label" data-en="Experience" data-zh="核心经历">Experience</div>
+
+        <div class="entry">
+          <div class="entry-header">
+            <div class="entry-title"><a href="https://xuw.info/braeburn-project.html" target="_blank" style="color:inherit;text-decoration:none;">Braeburn Systems | BlueLink Application</a></div>
+            <div class="entry-meta">2026.02 - 2026.09</div>
+          </div>
+          <div class="entry-sub"
+            data-en="UX Researcher &amp; Designer · Smart Home Software · 4-Person Team / Enterprise Client"
+            data-zh="用户体验研究员与设计师 · 智能家居软件 · 4 人团队 / 企业客户">
+            UX Researcher &amp; Designer · Smart Home Software · 4-Person Team / Enterprise Client
+          </div>
+          <span class="entry-tag">Mixed Methods</span>
+          <span class="entry-tag">UX Strategy</span>
+          <span class="entry-tag">User Flow</span>
+          <span class="entry-tag">Hi-Fi Prototype</span>
+          <span class="entry-tag">Design System</span>
+          <ul class="bullet-list">
+            <li data-en="Led mixed-method research across 20 sources, 7 brands × 15 experience criteria, 4 in-depth interviews, 103 survey responses (98% completion), and a heuristic evaluation to identify friction in setup, recovery, and everyday control"
+                data-zh="主导定性与定量研究：20 篇文献、7 个品牌 × 15 项体验维度、4 次深访、103 份问卷（98% 完成率）及启发式评估，定位首次连接、故障恢复与日常控制中的关键摩擦">
+              Led mixed-method research across 20 sources, 7 brands × 15 experience criteria, 4 in-depth interviews, 103 survey responses (98% completion), and a heuristic evaluation to identify friction in setup, recovery, and everyday control
+            </li>
+            <li data-en="Reworked onboarding, scheduling, reports, and troubleshooting flows after finding violations of 9/10 Nielsen heuristics across 6 screens"
+                data-zh="基于 6 个页面中 9/10 项尼尔森原则违背，重构 onboarding、schedule、reports 与 troubleshooting 用户路径">
+              Reworked onboarding, scheduling, reports, and troubleshooting flows after finding violations of 9/10 Nielsen heuristics across 6 screens
+            </li>
+            <li data-en="Owned user flows and high-fidelity prototypes; the team delivered nearly 70 screens and a client handoff that traced each research finding to a design decision"
+                data-zh="负责用户流程和高保真原型；团队交付近 70 个页面，并以“研究发现 → 设计决策”链路完成客户交付">
+              Owned user flows and high-fidelity prototypes; the team delivered nearly 70 screens and a client handoff that traced each research finding to a design decision
+            </li>
+            <li data-en="Iterated through two usability-testing rounds, redefining interface language, guided assistance, and key controls to improve comprehension and feedback in core flows"
+                data-zh="参与两轮可用性测试并迭代：重新定义界面语言、辅助向导与关键按键，提升核心流程的可理解性与操作反馈">
+              Iterated through two usability-testing rounds, redefining interface language, guided assistance, and key controls to improve comprehension and feedback in core flows
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Projects -->
+      <div class="section">
+        <div class="section-label" data-en="Related Projects" data-zh="相关项目">Related Projects</div>
+
+        <!-- SoftSignal -->
+        <div class="entry">
+          <div class="entry-header">
+            <div class="entry-title"><a href="https://xuw.info/softsignal-project.html" target="_blank" style="color:inherit;text-decoration:none;">SoftSignal | AI-Assisted Wearable UX</a></div>
+            <div class="entry-meta">2025</div>
+          </div>
+          <div class="entry-sub"
+            data-en="AI Product / HCI · UX Research &amp; Interaction Design"
+            data-zh="AI Product / HCI · 用户研究与交互设计">
+            AI Product / HCI · UX Research &amp; Interaction Design
+          </div>
+          <span class="entry-tag">Responsible AI UX</span>
+          <span class="entry-tag">Cross-device</span>
+          <span class="entry-tag">Wizard of Oz</span>
+          <span class="entry-tag">Wearable</span>
+          <ul class="bullet-list">
+            <li data-en="Designed an AI-assisted exit-cue system using smartwatch stress signals and situational context, connecting real-time watch prompts with post-event review on mobile"
+                data-zh="基于智能手表压力信号与环境语境，设计 AI 辅助离场提示，连接手表实时提醒与手机复盘历史的跨端流程">
+              Designed an AI-assisted exit-cue system using smartwatch stress signals and situational context, connecting real-time watch prompts with post-event review on mobile
+            </li>
+            <li data-en="Wizard of Oz and paper prototyping showed that high-pressure moments need clear, empathetic, low-interruption cues; framed AI as a suggestion rather than a command to protect privacy and autonomy"
+                data-zh="通过 Wizard of Oz / 纸面原型验证：高压情境下用户更需要清晰、共情、低打扰提示；将 AI 定位为建议而非指令，兼顾隐私与用户自主权">
+              Wizard of Oz and paper prototyping showed that high-pressure moments need clear, empathetic, low-interruption cues; framed AI as a suggestion rather than a command to protect privacy and autonomy
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mercari -->
+        <div class="entry">
+          <div class="entry-header">
+            <div class="entry-title"><a href="https://xuw.info/mercari-mockup.html" target="_blank" style="color:inherit;text-decoration:none;">Mercari | Navigation UX &amp; Information Architecture</a></div>
+            <div class="entry-meta">2025</div>
+          </div>
+          <div class="entry-sub"
+            data-en="Product UX Research · Qualitative / Quantitative Validation"
+            data-zh="产品体验研究 · 定性 / 定量验证">
+            Product UX Research · Qualitative / Quantitative Validation
+          </div>
+          <span class="entry-tag">Heuristic Eval</span>
+          <span class="entry-tag">Tree Testing</span>
+          <span class="entry-tag">Card Sort</span>
+          <span class="entry-tag">Maze · n=21</span>
+          <ul class="bullet-list">
+            <li data-en="Combined heuristic evaluation, competitive analysis, interviews, tree testing, card sorting, and a 21-person quantitative study to identify gaps between navigation structure and users' mental models"
+                data-zh="结合启发式评估、竞品分析、访谈、树形测试、卡片分类与 21 人定量测试，识别导航结构与用户心智模型的偏差">
+              Combined heuristic evaluation, competitive analysis, interviews, tree testing, card sorting, and a 21-person quantitative study to identify gaps between navigation structure and users' mental models
+            </li>
+            <li data-en="Restructured navigation into 8 top-level categories, achieving 83% task success and 91% CSAT, a 28% improvement over the original"
+                data-zh="重构 8 个顶级分类，任务成功率达 83%、CSAT 达 91%，较原版提升 28%">
+              Restructured navigation into 8 top-level categories, achieving 83% task success and 91% CSAT, a 28% improvement over the original
+            </li>
+          </ul>
+        </div>
+
+        <!-- Token ATM -->
+        <div class="entry">
+          <div class="entry-header">
+            <div class="entry-title">Token ATM | EdTech Platform</div>
+            <div class="entry-meta">2023</div>
+          </div>
+          <div class="entry-sub"
+            data-en="Full Stack &amp; UI/UX · To B / To D Web Application"
+            data-zh="全栈开发与 UI/UX · To B / To D Web 应用">
+            Full Stack &amp; UI/UX · To B / To D Web Application
+          </div>
+          <span class="entry-tag">Figma</span>
+          <span class="entry-tag">React</span>
+          <span class="entry-tag">Python / Flask</span>
+          <span class="entry-tag">API</span>
+          <ul class="bullet-list">
+            <li data-en="Designed information architecture, wireframes, and React/Tailwind components for student and instructor experiences, collaborating with faculty and developers to move interaction concepts into implementation"
+                data-zh="设计学生端与教师端信息架构、线框及 React/Tailwind 组件，协同导师与开发推进交互方案落地">
+              Designed information architecture, wireframes, and React/Tailwind components for student and instructor experiences, collaborating with faculty and developers to move interaction concepts into implementation
+            </li>
+            <li data-en="Built the Python/Flask backend and integrated Canvas and Qualtrics APIs, supporting up to 1,300 students"
+                data-zh="构建 Python/Flask 后端并集成 Canvas 与 Qualtrics API，支持最多 1,300 名学生">
+              Built the Python/Flask backend and integrated Canvas and Qualtrics APIs, supporting up to 1,300 students
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="section">
+        <div class="section-label" data-en="Education" data-zh="教育背景">Education</div>
+        <div class="edu-entry">
+          <div class="edu-school" data-en="University of California, Irvine" data-zh="加州大学欧文分校">UC Irvine</div>
+          <div class="edu-degree"
+            data-en="M.S. Human-Computer Interaction &amp; Design"
+            data-zh="人机交互与设计 理学硕士">
+            M.S. Human-Computer Interaction &amp; Design
+          </div>
+          <div class="edu-year">2025 - 2026</div>
+        </div>
+        <div class="edu-entry">
+          <div class="edu-school" data-en="University of California, Irvine" data-zh="加州大学欧文分校">UC Irvine</div>
+          <div class="edu-degree"
+            data-en="B.S. Software Engineering"
+            data-zh="软件工程 理学学士">
+            B.S. Software Engineering
+          </div>
+          <div class="edu-year">2019 - 2024</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label" data-en="Core Skills" data-zh="核心能力">Core Skills</div>
+        <div class="skill-group">
+          <div class="skill-group-label" data-en="Design &amp; Prototyping" data-zh="设计与原型">Design &amp; Prototyping</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Figma</span>
+            <span class="skill-tag">Codex Design</span>
+            <span class="skill-tag">Claude</span>
+            <span class="skill-tag">ProtoPie</span>
+            <span class="skill-tag">Framer</span>
+            <span class="skill-tag">Google Stitch</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label" data-en="Product &amp; Research" data-zh="产品与研究">Product &amp; Research</div>
+          <div class="skill-tags">
+            <span class="skill-tag" data-en="Information Architecture" data-zh="信息架构">Information Architecture</span>
+            <span class="skill-tag" data-en="User Flows" data-zh="用户流程">User Flows</span>
+            <span class="skill-tag" data-en="Usability Testing" data-zh="可用性测试">Usability Testing</span>
+            <span class="skill-tag" data-en="Interviews" data-zh="深度访谈">Interviews</span>
+            <span class="skill-tag" data-en="Surveys" data-zh="问卷">Surveys</span>
+            <span class="skill-tag" data-en="Competitive Analysis" data-zh="竞品分析">Competitive Analysis</span>
+            <span class="skill-tag">Tree Testing</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">AI / HCI</div>
+          <div class="skill-tags">
+            <span class="skill-tag" data-en="AI Cue Design" data-zh="AI 提示体验">AI Cue Design</span>
+            <span class="skill-tag" data-en="Cross-device UX" data-zh="跨端交互">Cross-device UX</span>
+            <span class="skill-tag">Wizard of Oz</span>
+            <span class="skill-tag" data-en="Privacy &amp; Autonomy" data-zh="隐私与自主权">Privacy &amp; Autonomy</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label" data-en="Development Collaboration" data-zh="开发协作">Development Collaboration</div>
+          <div class="skill-tags">
+            <span class="skill-tag">React</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">Python / Flask</span>
+            <span class="skill-tag">HTML / CSS</span>
+            <span class="skill-tag">Git</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label" data-en="Languages" data-zh="语言能力">Languages</div>
+        <div class="lang-row">
+          <span data-en="English" data-zh="英语">English</span>
+          <span class="lang-level" data-en="Fluent" data-zh="流利">Fluent</span>
+        </div>
+        <div class="lang-row">
+          <span data-en="Chinese" data-zh="中文">Chinese</span>
+          <span class="lang-level" data-en="Native" data-zh="母语">Native</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label" data-en="Portfolio" data-zh="作品集">Portfolio</div>
+        <div style="font-size:0.78rem; color:var(--gray2);">
+          <a href="https://xuw.info" target="_blank" style="color:var(--gray2); border-bottom:1px solid var(--rule); text-decoration:none;" data-en="Website: xuw.info" data-zh="网址：xuw.info">Website: xuw.info</a>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<script>
+  const btnEn = document.getElementById('btnEn');
+  const btnZh = document.getElementById('btnZh');
+
+  function applyLang(l) {
+    btnEn.classList.toggle('active', l === 'en');
+    btnZh.classList.toggle('active', l === 'zh');
+    document.documentElement.lang = l === 'zh' ? 'zh' : 'en';
+
+    document.querySelectorAll('[data-en][data-zh]').forEach(el => {
+      const val = el.getAttribute('data-' + l);
+      if (!val) return;
+      if (['SPAN','P','DIV','LI','H1','H2'].includes(el.tagName)) {
+        el.innerHTML = val;
+      } else {
+        el.textContent = val;
+      }
+    });
+  }
+
+  btnEn.addEventListener('click', () => applyLang('en'));
+  btnZh.addEventListener('click', () => applyLang('zh'));
+  applyLang('en');
+</script>
+</body>
+</html>

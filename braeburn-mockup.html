@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Braeburn Capstone — Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 900px; height: 560px; overflow: hidden; font-family: "DM Sans", -apple-system, sans-serif; background: #070a11; }
+  .stage {
+    width: 900px; height: 560px;
+    background:
+      radial-gradient(ellipse at 26% 42%, rgba(58,96,156,.30) 0%, transparent 58%),
+      radial-gradient(ellipse at 80% 70%, rgba(57,161,218,.16) 0%, transparent 55%),
+      linear-gradient(150deg, #070a11 0%, #111624 48%, #080b12 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rack { display: flex; align-items: center; gap: 40px; transform: scale(1.03); }
+/* ── Braeburn light-mode device mockups (redrawn from the Figma hi-fi) ── */
+    .bb-stage { display: flex; gap: 26px; align-items: center; justify-content: center; flex-wrap: wrap; }
+    .bb-wrap { display: flex; flex-direction: column; align-items: center; gap: 11px; }
+    .bb-cap { font-size: 8.5px; color: rgba(255,255,255,0.55); letter-spacing: .1em; text-transform: uppercase; }
+
+    /* iPhone 17 Pro chassis — 6.3" display, 1:2.174 screen ratio */
+    .bb-device {
+      position: relative; flex-shrink: 0;
+      width: 216px; height: 460px;
+      padding: 4px; border-radius: 48px;
+      background: linear-gradient(142deg, #8f97a3 0%, #4b525c 9%, #2b3038 26%, #1b1e24 50%, #2b3038 74%, #4b525c 91%, #8f97a3 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.30),
+        inset 0 -1px 0 rgba(255,255,255,.16),
+        0 0 0 .5px rgba(255,255,255,.22),
+        0 28px 64px rgba(0,0,0,.8);
+    }
+    /* left rail: Action button, Volume Up, Volume Down */
+    .bb-device::before {
+      content: ''; position: absolute; left: -1.5px; top: 84px;
+      width: 2.5px; height: 20px; border-radius: 2px; background: #6b7280;
+      box-shadow: 0 36px 0 0 #6b7280, 0 66px 0 0 #6b7280;
+    }
+    /* right rail: Side button, Camera Control */
+    .bb-device::after {
+      content: ''; position: absolute; right: -1.5px; top: 120px;
+      width: 2.5px; height: 34px; border-radius: 2px; background: #6b7280;
+      box-shadow: 0 58px 0 0 #6b7280;
+    }
+    .bb-phone {
+      width: 100%; height: 100%;
+      border-radius: 44px;
+      overflow: hidden; position: relative;
+      background: linear-gradient(180deg, #dfe8f5 0%, #e9f0f9 58%, #e0e9f5 100%);
+      color: #0D254B;
+      font-family: "DM Sans", -apple-system, sans-serif;
+      padding: 11px 12px 0;
+      display: flex; flex-direction: column; gap: 7px;
+      line-height: 1.25;
+    }
+    /* Dynamic Island */
+    .bb-phone::before {
+      content: ''; position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+      width: 64px; height: 19px; border-radius: 19px; background: #080a0d; z-index: 6;
+    }
+    /* home indicator */
+    .bb-phone::after {
+      content: ''; position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+      width: 98px; height: 4px; border-radius: 4px; background: rgba(13,37,75,.28); z-index: 6;
+    }
+    html[lang="zh"] .bb-phone { font-family: "DM Sans", -apple-system, sans-serif; }
+    .bb-status { display: flex; justify-content: space-between; align-items: center; min-height: 19px; font-size: 7.5px; font-weight: 700; color: #0D254B; padding: 0 2px; }
+    .bb-pill { background: #fff; border: 1px solid #c8d5e7; border-radius: 8px; padding: 5px 7px; display: flex; justify-content: space-between; align-items: center; font-size: 7px; box-shadow: 0 1px 3px rgba(13,37,75,.07); }
+    .bb-pill b { color: #0D254B; font-weight: 600; }
+    .bb-pill span { color: #556682; }
+    .bb-dot-blue { color: #39A1DA; }
+
+    .bb-dial { position: relative; width: 138px; height: 138px; margin: 4px auto 0; }
+    .bb-dial-val { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+    .bb-dial-lbl { font-size: 6px; letter-spacing: .16em; color: #556682; font-weight: 700; margin-bottom: 3px; }
+    .bb-dial-num { font-size: 34px; font-weight: 500; letter-spacing: -.03em; color: #0D254B; }
+
+    .bb-adjust { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 2px; }
+    .bb-round { width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 1px solid #c8d5e7; display: grid; place-items: center; font-size: 10px; color: #3A609C; }
+    .bb-adjust span { font-size: 7px; color: #42536d; }
+
+    .bb-stats { display: flex; justify-content: space-between; padding: 0 4px; margin-top: 2px; }
+    .bb-stat-l { font-size: 5.5px; letter-spacing: .12em; color: #556682; font-weight: 700; }
+    .bb-stat-v { font-size: 15px; font-weight: 600; color: #0D254B; letter-spacing: -.02em; }
+
+    .bb-modes { display: flex; gap: 6px; margin-top: 3px; }
+    .bb-mode { flex: 1; background: #fff; border: 1px solid #c8d5e7; border-radius: 8px; padding: 8px 0 6px; text-align: center; box-shadow: 0 1px 3px rgba(13,37,75,.07); }
+    .bb-mode span { font-size: 6.4px; color: #42536d; }
+    /* must out-specify `.bb-mode span`, which otherwise shrinks the icon to the label size */
+    .bb-mode span.bb-mode-ico { font-size: 14px; line-height: 1; display: block; margin-bottom: 4px; color: #3A609C; }
+    .bb-mode.on { border-color: #3A609C; background: #eef3fb; }
+
+    .bb-away { background: #fff; border: 1px solid #c8d5e7; border-radius: 9px; padding: 7px 8px; margin-top: 3px; box-shadow: 0 1px 3px rgba(13,37,75,.07); }
+    .bb-away-top { display: flex; justify-content: space-between; align-items: center; }
+    .bb-away-title { font-size: 7px; font-weight: 700; color: #3A609C; text-decoration: underline; }
+    .bb-toggle { width: 18px; height: 10px; border-radius: 6px; background: #d6dfec; position: relative; flex-shrink: 0; }
+    .bb-toggle.on { background: #3A609C; }
+    .bb-toggle::after { content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #fff; top: 1.5px; left: 1.5px; }
+    .bb-toggle.on::after { left: 9.5px; }
+    .bb-away-sub { font-size: 6px; color: #556682; margin-top: 2px; }
+
+    .bb-nav { margin-top: auto; display: flex; background: #fff; border-radius: 999px; padding: 4px; box-shadow: 0 -2px 12px rgba(13,37,75,.07); margin-bottom: 18px; }
+    .bb-nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 6px; font-weight: 500; color: #556682; padding: 4px 0; border-radius: 999px; }
+    .bb-nav-tab .ico { font-size: 9px; }
+    .bb-nav-tab.on { background: #24437E; color: #fff; }
+
+    .bb-h1 { font-size: 13px; font-weight: 700; letter-spacing: -.02em; color: #0D254B; margin-top: 2px; }
+    .bb-link { font-size: 7.5px; color: #3A609C; font-weight: 600; }
+    .bb-rule { height: 1px; background: #d9e2ee; margin: 4px 0 2px; }
+    .bb-card { background: #fff; border: 1px solid #c8d5e7; border-radius: 9px; padding: 8px 9px; box-shadow: 0 1px 3px rgba(13,37,75,.07); }
+    .bb-card-h { display: flex; justify-content: space-between; align-items: center; font-size: 8px; font-weight: 700; color: #0D254B; }
+    .bb-days { display: flex; justify-content: space-between; margin-top: 6px; }
+    .bb-day { flex: 1; text-align: center; font-size: 5px; letter-spacing: .06em; color: #556682; font-weight: 700; }
+    .bb-nums { display: flex; justify-content: space-between; margin-top: 3px; }
+    .bb-num { flex: 1; text-align: center; font-size: 7px; color: #556682; padding: 3px 0; }
+    .bb-num.on { background: #24437E; color: #fff; border-radius: 999px; font-weight: 600; }
+    .bb-sched-row { display: flex; align-items: center; gap: 5px; font-size: 6px; color: #42536d; padding: 3.5px 0; border-top: 1px solid #eef2f8; }
+    .bb-sched-row:first-of-type { border-top: none; margin-top: 5px; }
+    .bb-sched-row .t { width: 34px; color: #556682; }
+    .bb-sched-row .n { flex: 1; }
+    .bb-sched-row .d { color: #3A609C; font-weight: 700; }
+    .bb-btn { background: #1450AE; color: #fff; border-radius: 8px; text-align: center; font-size: 8px; font-weight: 700; padding: 9px 0; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .bb-btn.ghost { background: #fff; color: #3A609C; border: 1px solid #c9d6e8; }
+
+    .bb-tabs { display: flex; gap: 0; border-bottom: 1px solid #d9e2ee; margin-top: 2px; }
+    .bb-tab { flex: 1; text-align: center; font-size: 7px; padding: 5px 0; color: #556682; }
+    .bb-tab.on { color: #1450AE; font-weight: 700; border-bottom: 2px solid #1450AE; }
+    .bb-seg { display: flex; background: #fff; border: 1px solid #c8d5e7; border-radius: 999px; padding: 2px; margin-top: 5px; }
+    .bb-seg span { flex: 1; text-align: center; font-size: 6px; padding: 3px 0; border-radius: 999px; color: #42536d; }
+    .bb-seg span.on { background: #24437E; color: #fff; font-weight: 700; }
+    .bb-metric { font-size: 15px; font-weight: 700; color: #0D254B; letter-spacing: -.02em; }
+    .bb-small { font-size: 6.2px; color: #556682; line-height: 1.45; }
+    .bb-mini-bars { margin-top: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .bb-mini-row { display: flex; align-items: center; gap: 5px; font-size: 6.2px; color: #42536d; }
+    .bb-mini-row .lab { width: 42px; }
+    .bb-mini-track { flex: 1; height: 3px; border-radius: 999px; background: #e3eaf4; overflow: hidden; }
+    .bb-mini-fill { height: 100%; border-radius: 999px; background: #0C8850; }
+    .bb-mini-row .pct { width: 18px; text-align: right; font-weight: 700; color: #0D254B; }
+
+    .bb-issue { background: #fff; border: 1px solid #c8d5e7; border-radius: 9px; padding: 8px; display: flex; align-items: center; gap: 7px; margin-top: 6px; box-shadow: 0 1px 3px rgba(13,37,75,.07); }
+    .bb-issue span.bb-issue-ico { flex: 0 0 17px; width: 17px; height: 17px; border-radius: 5px; background: #0D254B; color: #fff; display: grid; place-items: center; font-size: 8px; flex-shrink: 0; }
+    .bb-issue span { flex: 1; font-size: 7px; color: #0D254B; font-weight: 500; }
+    .bb-issue .chev { flex: 0 0 auto; color: #556682; font-size: 8px; }
+    .bb-kicker { font-size: 6.2px; letter-spacing: .14em; color: #556682; font-weight: 700; margin-top: 6px; }
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="bbArc" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0%" stop-color="#C2410C"/><stop offset="52%" stop-color="#b8bfc9"/><stop offset="100%" stop-color="#007C8A"/>
+  </linearGradient>
+</defs></svg>
+  <div class="stage"><div class="rack">
+      <div class="bb-wrap">
+        <div class="bb-device">
+            <div class="bb-phone">
+              <div class="bb-status"><span>9:41</span><span>▮▮▮ ᯤ ▬</span></div>
+              <div class="bb-pill"><b><span class="bb-dot-blue">❄</span> Cooling → 72°F</b><span>Next: 6 PM</span></div>
+              <div class="bb-dial">
+                <svg viewBox="0 0 138 138" width="138" height="138">
+                  <circle cx="69" cy="69" r="60" fill="none" stroke="url(#bbArc)" stroke-width="1.6"/>
+                  <circle cx="69" cy="9" r="3" fill="#fff" stroke="#b8bfc9" stroke-width="1"/>
+                </svg>
+                <div class="bb-dial-val"><span class="bb-dial-lbl">CURRENT</span><span class="bb-dial-num">74°</span></div>
+              </div>
+              <div class="bb-adjust"><span class="bb-round">−</span><span>Tap to adjust</span><span class="bb-round">+</span></div>
+              <div class="bb-stats">
+                <div><div class="bb-stat-l">FEELS LIKE</div><div class="bb-stat-v">74°F</div></div>
+                <div style="text-align:right"><div class="bb-stat-l">HUMIDITY</div><div class="bb-stat-v">38%</div></div>
+              </div>
+              <div class="bb-modes">
+                <div class="bb-mode"><span class="bb-mode-ico">❄</span><span>Cold</span></div>
+                <div class="bb-mode on"><span class="bb-mode-ico">⇄</span><span>Auto</span></div>
+                <div class="bb-mode"><span class="bb-mode-ico">♨</span><span>Heat</span></div>
+              </div>
+              <div class="bb-away">
+                <div class="bb-away-top"><span class="bb-away-title">Away mode ›</span><span class="bb-toggle on"></span></div>
+                <div class="bb-away-sub">Radius: 0.5 mi · Last detected: 2 min ago</div>
+              </div>
+              <div class="bb-nav">
+                <div class="bb-nav-tab on"><span class="ico">⌂</span>Home</div>
+                <div class="bb-nav-tab"><span class="ico">◷</span>Schedule</div>
+                <div class="bb-nav-tab"><span class="ico">▤</span>Reports</div>
+                <div class="bb-nav-tab"><span class="ico">⚙</span>Settings</div>
+              </div>
+            </div>
+          </div>
+        <span class="bb-cap">Home</span>
+      </div>
+      <div class="bb-wrap">
+        <div class="bb-device">
+            <div class="bb-phone">
+              <div class="bb-status"><span>9:41</span><span>▮▮▮ ᯤ ▬</span></div>
+              <div class="bb-h1">Smart Report</div>
+              <div class="bb-small" style="margin-top:1px;">Floor 1 Thermostat ⌄</div>
+              <div class="bb-tabs">
+                <span class="bb-tab">Home Data</span>
+                <span class="bb-tab on">Energy Savings</span>
+              </div>
+              <div class="bb-seg">
+                <span class="on">Daily</span>
+                <span>Weekly</span>
+                <span>Monthly</span>
+              </div>
+              <div class="bb-card" style="margin-top:6px;">
+                <div class="bb-card-h"><span>Energy Efficiency Score</span><span style="color:#0D254B;">ⓘ</span></div>
+                <div class="bb-small" style="margin-top:5px;">Top</div>
+                <div class="bb-metric">25%</div>
+                <div class="bb-small" style="margin-top:2px;">Your household saves more energy than 3 out of 4 neighboring homes.</div>
+                <div style="display:flex;gap:2px;margin-top:6px;">
+                  <span style="flex:1;height:2.5px;background:#0C8850;border-radius:2px;"></span>
+                  <span style="flex:1;height:2.5px;background:#0C8850;border-radius:2px;"></span>
+                  <span style="flex:1;height:2.5px;background:#0C8850;border-radius:2px;"></span>
+                  <span style="flex:1;height:2.5px;background:#d6dfec;border-radius:2px;"></span>
+                </div>
+              </div>
+              <div class="bb-card" style="margin-top:6px;">
+                <div class="bb-card-h"><span>Runtime savings comparison</span><span style="color:#0D254B;">ⓘ</span></div>
+                <div class="bb-mini-bars">
+                  <div class="bb-mini-row"><span class="lab">Your home</span><span class="bb-mini-track"><span class="bb-mini-fill" style="width:80%"></span></span><span class="pct">16%</span></div>
+                  <div class="bb-mini-row"><span class="lab">State avg</span><span class="bb-mini-track"><span class="bb-mini-fill" style="width:50%"></span></span><span class="pct">10%</span></div>
+                  <div class="bb-mini-row"><span class="lab">National avg</span><span class="bb-mini-track"><span class="bb-mini-fill" style="width:40%"></span></span><span class="pct">8%</span></div>
+                </div>
+              </div>
+              <div class="bb-nav">
+                <div class="bb-nav-tab"><span class="ico">⌂</span>Home</div>
+                <div class="bb-nav-tab"><span class="ico">◷</span>Schedule</div>
+                <div class="bb-nav-tab on"><span class="ico">▤</span>Reports</div>
+                <div class="bb-nav-tab"><span class="ico">⚙</span>Settings</div>
+              </div>
+            </div>
+          </div>
+        <span class="bb-cap">Smart Report</span>
+      </div>
+      <div class="bb-wrap">
+        <div class="bb-device">
+            <div class="bb-phone">
+              <div class="bb-status"><span>9:41</span><span>▮▮▮ ᯤ ▬</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 2px 6px;">
+                <span style="font-size:10px;color:#42536d;">✕</span>
+                <span style="font-size:10px;font-weight:700;color:#0D254B;">Troubleshooting</span>
+                <span style="display:inline-flex;align-items:center;color:#42536d;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="9.7" r="3.2"/><path d="M5.85 19.1a6.35 6.35 0 0 1 12.3 0"/></svg></span>
+              </div>
+              <div class="bb-rule"></div>
+              <div style="width:22px;height:2.5px;background:#1450AE;border-radius:2px;margin:6px 0 8px;"></div>
+              <div style="font-size:11px;font-weight:700;color:#0D254B;letter-spacing:-.01em;">Having trouble connecting?</div>
+              <div class="bb-small" style="margin-top:3px;">We'll help you get your device online. Choose the issue you're experiencing below.</div>
+              <div class="bb-kicker">COMMON ISSUES</div>
+              <div class="bb-issue"><span class="bb-issue-ico">▦</span><span>QR code not working</span><span class="chev">›</span></div>
+              <div class="bb-issue"><span class="bb-issue-ico">ᯤ</span><span>Wi-Fi connection</span><span class="chev">›</span></div>
+              <div class="bb-issue"><span class="bb-issue-ico">⌕</span><span>Device not found</span><span class="chev">›</span></div>
+              <div class="bb-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 10px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Try Again</div>
+              <div style="text-align:center;margin-top:8px;font-size:7px;color:#3A609C;text-decoration:underline;">Contact Support</div>
+              <div style="margin-top:auto;height:8px;"></div>
+            </div>
+          </div>
+        <span class="bb-cap">Self-service</span>
+      </div>
+  </div></div>
+</body>
+</html>
