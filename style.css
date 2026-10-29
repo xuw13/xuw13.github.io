@@ -359,7 +359,9 @@ main::before {
     radial-gradient(140% 150% at var(--glass-x) var(--glass-y), rgba(255,255,255,.06), rgba(255,255,255,.012) 44%, transparent 70%),
     linear-gradient(135deg, rgba(111,133,255,.14), rgba(183,124,255,.05)), rgba(255,255,255,.022);
   backdrop-filter: blur(28px) saturate(1.7) brightness(1.05); -webkit-backdrop-filter: blur(28px) saturate(1.7) brightness(1.05); box-shadow: var(--glass-shadow);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
 }
+
 .contact::after { content: ""; position: absolute; width: 370px; height: 370px; right: -90px; top: -120px; border-radius: 45% 55% 60% 40% / 45% 40% 60% 55%; background: linear-gradient(135deg, rgba(111,145,255,.72), rgba(103,231,245,.4)); box-shadow: -160px 290px 90px rgba(255,124,148,.4); filter: blur(7px); animation: contact-morph 10s ease-in-out infinite alternate; }
 .contact > * { position: relative; z-index: 2; }
 .contact h2 { max-width: 940px; color: white; font-size: clamp(3rem,6vw,6rem); }
