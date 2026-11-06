@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f6f2" />
+    <link rel="icon" type="image/png" href="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-favicon-32.png" />
+    <link rel="apple-touch-icon" href="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-logo-icon.png" />
+    <meta
+      name="description"
+      content="Today is a personal AI that remembers what matters and acts before you ask."
+    />
+    <title>Today — Your life, one step ahead.</title>
+    <link rel="stylesheet" href="./todayai-agent-redesign-v1.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="Today home">
+        <img class="brand-wordmark" src="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-wordmark.svg" alt="" aria-hidden="true" />
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#meet-today">Memory</a>
+        <a href="#proactive">Proactive</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#possibilities">Possibilities</a>
+      </nav>
+      <div class="header-actions">
+        <a class="header-login" href="https://today.ai/login" target="_blank" rel="noreferrer">Log in</a>
+        <a class="header-cta" href="https://today.ai/downloads" target="_blank" rel="noreferrer">Download</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero hero-light" aria-labelledby="hero-title">
+        <div class="hero-aura aura-one" aria-hidden="true"></div>
+        <div class="hero-aura aura-two" aria-hidden="true"></div>
+        <div class="signup-offer hero-offer-banner">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 10h16v10H4zM3 7h18v4H3zM12 7v13M12 7H7.5A2.5 2.5 0 1 1 12 4.5V7Zm0 0h4.5A2.5 2.5 0 1 0 12 4.5V7Z" /></svg>
+          <strong>New user bonus</strong>
+          <span>300M tokens · 3 months Pro · Free Basic forever</span>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow reveal">Meet Today</p>
+          <h1 id="hero-title" class="reveal" aria-label="Today: is your day">Today<span class="hero-colon" aria-hidden="true"><i></i><i></i></span><span class="sr-only">:</span><br /><em><span class="hero-small-i">i</span>s your day</em></h1>
+          <p class="hero-deck reveal">
+            Your personal assistant that actually knows you — and acts before you ask.
+          </p>
+          <div class="hero-actions reveal">
+            <a class="button button-primary" href="#meet-today">Meet Today</a>
+            <button class="text-button" type="button" data-open-demo>
+              See a day with Today.ai <span class="play" aria-hidden="true">▶</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="agent-stage reveal" aria-label="An illustrative view of Today at work">
+          <div class="orbit orbit-one" aria-hidden="true"></div>
+          <div class="orbit orbit-two" aria-hidden="true"></div>
+          <div class="agent-shell glass-panel">
+            <div class="agent-topbar">
+              <div class="agent-identity">
+                <span class="agent-dot"><i></i></span>
+                <div><strong>Today</strong><small>Working on: First Impression</small></div>
+              </div>
+              <span class="live-pill"><i></i> Every day starts here</span>
+            </div>
+            <div class="scene-switcher is-paused" data-scene-switcher>
+              <div class="scene-switcher-head">
+                <span>Explore Today.ai</span>
+                <span class="scene-autoplay"><i aria-hidden="true"></i> Auto-playing</span>
+              </div>
+              <div class="scene-tabs" role="tablist" aria-label="Explore Today.ai features">
+                <button id="scene-tab-today" class="scene-tab active" type="button" role="tab" aria-selected="true" aria-controls="scene-preview" data-scene="today"><span>Today</span></button>
+                <button id="scene-tab-tasks" class="scene-tab" type="button" role="tab" aria-selected="false" aria-controls="scene-preview" data-scene="tasks"><span>Tasks</span></button>
+                <button id="scene-tab-memories" class="scene-tab" type="button" role="tab" aria-selected="false" aria-controls="scene-preview" data-scene="memories"><span>Memories</span></button>
+                <button id="scene-tab-capabilities" class="scene-tab" type="button" role="tab" aria-selected="false" aria-controls="scene-preview" data-scene="capabilities"><span>Capabilities</span></button>
+              </div>
+            </div>
+
+            <div id="scene-preview" class="agent-content" role="tabpanel" aria-labelledby="scene-tab-today" data-scene-panel>
+              <p class="agent-kicker">8:00 · Morning Brief</p>
+              <h2>Every day starts here.</h2>
+              <p class="agent-message">
+                Nice to meet you here, April. I’m Today. I already know a bit about you — what should I focus on first?
+              </p>
+              <div class="context-row">
+                <div><span>Sleep</span><strong>8h 14m</strong></div>
+                <div><span>HRV</span><strong>83.6 ms</strong></div>
+                <div><span>Movement</span><strong>2.8k steps</strong></div>
+                <div><span>HRR</span><strong>44 bpm</strong></div>
+              </div>
+              <div class="today-focus-card" data-agent-detail>
+                <span>Working on</span><strong>Launch Page Visual Design</strong><small>3 directions · Due 6 pm</small>
+              </div>
+              <button class="agent-action" type="button">Ask Today… <span>→</span></button>
+            </div>
+          </div>
+          <div class="floating-card float-calendar glass-panel" aria-hidden="true">
+            <span>Camino Francés</span><strong>5 days · 115 km</strong><small>Sarria → Santiago</small>
+          </div>
+          <div class="floating-card float-signal glass-panel" aria-hidden="true">
+            <span class="signal-icon">✦</span><div><strong>Morning Brief</strong><small>Body signals · tasks · context</small></div>
+          </div>
+        </div>
+
+        <div class="hero-foot reveal">
+          <span>Memory that grows with you</span><i></i><span>Help that arrives at the right moment</span>
+        </div>
+      </section>
+
+      <section id="meet-today" class="product-intro" aria-labelledby="intro-title">
+        <div class="section-wrap product-intro-grid">
+          <p class="eyebrow reveal">Why Today</p>
+          <div class="product-intro-copy">
+            <h2 id="intro-title" class="reveal"><span class="intro-line">Not another chat window.</span><br />A personal AI that stays <em>in context.</em></h2>
+          </div>
+          <div class="intro-mockup reveal" aria-label="Illustrative Today onboarding conversation">
+            <div class="phone-shell">
+              <div class="phone-screen">
+                <div class="phone-statusbar" aria-hidden="true">
+                  <span>9:41</span><span class="phone-island"></span>
+                  <div class="phone-signals"><i></i><i></i><i></i><b></b></div>
+                </div>
+                <div class="mockup-meta" aria-hidden="true"><span><i></i>Context ready</span><small>8:00 AM</small></div>
+                <span class="mockup-agent-mark" aria-hidden="true"><i></i><i></i></span>
+                <div class="mockup-conversation">
+                  <p>Hi, Nice to meet you here. I’m your personal AI 「Today」.<br />Every day starts here.</p>
+                  <p>I already know a bit about you. What should I focus on first?</p>
+                </div>
+                <div class="mockup-question">
+                  <strong>What would you like Today to help with?</strong>
+                  <div class="mockup-choice"><span>Keep design work organized</span><i aria-hidden="true"></i></div>
+                  <div class="mockup-choice selected"><span>Book hotels in my travel plan</span><i aria-hidden="true">✓</i></div>
+                  <div class="mockup-choice"><span>Health, without the pressure</span><i aria-hidden="true"></i></div>
+                </div>
+                <div class="mockup-input" aria-hidden="true"><span>＋</span><p>Ask Today…</p><i>↑</i></div>
+                <span class="phone-home" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="context-manifesto" aria-labelledby="context-manifesto-title" data-context-manifesto>
+        <div class="context-manifesto-frame">
+          <div class="section-wrap context-manifesto-inner">
+            <div class="manifest-context-visual" aria-label="An illustrative view of Today keeping a person's day in context">
+              <div class="manifest-context-window">
+                <div class="manifest-context-head">
+                  <span class="manifest-today-mark" aria-hidden="true"><i></i><i></i></span>
+                  <div><strong>Today</strong><small>Living context</small></div>
+                  <span class="manifest-live"><i></i> Live</span>
+                </div>
+                <div class="manifest-context-feed">
+                  <article class="active"><time>08:00</time><div><small>Morning brief</small><strong>Your day, already connected.</strong><span>Sleep · calendar · priorities</span></div></article>
+                  <article><time>12:40</time><div><small>Memory</small><strong>Camino Francés</strong><span>5 days · 115 km · preferences</span></div></article>
+                  <article><time>Next</time><div><small>Prepared</small><strong>Brand review notes</strong><span>Changes organized · ready to review</span></div></article>
+                </div>
+                <div class="manifest-context-sources" aria-hidden="true"><span>Calendar</span><span>Health</span><span>Files</span><span>Tasks</span></div>
+              </div>
+              <span class="manifest-float manifest-float-memory">4 signals connected</span>
+              <span class="manifest-float manifest-float-ready">Next step ready <i>✓</i></span>
+            </div>
+
+            <div class="manifest-copy-column">
+              <p class="eyebrow">How Today knows you</p>
+              <h2
+                id="context-manifesto-title"
+                class="context-manifesto-copy"
+                aria-label="Today gets to know the rhythm of every day, builds a rich and reliable memory, and turns that understanding into just-right help across every device."
+              >
+                <span class="manifest-chunk" data-manifest-step>Today gets to know the rhythm of</span>
+                <span class="manifest-chunk manifest-accent manifest-blue" data-manifest-step>
+                  <svg class="manifest-icon" aria-hidden="true" viewBox="0 0 48 48"><circle cx="24" cy="24" r="8"></circle><path d="M24 5v6M24 37v6M5 24h6M37 24h6M10.6 10.6l4.3 4.3M33.1 33.1l4.3 4.3M37.4 10.6l-4.3 4.3M14.9 33.1l-4.3 4.3"></path></svg>
+                  every day,
+                </span>
+                <span class="manifest-chunk" data-manifest-step>builds a rich and reliable</span>
+                <span class="manifest-chunk manifest-accent manifest-teal" data-manifest-step>
+                  <svg class="manifest-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M17 37h13a8 8 0 0 0 8-8V18a10 10 0 0 0-20 0v4l-5 6h4v9Z"></path><path d="M23 20h9M23 25h7M23 30h5"></path></svg>
+                  memory,
+                </span>
+                <span class="manifest-chunk" data-manifest-step>and turns that understanding into</span>
+                <span class="manifest-chunk manifest-accent manifest-violet" data-manifest-step>
+                  <svg class="manifest-icon" aria-hidden="true" viewBox="0 0 48 48"><rect x="8" y="7" width="32" height="34" rx="8"></rect><path d="m15 18 3 3 5-6M27 18h7M15 30l3 3 5-6M27 30h7"></path></svg>
+                  just-right help
+                </span>
+                <span class="manifest-chunk" data-manifest-step>across</span>
+                <span class="manifest-chunk manifest-accent manifest-silver" data-manifest-step>
+                  <svg class="manifest-devices" aria-hidden="true" viewBox="0 0 92 42"><rect x="2" y="8" width="20" height="30" rx="5"></rect><path d="M9 34h6"></path><rect x="32" y="5" width="27" height="23" rx="3"></rect><path d="M45.5 28v6M38 35h15"></path><rect x="66" y="8" width="22" height="21" rx="3"></rect><path d="m63 34 3-5h22l3 5H63Z"></path></svg>
+                  every device.
+                </span>
+              </h2>
+              <div class="manifest-progress" aria-hidden="true"><i></i></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="memory" class="product-features" aria-labelledby="memory-title">
+        <div class="section-wrap">
+          <div class="post-heading reveal">
+            <div><p class="eyebrow">Today features</p><h2 id="memory-title">One assistant.<br />Four clear advantages.</h2></div>
+            <p>Today does more than answer. It keeps context, recognizes what may matter next, and can carry work through to a finished result.</p>
+          </div>
+
+          <div class="feature-explorer" data-feature-explorer>
+            <div class="feature-tabs" role="tablist" aria-label="Today product advantages">
+              <button id="feature-tab-memory" class="feature-tab active" type="button" role="tab" aria-selected="true" aria-controls="feature-panel-memory" data-feature-tab="memory">
+                <span>01</span><span class="feature-tab-copy"><strong>A living memory</strong><small>Your days, people, preferences, and returning goals stay in context — with you in control.</small></span><i aria-hidden="true">−</i>
+              </button>
+              <button id="feature-tab-proactive" class="feature-tab" type="button" role="tab" aria-selected="false" aria-controls="feature-panel-proactive" data-feature-tab="proactive">
+                <span>02</span><span class="feature-tab-copy"><strong>Help before you ask</strong><small>Today pays attention to what may matter next and steps in when there is something useful to do.</small></span><i aria-hidden="true">+</i>
+              </button>
+              <button id="feature-tab-execution" class="feature-tab" type="button" role="tab" aria-selected="false" aria-controls="feature-panel-execution" data-feature-tab="execution">
+                <span>03</span><span class="feature-tab-copy"><strong>From request to result</strong><small>It can plan the work, use tools, check progress, and report back — not just give advice.</small></span><i aria-hidden="true">+</i>
+              </button>
+              <button id="feature-tab-connected" class="feature-tab" type="button" role="tab" aria-selected="false" aria-controls="feature-panel-connected" data-feature-tab="connected">
+                <span>04</span><span class="feature-tab-copy"><strong>Connected to your day</strong><small>Calendar, mail, notes, files, messaging, project tools, devices, and more.</small></span><i aria-hidden="true">+</i>
+              </button>
+            </div>
+
+            <div class="feature-stage reveal">
+              <article id="feature-panel-memory" class="feature-panel active" role="tabpanel" aria-labelledby="feature-tab-memory" data-feature-panel="memory">
+                <div class="memory-visual-main"><img src="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-memory-phone-cutout.png" alt="Today showing a morning brief and personal context" /></div>
+                <div class="memory-visual-card memory-visual-learning"><small>Learning Spanish</small><strong>Hoy <em>[OY]</em></strong><span>¡Hoy es tu día!</span></div>
+                <div class="memory-visual-card memory-visual-trip"><small>Travel plan</small><strong>Camino Francés</strong><span>5 days · 115 km</span></div>
+                <div class="memory-visual-people"><small>Key people</small><strong>Maya · Rohan · Jess</strong></div>
+              </article>
+
+              <article id="feature-panel-proactive" class="feature-panel" role="tabpanel" aria-labelledby="feature-tab-proactive" data-feature-panel="proactive" hidden>
+                <img class="proactive-panel-image" src="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-proactive-sleep.jpg" alt="A person checking Today on their phone" />
+                <div class="proactive-note"><span>08:02 · Body signals</span><strong>Rest first. The review is covered.</strong><p>You slept under six hours and have a brand review at 10. Want me to move today’s long walk and prep the review notes now?</p></div>
+              </article>
+
+              <article id="feature-panel-execution" class="feature-panel" role="tabpanel" aria-labelledby="feature-tab-execution" data-feature-panel="execution" hidden>
+                <div class="execution-window">
+                  <div class="execution-head"><span>Launch Page Visual Design</span><small>Working now</small></div>
+                  <div class="execution-step done"><span>01</span><div><strong>Understand the request</strong><small>Three directions · warmer hero · real-home photography</small></div><i>✓</i></div>
+                  <div class="execution-step active"><span>02</span><div><strong>Plan and use tools</strong><small>Open Figma · import references · organize requirements</small></div><i></i></div>
+                  <div class="execution-step"><span>03</span><div><strong>Deliver the result</strong><small>Review the work and report back</small></div><i></i></div>
+                </div>
+              </article>
+
+              <article id="feature-panel-connected" class="feature-panel" role="tabpanel" aria-labelledby="feature-tab-connected" data-feature-panel="connected" hidden>
+                <div class="connected-orbit"><span class="connected-core">Today</span><span class="connected-app app-calendar">Calendar</span><span class="connected-app app-mail">Mail</span><span class="connected-app app-files">Files</span><span class="connected-app app-notes">Notes</span><span class="connected-app app-projects">Projects</span><span class="connected-app app-messages">Messages</span></div>
+                <p>One context layer across the services and devices your life already runs on.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="proactive" class="workflow-section" aria-labelledby="workflow-title">
+        <div class="section-wrap">
+          <div class="post-heading reveal">
+            <div><p class="eyebrow">Proactive</p><h2 id="workflow-title">It helps<br />before you ask.</h2></div>
+            <p>Today pays attention to what may matter next, then steps in when there is something useful to know, decide, or do.</p>
+          </div>
+          <div class="proactive-showcase">
+            <article class="proactive-signal reveal">
+              <img src="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-memory-bottom.jpg" alt="Today connecting health context, tasks, and the day ahead" />
+              <div class="proactive-signal-note">
+                <small>10:00 · BRAND REVIEW</small>
+                <h3>You slept less than six hours last night.</h3>
+                <p>I can move your long walk to tonight and prepare the review document now.</p>
+                <div><span>Move walk</span><strong>Prepare review</strong></div>
+              </div>
+            </article>
+
+            <article class="proactive-change reveal">
+              <small>CONTEXT CHANGED</small>
+              <h3>The launch requirements changed.</h3>
+              <p>The team now wants a warmer hero, less technical detail, and product imagery in real homes.</p>
+              <div class="change-tags"><span>Warmer hero</span><span>Less technical</span><span>Real-home imagery</span></div>
+              <strong class="change-ready">Changes organized <span aria-hidden="true">✓</span></strong>
+            </article>
+
+            <article class="proactive-routines reveal">
+              <div><small>ACTIVE ROUTINES</small><span>Always in rhythm</span></div>
+              <ul>
+                <li><strong>Email triage</strong><time>Every 2h</time></li>
+                <li><strong>Campaign references</strong><time>Weekdays · 9:00</time></li>
+                <li><strong>Spanish practice</strong><time>Tue / Thu · 20:30</time></li>
+                <li><strong>Evening walk</strong><time>Daily · 18:30</time></li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="capabilities" class="capability-proof" aria-labelledby="capabilities-title">
+        <div class="section-wrap">
+          <div class="capabilities-heading reveal">
+            <p class="eyebrow">Capabilities</p>
+            <h2 id="capabilities-title">Powerful capabilities.<br />More becomes possible.</h2>
+            <p class="capabilities-summary">Today brings together frontier intelligence, reliable execution, cloud computers, connectors, and skills that keep improving through real use.</p>
+          </div>
+          <div class="capability-wall">
+            <div class="capability-column capability-column-left">
+              <article class="capability-card capability-models reveal">
+                <div class="capability-card-copy">
+                  <h3>Frontier models</h3>
+                  <p>Today’s models continuously evolve, matching frontier intelligence to what each task truly needs, so every response is just right.</p>
+                </div>
+                <div class="model-stack" aria-hidden="true">
+                  <span>Harness layer</span>
+                  <strong><i>♞</i> Frontier interaction model</strong>
+                  <span>Today Bench</span>
+                </div>
+              </article>
+
+              <article class="capability-card capability-execution reveal">
+                <div class="capability-card-copy">
+                  <h3>Powerful task execution</h3>
+                  <p>It plans steps, uses tools, checks progress, and reports back—turning a request into a result, not just advice.</p>
+                </div>
+                <ol class="execution-mini" aria-label="Today execution steps">
+                  <li><i aria-hidden="true">✓</i><span>Understand the request</span></li>
+                  <li><i aria-hidden="true">✓</i><span>Plan and use tools</span></li>
+                  <li><i aria-hidden="true">✓</i><span>Deliver the result</span></li>
+                </ol>
+              </article>
+            </div>
+
+            <div class="capability-column capability-column-center">
+              <article class="capability-card capability-connectors reveal">
+                <div class="capability-card-copy">
+                  <h3>A rich connector ecosystem</h3>
+                  <p>Today connects the apps and services your work and life already depend on—from calendars, email, notes, and files to messaging, project tools, and more.</p>
+                </div>
+                <div class="connector-orbit" aria-label="Examples of connected apps">
+                  <span class="connector-line line-one" aria-hidden="true"></span>
+                  <span class="connector-line line-two" aria-hidden="true"></span>
+                  <i class="connector-app app-github" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4a9.7 9.7 0 0 0-3.07 18.9c.49.09.67-.21.67-.47v-1.7c-2.73.6-3.31-1.17-3.31-1.17-.45-1.15-1.09-1.45-1.09-1.45-.89-.61.07-.6.07-.6.98.07 1.5 1.02 1.5 1.02.88 1.5 2.3 1.07 2.86.82.09-.64.34-1.07.62-1.32-2.18-.25-4.47-1.09-4.47-4.86 0-1.07.38-1.95 1.01-2.64-.1-.25-.44-1.25.1-2.6 0 0 .83-.27 2.69 1.01A9.3 9.3 0 0 1 12 7.06a9.2 9.2 0 0 1 2.45.33c1.86-1.28 2.68-1.01 2.68-1.01.54 1.35.2 2.35.1 2.6.63.69 1.01 1.57 1.01 2.64 0 3.78-2.3 4.61-4.49 4.86.35.3.67.91.67 1.84v2.72c0 .26.18.57.68.47A9.7 9.7 0 0 0 12 2.4Z"/></svg></i>
+                  <i class="connector-app app-figma" title="Figma"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="5" r="3" fill="#f24e1e"/><circle cx="15" cy="5" r="3" fill="#ff7262"/><circle cx="9" cy="11" r="3" fill="#a259ff"/><circle cx="15" cy="11" r="3" fill="#1abcfe"/><circle cx="9" cy="17" r="3" fill="#0acf83"/></svg></i>
+                  <i class="connector-app app-microsoft" title="Microsoft"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#f25022" d="M3 3h8v8H3z"/><path fill="#7fba00" d="M13 3h8v8h-8z"/><path fill="#00a4ef" d="M3 13h8v8H3z"/><path fill="#ffb900" d="M13 13h8v8h-8z"/></svg></i>
+                  <strong class="connector-core" title="Google"><span>G</span></strong>
+                  <i class="connector-app app-dropbox" title="Dropbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m7.1 4.3 4.9 3.1-4.9 3.1-4.9-3.1 4.9-3.1Zm9.8 0 4.9 3.1-4.9 3.1L12 7.4l4.9-3.1ZM7.1 11.5l4.9 3.1-4.9 3.1-4.9-3.1 4.9-3.1Zm9.8 0 4.9 3.1-4.9 3.1-4.9-3.1 4.9-3.1ZM7.3 18.8l4.7-3 4.7 3-4.7 2.9-4.7-2.9Z"/></svg></i>
+                </div>
+              </article>
+
+              <article class="capability-card capability-cloud reveal">
+                <div class="capability-card-copy">
+                  <h3>Reliable cloud computers</h3>
+                  <p>Today has stable cloud computers that can open browsers, handle files, run code, and keep working whenever you need.</p>
+                </div>
+                <div class="cloud-computer" aria-hidden="true">
+                  <span class="cloud-pill cloud-pill-apps">Operate apps</span>
+                  <span class="cloud-pill cloud-pill-online">Online 24/7</span>
+                  <div class="cloud-machine"><b>☁</b><i></i></div>
+                  <span class="cloud-pill cloud-pill-files">Handle files</span>
+                </div>
+              </article>
+            </div>
+
+            <div class="capability-column capability-column-right">
+              <article class="capability-card capability-devices reveal">
+                <div class="capability-card-copy">
+                  <h3>Cross-device collaboration</h3>
+                  <p>Today works with the devices you already use, so the next action happens in the right place at the right time.</p>
+                </div>
+                <div class="device-family" aria-hidden="true">
+                  <span class="device-phone"></span>
+                  <span class="device-tablet"></span>
+                  <span class="device-laptop"><i></i></span>
+                </div>
+              </article>
+
+              <article class="capability-card capability-skills reveal">
+                <div class="capability-card-copy">
+                  <h3>Community skills</h3>
+                  <p>Community Skills run inside Today, bringing more workflows and making it easier to use capabilities you already know.</p>
+                </div>
+                <div class="skill-stack" aria-hidden="true">
+                  <div><span>Deep research</span><small>Research</small></div>
+                  <div><span>HRV analysis</span><small>Health</small></div>
+                  <div><span>Meeting notes</span><small>Marketing</small></div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="possibilities" class="use-cases" aria-labelledby="possibilities-title">
+        <div class="section-wrap">
+          <div class="post-heading reveal">
+            <div><p class="eyebrow">Today in real life</p><h2 id="possibilities-title">One agent.<br />Every part of your day.</h2></div>
+            <p>Work you care about, things you want to learn, people you love, and the everyday moments that shape your days.</p>
+          </div>
+          <div class="use-case-grid">
+            <article class="use-case-card reveal"><figure><img src="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-proactive-brand.jpg" alt="A creative team working together" /></figure><div><small>Work</small><h3>Turn changing requirements into clear next steps.</h3><p>Keep the brief, references, people, and decisions connected.</p></div></article>
+            <article class="use-case-card reveal"><figure><img src="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-proactive-sleep.jpg" alt="A person reviewing health context" /></figure><div><small>Health</small><h3>Notice a quiet pattern before it becomes noise.</h3><p>Bring body signals and the day ahead into the same view.</p></div></article>
+            <article class="use-case-card reveal"><figure><img src="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-memory-hero.jpg" alt="A designer working at a desk" /></figure><div><small>Learning</small><h3>Keep practice moving without starting over.</h3><p>Remember what you are learning and make room for the next session.</p></div></article>
+            <article class="use-case-card reveal"><figure><img src="./todayai-agent-redesign-v1-assets/todayai-agent-redesign-v1-proactive-tasks.jpg" alt="A calm home environment" /></figure><div><small>Daily life</small><h3>Let the small routines keep moving.</h3><p>Email triage, travel plans, reminders, files, and recurring tasks.</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="download" class="closing-cta" aria-labelledby="cta-title">
+        <div class="section-wrap closing-cta-inner">
+          <p class="eyebrow reveal">Every day starts here</p>
+          <h2 id="cta-title" class="reveal">Less to manage.<br />More life to live.</h2>
+          <p class="reveal">Meet the personal AI that knows what matters — and helps make it happen.</p>
+          <a class="button closing-button reveal" href="https://today.ai/" target="_blank" rel="noreferrer">Get Today <span>↗</span></a>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="day-dialog" data-demo-dialog>
+      <button class="dialog-close" type="button" data-close-demo aria-label="Close demo">×</button>
+      <div class="dialog-orbit" aria-hidden="true"></div>
+      <p class="eyebrow">A day with Today.ai</p>
+      <h2>Your context keeps moving,<br />even when you don’t.</h2>
+      <div class="dialog-timeline">
+        <div><span>08:02</span><p><strong>Morning, prepared.</strong> Review notes, health signals, and your first focus in one place.</p></div>
+        <div><span>11:20</span><p><strong>Change, absorbed.</strong> New requirements organized before they become noise.</p></div>
+        <div><span>18:30</span><p><strong>Day, gently closed.</strong> Loose ends handled and tomorrow given a clean start.</p></div>
+      </div>
+    </dialog>
+
+    <script src="./todayai-agent-redesign-v1.js"></script>
+  </body>
+</html>

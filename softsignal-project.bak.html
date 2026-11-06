@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoftSignal — Xu Wang</title>
+  <meta name="description" content="SoftSignal: AI-assisted exit cues for people with social anxiety. A wearable UX research project by Xu Wang.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:    #0b0a08;
+      --bg2:   #111009;
+      --bg3:   #181610;
+      --cream:  #f0ece3;
+      --cream2: #c8c2b4;
+      --cream3: #6e6a60;
+      --gold:   #c9a96e;
+      --gold2:  #8a6e40;
+      --border:  rgba(255,255,255,0.055);
+      --border2: rgba(201,169,110,0.22);
+      /* SoftSignal accent — soft teal/blue, calming palette */
+      --accent:  #5b9cf0;
+      --accent2: rgba(91,156,240,0.15);
+      --accent3: rgba(91,156,240,0.08);
+      --warn:   #e8907e;
+      --ok:     #7cd8cc;
+      --z-nav:    100;
+      --z-cursor: 200;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Grain */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      z-index: 198; pointer-events: none; opacity: 0.032;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ── Cursor ── */
+    .cursor {
+      width: 6px; height: 6px;
+      background: var(--gold); border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 200;
+      transform: translate(-50%,-50%);
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid rgba(201,169,110,0.35); border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 199;
+      transform: translate(-50%,-50%);
+      transition: width .3s cubic-bezier(.16,1,.3,1), height .3s cubic-bezier(.16,1,.3,1), border-color .3s;
+    }
+    .cursor-ring.hover { width: 56px; height: 56px; border-color: var(--gold); }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 3rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color .4s, background .4s, backdrop-filter .4s;
+    }
+    nav.scrolled {
+      border-color: var(--border);
+      background: rgba(11,10,8,0.9);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem; font-weight: 300; letter-spacing: .18em;
+      color: var(--cream); text-decoration: none; transition: color .3s;
+    }
+    .nav-logo:hover { color: var(--gold); }
+    .nav-right { display: flex; align-items: center; gap: 2.5rem; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--cream3); text-decoration: none; transition: color .25s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1px; background: var(--gold);
+      transition: width .3s cubic-bezier(.16,1,.3,1);
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a:hover::after { width: 100%; }
+    .lang-toggle {
+      display: flex; align-items: center;
+      border: 1px solid var(--border2); border-radius: 2px; overflow: hidden;
+    }
+    .lang-btn {
+      background: none; border: none; cursor: none;
+      padding: .35em .85em;
+      font-family: 'DM Sans', sans-serif; font-size: .68rem;
+      font-weight: 400; letter-spacing: .12em;
+      color: var(--cream3); transition: background .2s, color .2s;
+    }
+    .lang-btn.active { background: var(--gold); color: var(--bg); font-weight: 500; }
+    .lang-btn:not(.active):hover { background: var(--bg3); color: var(--cream); }
+    .lang-divider { width: 1px; height: 16px; background: var(--border2); }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex; align-items: center; gap: .8rem;
+      font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--cream3); text-decoration: none;
+      padding: 1.5rem 3rem; border-bottom: 1px solid var(--border);
+      transition: color .3s, gap .3s; width: 100%;
+      background: var(--bg2);
+    }
+    .back-link:hover { color: var(--gold); gap: 1.2rem; }
+    .back-link:active { transform: translateX(-2px); }
+    .back-link svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 1px solid var(--border); }
+
+    /* ── Section commons ── */
+    section { padding: 8rem 3rem; }
+    .section-label {
+      font-size: .66rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px,4.5vw,62px); font-weight: 300;
+      line-height: 1.03; letter-spacing: -.02em; text-wrap: balance;
+    }
+    .section-title em { font-style: italic; }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100dvh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 0 3rem; padding-top: 5rem; gap: 4rem;
+      position: relative; overflow: hidden;
+    }
+    #hero::after {
+      content: '';
+      position: absolute; top: 15%; right: -8%;
+      width: 55%; height: 75%;
+      background: radial-gradient(ellipse at center, rgba(91,156,240,0.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-bg-text {
+      position: absolute; top: 50%; left: -1%;
+      transform: translateY(-52%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(100px,15vw,220px);
+      font-weight: 300;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.035);
+      white-space: nowrap; pointer-events: none; user-select: none;
+      letter-spacing: -.04em;
+    }
+    .hero-left { position: relative; z-index: 1; }
+    .hero-tag {
+      display: inline-block; font-size: .68rem; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--gold);
+      border: 1px solid var(--border2); padding: .4em 1.1em; border-radius: 1px;
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp .8s .3s forwards;
+    }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(44px,6.5vw,88px); font-weight: 300;
+      line-height: .93; letter-spacing: -.025em; margin-bottom: 1.75rem;
+      opacity: 0; animation: fadeUp .9s .5s forwards; text-wrap: balance;
+    }
+    .hero-name em { font-style: italic; color: var(--gold); }
+    .hero-desc {
+      font-size: 1rem; color: var(--cream2); max-width: 40ch;
+      margin-bottom: 2.5rem; line-height: 1.75;
+      opacity: 0; animation: fadeUp .9s .7s forwards; text-wrap: pretty;
+    }
+    .hero-meta {
+      display: flex; gap: 2.5rem; margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp .9s .85s forwards;
+    }
+    .hero-meta-label {
+      font-size: .63rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .25rem; display: block;
+    }
+    .hero-meta-value { font-size: .82rem; color: var(--cream2); }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: .8rem;
+      font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--cream); text-decoration: none;
+      border-bottom: 1px solid var(--gold); padding-bottom: .3rem;
+      transition: color .25s, gap .3s cubic-bezier(.16,1,.3,1);
+      opacity: 0; animation: fadeUp .9s .9s forwards;
+    }
+    .hero-cta:hover { color: var(--gold); gap: 1.3rem; }
+    .hero-cta:active { transform: translateY(1px); }
+    .hero-cta svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+    .hero-right {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; animation: fadeUp .9s .6s forwards;
+    }
+
+    /* ── Watch hero mockup ── */
+    .watch-stage {
+      display: flex; gap: 28px; align-items: flex-end; justify-content: center;
+    }
+    .watch-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .watch {
+      width: 130px; height: 150px;
+      background: #111; border-radius: 28px;
+      border: 2.5px solid rgba(255,255,255,0.12);
+      box-shadow: 0 0 0 6px #0a0a0a, 0 24px 60px rgba(0,0,0,.8);
+      position: relative; display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .watch.large { width: 155px; height: 178px; border-radius: 32px; }
+    .watch-crown {
+      position: absolute; right: -8px; top: 38px;
+      width: 7px; height: 28px; background: #2a2a2a; border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .watch-btn {
+      position: absolute; right: -8px; top: 72px;
+      width: 7px; height: 16px; background: #222; border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .watch-screen {
+      width: calc(100% - 16px); height: calc(100% - 16px);
+      border-radius: 20px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 12px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .ws-ok { background: linear-gradient(160deg, #0d1a12 0%, #081410 100%); }
+    .ws-warn { background: linear-gradient(160deg, #1a0d0a 0%, #100808 100%); }
+    .ws-alert { background: linear-gradient(160deg, #0a0d1a 0%, #08080f 100%); }
+    .ws-settings { background: linear-gradient(160deg, #111420 0%, #0c0e1a 100%); }
+    .watch-time {
+      font-size: 8px; color: rgba(255,255,255,0.35);
+      letter-spacing: .1em; margin-bottom: 4px;
+    }
+    .watch-gear {
+      position: absolute; top: 8px; left: 10px;
+      font-size: 9px; opacity: .35;
+    }
+    /* Pressure ring */
+    .pressure-ring { position: relative; width: 62px; height: 62px; margin: 4px auto; }
+    .pressure-ring.sm { width: 50px; height: 50px; }
+    .pressure-val {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      line-height: 1; transform: translateY(5px);
+    }
+    .pval-num { font-size: 16px; font-weight: 500; line-height: 1; }
+    .pval-num.sm { font-size: 13px; }
+    .pval-pct { font-size: 6px; line-height: 1; color: rgba(255,255,255,0.4); }
+    .pval-lbl { font-size: 5px; line-height: 1; color: rgba(255,255,255,0.3); letter-spacing: .06em; margin-top: 1px; }
+    .pval-ok  { color: #29d6aa; }
+    .pval-warn { color: #f87a6a; }
+    .watch-status {
+      font-size: 8px; font-weight: 500; letter-spacing: .06em; margin-top: 4px;
+    }
+    .ws-ok-text  { color: #29d6aa; }
+    .ws-warn-text { color: #f87a6a; }
+    /* Notification card on watch */
+    .watch-notif {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+      padding: 8px 10px; width: 100%; text-align: left; margin-top: 6px;
+    }
+    .watch-notif-title { font-size: 8px; font-weight: 500; color: var(--accent); margin-bottom: 3px; }
+    .watch-notif-msg { font-size: 7px; color: rgba(255,255,255,0.55); line-height: 1.4; }
+    .watch-notif-btn {
+      margin-top: 6px; width: 100%; background: var(--accent);
+      border-radius: 4px; padding: 4px; font-size: 7px;
+      font-weight: 500; color: #fff; text-align: center;
+    }
+    /* Settings screen */
+    .watch-setting-row {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .watch-setting-row:last-child { border-bottom: none; }
+    .ws-label { font-size: 7px; color: rgba(255,255,255,0.65); }
+    .ws-toggle {
+      width: 20px; height: 11px; border-radius: 6px; position: relative;
+      flex-shrink: 0;
+    }
+    .ws-toggle.on { background: var(--accent); }
+    .ws-toggle.off { background: rgba(255,255,255,0.15); }
+    .ws-toggle::after {
+      content: ''; position: absolute;
+      width: 8px; height: 8px; border-radius: 50%; background: #fff;
+      top: 1.5px; transition: left .2s;
+    }
+    .ws-toggle.on::after { left: 10px; }
+    .ws-toggle.off::after { left: 1.5px; }
+    .watch-label { font-size: 8px; color: rgba(255,255,255,0.25); letter-spacing: .08em; text-transform: uppercase; }
+
+    /* Phone mockup */
+    .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .phone {
+      width: 130px; height: 260px; background: #111;
+      border-radius: 22px; border: 2.5px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 0 5px #0a0a0a, 0 24px 60px rgba(0,0,0,.8);
+      overflow: hidden; position: relative;
+    }
+    .phone-notch {
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 40px; height: 10px;
+      background: #0a0a0a; border-radius: 0 0 8px 8px;
+      z-index: 2;
+    }
+    .phone-screen {
+      width: 100%; height: 100%;
+      background: linear-gradient(160deg, #0c1020 0%, #08080f 100%);
+      padding: 18px 10px 10px;
+      display: flex; flex-direction: column; gap: 8px;
+      line-height: 1.3;
+    }
+    .phone-status-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 4px;
+    }
+    .phone-time { font-size: 7px; color: rgba(255,255,255,0.7); font-weight: 500; }
+    .phone-icons { font-size: 6px; color: rgba(255,255,255,0.5); letter-spacing: .05em; }
+    .phone-section-label { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.8); margin-bottom: 2px; }
+    /* In Progress card */
+    .phone-card {
+      background: #181c28; border-radius: 8px;
+      padding: 8px 10px; position: relative; overflow: hidden;
+      flex-shrink: 0; min-height: 44px;
+    }
+    .phone-card-warn { background: #1a1018; }
+    .phone-card-label { font-size: 6px; color: #f87a6a; margin-bottom: 2px; }
+    .phone-card-title { font-size: 8px; font-weight: 500; color: rgba(255,255,255,0.85); }
+    .phone-card-ring {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%);
+      width: 28px; height: 28px;
+    }
+    .phone-card-btn {
+      display: inline-block; margin-top: 6px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 4px; padding: 3px 8px;
+      font-size: 6px; color: rgba(255,255,255,0.65);
+    }
+    /* Event history items */
+    .phone-event {
+      background: #181c28; border-radius: 6px;
+      padding: 6px 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .phone-event-icon {
+      width: 16px; height: 16px; border-radius: 3px;
+      background: rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; flex-shrink: 0; color: rgba(255,255,255,0.5);
+    }
+    .phone-event-info { flex: 1; min-width: 0; }
+    .phone-event-name { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.75); }
+    .phone-event-time { font-size: 6px; color: rgba(255,255,255,0.3); }
+    .phone-event-ring { width: 18px; height: 18px; flex-shrink: 0; }
+    /* Bottom nav */
+    .phone-nav {
+      margin-top: auto; display: flex;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 6px;
+    }
+    .phone-nav-tab {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 2px; font-size: 5px; color: rgba(255,255,255,0.3);
+    }
+    .phone-nav-tab.active { color: var(--accent); }
+    .phone-nav-icon { font-size: 10px; }
+
+    /* ── Overview ── */
+    #overview {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 6rem; align-items: start; background: var(--bg2);
+    }
+    #overview > div:first-child { position: sticky; top: 7rem; }
+    .overview-body {
+      font-size: 1rem; color: var(--cream2); line-height: 1.85;
+      margin-bottom: 1.5rem; max-width: 58ch; text-wrap: pretty;
+    }
+    .overview-body strong { color: var(--cream); font-weight: 400; }
+    .hmw-block {
+      margin-top: 2.5rem; padding: 2rem;
+      border: 1px solid var(--border2);
+      border-left: 2px solid var(--gold);
+      border-radius: 0 3px 3px 0;
+      background: rgba(201,169,110,0.035);
+    }
+    .hmw-label {
+      font-size: .63rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .8rem; display: block;
+    }
+    .hmw-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.32rem; font-style: italic; font-weight: 300;
+      color: var(--cream); line-height: 1.5;
+    }
+    .phase-row {
+      display: flex; gap: 0; margin-top: 2.5rem;
+      border: 1px solid var(--border); border-radius: 3px; overflow: hidden;
+    }
+    .phase-pill {
+      flex: 1; padding: 1rem 1.2rem; background: var(--bg2); text-align: center;
+      border-right: 1px solid var(--border);
+      transition: background .3s, padding-left .3s cubic-bezier(.16,1,.3,1);
+    }
+    .phase-pill:last-child { border-right: none; }
+    .phase-pill:hover { background: var(--bg3); }
+    .phase-num {
+      font-family: 'Cormorant Garamond', serif; font-size: .8rem;
+      color: var(--gold); display: block; margin-bottom: .3rem;
+    }
+    .phase-name { font-size: .7rem; letter-spacing: .08em; color: var(--cream2); }
+
+    /* ── Research Insights ── */
+    #insights { }
+    .insights-grid {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 6rem; align-items: start;
+    }
+    #insights > div:first-child { position: sticky; top: 7rem; }
+    .obs-cards { display: flex; flex-direction: column; gap: 1px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .obs-card {
+      background: var(--bg2); padding: 1.6rem 2rem;
+      display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start;
+      transition: background .3s, padding-left .3s cubic-bezier(.16,1,.3,1);
+    }
+    .obs-card:hover { background: var(--bg3); padding-left: 2.4rem; }
+    .obs-icon {
+      width: 34px; height: 34px; border: 1px solid var(--border2);
+      border-radius: 3px; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0; margin-top: .2rem;
+    }
+    .obs-title { font-size: .82rem; font-weight: 400; color: var(--cream); margin-bottom: .4rem; }
+    .obs-text { font-size: .82rem; color: var(--cream3); line-height: 1.6; text-wrap: pretty; }
+    .obs-text em { color: var(--cream2); font-style: normal; }
+    .quote-block {
+      margin-top: 2.5rem; padding: 1.8rem 2rem;
+      border-left: 1px solid var(--gold);
+      background: rgba(255,255,255,0.018);
+    }
+    .quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.22rem; font-style: italic; font-weight: 300;
+      color: var(--cream2); line-height: 1.65; margin-bottom: .8rem;
+    }
+    .quote-src { font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--cream3); }
+
+    /* ── Empathy Map ── */
+    #empathy { background: var(--bg2); }
+    .empathy-layout {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 6rem; align-items: start; margin-top: 0;
+    }
+    #empathy > .empathy-layout > div:first-child { position: sticky; top: 7rem; }
+    .empathy-quadrants {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border); border-radius: 3px; overflow: hidden;
+    }
+    .eq-card {
+      background: var(--bg2); padding: 2rem; transition: background .3s;
+    }
+    .eq-card:hover { background: var(--bg3); }
+    .eq-label {
+      font-size: .62rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem; display: block;
+    }
+    .eq-tags { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .etag {
+      font-size: .7rem; padding: .28em .75em; border-radius: 2px;
+      border: 1px solid var(--border); color: var(--cream2);
+    }
+    .etag.t  { border-color: rgba(91,156,240,0.25); color: var(--accent); background: rgba(91,156,240,0.06); }
+    .etag.s  { border-color: rgba(201,169,110,0.2); color: var(--gold); background: rgba(201,169,110,0.05); }
+    .etag.h  { border-color: rgba(255,255,255,0.08); color: var(--cream2); }
+    .etag.d  { border-color: rgba(124,216,204,0.2); color: var(--ok); background: rgba(124,216,204,0.05); }
+    /* Pains / Gains */
+    .pg-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border);
+      border-radius: 0 0 3px 3px; overflow: hidden;
+    }
+    .pg-card { background: var(--bg2); padding: 2rem; transition: background .3s; }
+    .pg-card:hover { background: var(--bg3); }
+    .pg-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem; font-weight: 300; margin-bottom: 1rem; color: var(--cream);
+    }
+    .pg-list { display: flex; flex-direction: column; gap: .55rem; }
+    .pg-item {
+      display: flex; align-items: flex-start; gap: .65rem;
+      font-size: .8rem; color: var(--cream3); line-height: 1.5; text-wrap: pretty;
+    }
+    .pg-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: .45rem; }
+    .pg-dot.pain { background: var(--warn); }
+    .pg-dot.gain { background: var(--ok); }
+
+    /* ── JTBD ── */
+    #jtbd { }
+    .jtbd-layout {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 6rem; align-items: start;
+    }
+    #jtbd > .jtbd-layout > div:first-child { position: sticky; top: 7rem; }
+    .jtbd-scenario {
+      padding: 1.8rem 2rem; margin-bottom: 2rem;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+    .scenario-label {
+      font-size: .62rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--cream3); margin-bottom: .7rem; display: block;
+    }
+    .scenario-text { font-size: .88rem; color: var(--cream2); line-height: 1.7; text-wrap: pretty; }
+    .scenario-text strong { color: var(--cream); font-weight: 400; }
+    .jtbd-cards { display: flex; flex-direction: column; gap: 1px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .jtbd-card {
+      background: var(--bg2); padding: 2rem;
+      position: relative; overflow: hidden; transition: background .3s;
+    }
+    .jtbd-card:hover { background: var(--bg3); }
+    .jtbd-card-accent {
+      position: absolute; bottom: 0; left: 0; height: 1px; width: 0;
+      background: var(--gold); transition: width .5s cubic-bezier(.16,1,.3,1);
+    }
+    .jtbd-card:hover .jtbd-card-accent { width: 100%; }
+    .jtbd-kind {
+      font-size: .62rem; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--border2);
+      padding: .25em .7em; border-radius: 1px;
+      display: inline-block; margin-bottom: 1rem;
+    }
+    .jtbd-main {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.22rem; font-weight: 300; color: var(--cream);
+      margin-bottom: .6rem;
+    }
+    .jtbd-dims { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .8rem; }
+    .jtbd-dim {
+      font-size: .68rem; padding: .22em .65em; border-radius: 2px;
+      border: 1px solid var(--border); color: var(--cream3);
+    }
+    .jtbd-dim.em { border-color: rgba(91,156,240,0.25); color: var(--accent); background: rgba(91,156,240,0.06); }
+    .jtbd-dim.fn { border-color: rgba(255,255,255,0.1); }
+    .jtbd-dim.pd { border-color: rgba(124,216,204,0.2); color: var(--ok); }
+    .jtbd-dim.sd { border-color: rgba(201,169,110,0.2); color: var(--gold); }
+
+    /* ── Storyboard ── */
+    #storyboard { background: var(--bg2); }
+    .story-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 1px; background: var(--border);
+      border-radius: 3px; overflow: hidden; margin-top: 3rem;
+    }
+    .story-card {
+      background: var(--bg2); padding: 2rem;
+      transition: background .3s; position: relative; overflow: hidden;
+    }
+    .story-card:hover { background: var(--bg3); }
+    .story-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem; font-weight: 300;
+      color: var(--gold); opacity: .35; line-height: 1; margin-bottom: .8rem;
+    }
+    .story-title { font-size: .85rem; font-weight: 400; color: var(--cream); margin-bottom: .5rem; }
+    .story-text { font-size: .8rem; color: var(--cream3); line-height: 1.6; text-wrap: pretty; }
+    .story-accent {
+      position: absolute; bottom: 0; left: 0; height: 1px; width: 0;
+      background: var(--gold); transition: width .5s cubic-bezier(.16,1,.3,1);
+    }
+    .story-card:hover .story-accent { width: 100%; }
+
+    /* ── UI Screens section ── */
+    #ui { }
+    .ui-intro {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 6rem; align-items: start; margin-bottom: 4rem;
+    }
+    #ui > .ui-intro > div:first-child { position: sticky; top: 7rem; }
+    .ui-body { font-size: 1rem; color: var(--cream2); line-height: 1.8; text-wrap: pretty; }
+    .ui-body strong { color: var(--cream); font-weight: 400; }
+    /* Screen cards: 2 cols watch / 1 col phone app */
+    .sc-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-top: 3rem;
+    }
+    .sc-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 3px; padding: 2rem;
+      display: flex; flex-direction: column; gap: 1.2rem;
+      position: relative; overflow: hidden; transition: background .4s;
+    }
+    .sc-card:hover { background: var(--bg3); }
+    .sc-card.wide { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
+    .sc-accent {
+      position: absolute; bottom: 0; left: 0;
+      height: 1px; width: 0; background: var(--gold);
+      transition: width .5s cubic-bezier(.16,1,.3,1);
+    }
+    .sc-card:hover .sc-accent { width: 100%; }
+    .sc-label { font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+    .sc-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 300; }
+    .sc-desc { font-size: .8rem; color: var(--cream3); line-height: 1.6; text-wrap: pretty; }
+    .sc-status {
+      font-size: .65rem; letter-spacing: .1em; text-transform: uppercase;
+      padding: .28em .75em; border-radius: 2px; display: inline-block;
+      align-self: flex-start;
+    }
+    .st-ok   { background: rgba(124,216,204,0.1); color: var(--ok); border: 1px solid rgba(124,216,204,0.22); }
+    .st-warn { background: rgba(248,122,106,0.1); color: var(--warn); border: 1px solid rgba(248,122,106,0.22); }
+    .st-blue { background: rgba(91,156,240,0.1); color: var(--accent); border: 1px solid rgba(91,156,240,0.22); }
+    /* Mini watch preview inside sc-card */
+    .sc-watch-preview {
+      display: flex; justify-content: center; align-items: center;
+      padding: 1.5rem 0;
+    }
+    .mini-watch {
+      width: 140px; height: 162px; background: #111;
+      border-radius: 30px; border: 2.5px solid rgba(255,255,255,0.12);
+      box-shadow: 0 0 0 6px #0a0a0a, 0 20px 50px rgba(0,0,0,.85);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    /* Crown button on the side */
+    .mini-watch::after {
+      content: '';
+      position: absolute; right: -8px; top: 42px;
+      width: 6px; height: 26px;
+      background: #222; border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .mini-watch-screen {
+      width: calc(100% - 14px); height: calc(100% - 14px);
+      border-radius: 22px; padding: 14px 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 5px; text-align: center; overflow: hidden;
+    }
+    .mw-ok   { background: linear-gradient(160deg,#0d1a12,#081410); }
+    .mw-warn { background: linear-gradient(160deg,#1a0d0a,#100808); }
+    .mw-set  { background: linear-gradient(160deg,#111420,#0c0e1a); }
+    .mw-num  { font-size: 24px; font-weight: 500; line-height: 1; }
+    .mw-ok-c  { color: #29d6aa; }
+    .mw-warn-c { color: #f87a6a; }
+    .mw-lbl  { font-size: 8px; color: rgba(255,255,255,0.3); letter-spacing: .04em; }
+    .mw-status { font-size: 9px; font-weight: 500; }
+
+    /* ── Prototyping Insights ── */
+    #prototyping { background: var(--bg2); }
+    .proto-layout {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 6rem; align-items: start;
+    }
+    #prototyping > .proto-layout > div:first-child { position: sticky; top: 7rem; }
+    .proto-cards { display: flex; flex-direction: column; gap: 1px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .proto-card {
+      background: var(--bg2); padding: 2rem;
+      display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start;
+      position: relative; overflow: hidden; transition: background .3s, padding-left .3s cubic-bezier(.16,1,.3,1);
+    }
+    .proto-card:hover { background: var(--bg3); padding-left: 2.4rem; }
+    .proto-card-accent {
+      position: absolute; bottom: 0; left: 0;
+      height: 1px; width: 0; background: var(--gold);
+      transition: width .5s cubic-bezier(.16,1,.3,1);
+    }
+    .proto-card:hover .proto-card-accent { width: 100%; }
+    .proto-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem; font-weight: 300; color: var(--gold); opacity: .4; line-height: 1;
+    }
+    .proto-title { font-size: .85rem; font-weight: 400; color: var(--cream); margin-bottom: .4rem; }
+    .proto-text { font-size: .82rem; color: var(--cream3); line-height: 1.6; text-wrap: pretty; }
+    .proto-cta {
+      margin-top: 2.5rem; display: inline-flex; align-items: center; gap: .8rem;
+      font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--cream3); text-decoration: none;
+      border-bottom: 1px solid var(--gold2); padding-bottom: .3rem;
+      transition: color .25s, gap .3s cubic-bezier(.16,1,.3,1);
+    }
+    .proto-cta:hover { color: var(--gold); gap: 1.2rem; }
+    .proto-cta svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* ── Contact ── */
+    #contact {
+      background: var(--bg); text-align: center; padding: 9rem 3rem;
+      position: relative; overflow: hidden;
+    }
+    #contact::before {
+      content: ''; position: absolute; bottom: -20%; left: 50%;
+      transform: translateX(-50%); width: 70%; height: 70%;
+      background: radial-gradient(ellipse at center, rgba(91,156,240,0.055) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .contact-pre { font-size: .66rem; letter-spacing: .24em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; position: relative; }
+    .contact-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px,8vw,108px); font-weight: 300;
+      line-height: .93; letter-spacing: -.03em; margin-bottom: 3rem; position: relative;
+    }
+    .contact-title em { font-style: italic; color: var(--gold); }
+    .contact-email {
+      display: inline-block; font-size: .95rem; letter-spacing: .1em;
+      color: var(--cream2); text-decoration: none;
+      border-bottom: 1px solid var(--gold2); padding-bottom: .3rem;
+      transition: color .25s, border-color .25s; margin-bottom: 3.5rem; position: relative;
+    }
+    .contact-email:hover { color: var(--gold); border-color: var(--gold); }
+    .contact-socials { display: flex; gap: 2rem; justify-content: center; position: relative; }
+    .contact-socials a {
+      font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--cream3); text-decoration: none; transition: color .25s; position: relative;
+    }
+    .contact-socials a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1px; background: var(--gold);
+      transition: width .3s cubic-bezier(.16,1,.3,1);
+    }
+    .contact-socials a:hover { color: var(--gold); }
+    .contact-socials a:hover::after { width: 100%; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 1.5rem 3rem; display: flex;
+      justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--border);
+      font-size: .68rem; letter-spacing: .08em; color: var(--cream3);
+    }
+    .footer-legal { display: flex; gap: 1.5rem; align-items: center; }
+    .footer-legal a { color: var(--cream3); text-decoration: none; transition: color .2s; }
+    .footer-legal a:hover { color: var(--gold); }
+
+    /* ── Reveal ── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+    @keyframes spin   { to { transform: rotate(360deg); } }
+    @keyframes pulse  { 0%,100% { opacity:.6; } 50% { opacity:1; } }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      #hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; min-height: 100dvh; }
+      .hero-right { display: none; }
+      section { padding: 5rem 1.5rem; }
+      .back-link { padding: 1.5rem; }
+      #overview, .insights-grid, .empathy-layout, .jtbd-layout, .ui-intro, .proto-layout { grid-template-columns: 1fr; gap: 3rem; }
+      #overview > div:first-child, #insights > div:first-child, #empathy > .empathy-layout > div:first-child, #jtbd > .jtbd-layout > div:first-child, #ui > .ui-intro > div:first-child, #prototyping > .proto-layout > div:first-child { position: static; }
+      .empathy-quadrants, .pg-row { grid-template-columns: 1fr; }
+      .story-grid { grid-template-columns: 1fr; }
+      .sc-grid { grid-template-columns: 1fr; }
+      .sc-card.wide { grid-column: span 1; grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: .75rem; text-align: center; }
+      .footer-legal { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ── NAV ── -->
+  <nav id="nav">
+    <a href="index.html" class="nav-logo">XUW.</a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#insights">Research</a></li>
+        <li><a href="#empathy">Empathy</a></li>
+        <li><a href="#ui">UI</a></li>
+        <li><a href="#prototyping">Insights</a></li>
+      </ul>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btnEn">EN</button>
+        <div class="lang-divider"></div>
+        <button class="lang-btn" id="btnZh">中文</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── BACK LINK ── -->
+  <a href="index.html#projects" class="back-link" style="margin-top:4rem; display:flex;">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <span data-zh="返回作品集" data-en="Back to Work">Back to Work</span>
+  </a>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <div class="hero-bg-text">SIGNAL</div>
+    <div class="hero-left">
+      <span class="hero-tag" data-zh="UX 研究 · 可穿戴 · AI" data-en="UX Research · Wearable · AI">UX Research · Wearable · AI</span>
+      <h1 class="hero-name">
+        Soft<em>Signal</em>
+      </h1>
+      <p class="hero-desc" data-zh="为社交焦虑人群设计的 AI 辅助系统——在压力达到临界点之前，通过可穿戴设备以隐蔽、有尊严的方式给予离场许可。" data-en="An AI-assisted wearable system that gives people with social anxiety discreet, dignified permission to leave before they reach their limit.">
+        An AI-assisted wearable system that gives people with social anxiety discreet, dignified permission to leave before they reach their limit.
+      </p>
+      <div class="hero-meta">
+        <div>
+          <span class="hero-meta-label" data-zh="角色" data-en="Role">Role</span>
+          <span class="hero-meta-value" data-zh="UX 研究员 & 设计师" data-en="UX Researcher & Designer">UX Researcher & Designer</span>
+        </div>
+        <div>
+          <span class="hero-meta-label" data-zh="类型" data-en="Type">Type</span>
+          <span class="hero-meta-value" data-zh="学术项目 · HCI" data-en="Academic · HCI">Academic · HCI</span>
+        </div>
+        <div>
+          <span class="hero-meta-label" data-zh="年份" data-en="Year">Year</span>
+          <span class="hero-meta-value">2025</span>
+        </div>
+      </div>
+      <a href="https://youtu.be/tfy3Ol7rqrs" target="_blank" class="hero-cta" data-zh="观看 Wizard of Oz 演示视频" data-en="Watch Wizard of Oz Demo">
+        Watch Wizard of Oz Demo
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <!-- Hero right: watch + phone mockups -->
+    <div class="hero-right">
+      <div class="watch-stage">
+
+        <!-- Watch: Low pressure / All good -->
+        <div class="watch-wrap">
+          <div class="watch">
+            <div class="watch-crown"></div>
+            <div class="watch-btn"></div>
+            <div class="watch-screen ws-ok">
+              <span class="watch-gear">⚙</span>
+              <span class="watch-time">9:55</span>
+              <div class="pressure-ring sm">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                  <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3.5"/>
+                  <circle cx="25" cy="25" r="20" fill="none" stroke="#29d6aa" stroke-width="3.5"
+                    stroke-dasharray="15.1 110.6" stroke-dashoffset="0" stroke-linecap="round"
+                    transform="rotate(-90 25 25)"/>
+                </svg>
+                <div class="pressure-val">
+                  <span class="pval-num sm pval-ok">12</span>
+                  <span class="pval-pct">%</span>
+                  <span class="pval-lbl">PRESSURE</span>
+                </div>
+              </div>
+              <span class="watch-status ws-ok-text">All good</span>
+            </div>
+          </div>
+          <span class="watch-label">Low stress</span>
+        </div>
+
+        <!-- Phone: main app -->
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar">
+                <span class="phone-time">9:41</span>
+                <span class="phone-icons">▌▌ ▾ ▬</span>
+              </div>
+              <span class="phone-section-label">In Progress</span>
+              <div class="phone-card phone-card-warn">
+                <div class="phone-card-label">⚠ Take a break</div>
+                <div class="phone-card-title">Birthday party</div>
+                <svg class="phone-card-ring" viewBox="0 0 28 28">
+                  <circle cx="14" cy="14" r="11" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
+                  <circle cx="14" cy="14" r="11" fill="none" stroke="#f87a6a" stroke-width="3"
+                    stroke-dasharray="48.4 20.7" stroke-dashoffset="0" stroke-linecap="round"
+                    transform="rotate(-90 14 14)"/>
+                  <text x="14" y="14" dominant-baseline="central" text-anchor="middle" font-size="7" font-weight="500" fill="#f87a6a">70%</text>
+                </svg>
+                <div class="phone-card-btn">View More</div>
+              </div>
+              <span class="phone-section-label">Event History</span>
+              <div class="phone-event">
+                <div class="phone-event-icon">☑</div>
+                <div class="phone-event-info">
+                  <div class="phone-event-name">Team building</div>
+                  <div class="phone-event-time">164 minutes</div>
+                </div>
+                <svg class="phone-event-ring" viewBox="0 0 18 18">
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="#f87a6a" stroke-width="2"
+                    stroke-dasharray="31.7 12.3" stroke-dashoffset="0" stroke-linecap="round"
+                    transform="rotate(-90 9 9)"/>
+                  <text x="9" y="9" dominant-baseline="central" text-anchor="middle" font-size="4.5" fill="#f87a6a">72%</text>
+                </svg>
+              </div>
+              <div class="phone-event">
+                <div class="phone-event-icon">☑</div>
+                <div class="phone-event-info">
+                  <div class="phone-event-name">Meeting</div>
+                  <div class="phone-event-time">57 minutes</div>
+                </div>
+                <svg class="phone-event-ring" viewBox="0 0 18 18">
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="#29d6aa" stroke-width="2"
+                    stroke-dasharray="11 33" stroke-dashoffset="0" stroke-linecap="round"
+                    transform="rotate(-90 9 9)"/>
+                  <text x="9" y="9" dominant-baseline="central" text-anchor="middle" font-size="4.5" fill="#29d6aa">25%</text>
+                </svg>
+              </div>
+              <div class="phone-nav">
+                <div class="phone-nav-tab active"><span class="phone-nav-icon">⌂</span>Home</div>
+                <div class="phone-nav-tab"><span class="phone-nav-icon">⚙</span>Settings</div>
+              </div>
+            </div>
+          </div>
+          <span class="watch-label">Mobile app</span>
+        </div>
+
+        <!-- Watch: High pressure alert -->
+        <div class="watch-wrap">
+          <div class="watch">
+            <div class="watch-crown"></div>
+            <div class="watch-btn"></div>
+            <div class="watch-screen ws-warn">
+              <span class="watch-gear">⚙</span>
+              <span class="watch-time">9:55</span>
+              <div class="pressure-ring sm">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                  <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3.5"/>
+                  <circle cx="25" cy="25" r="20" fill="none" stroke="#f87a6a" stroke-width="3.5"
+                    stroke-dasharray="87.9 37.7" stroke-dashoffset="0" stroke-linecap="round"
+                    transform="rotate(-90 25 25)"/>
+                </svg>
+                <div class="pressure-val">
+                  <span class="pval-num sm pval-warn">70</span>
+                  <span class="pval-pct">%</span>
+                  <span class="pval-lbl">PRESSURE</span>
+                </div>
+              </div>
+              <span class="watch-status ws-warn-text">⚠ Take a break</span>
+            </div>
+          </div>
+          <span class="watch-label">High stress</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── OVERVIEW ── -->
+  <section id="overview">
+    <div>
+      <p class="section-label reveal" data-zh="项目概述" data-en="Overview">Overview</p>
+      <h2 class="section-title reveal">
+        <span data-zh="AI 给予<br>离场的<em>许可</em>" data-en="AI-given<br>permission<br>to <em>leave</em>">AI-given<br>permission<br>to <em>leave</em></span>
+      </h2>
+    </div>
+    <div class="reveal">
+      <p class="overview-body" data-zh="社交焦虑人群在感到超负荷时，往往无法做出离场的决定——不是因为他们不想离开，而是因为 <strong>社会压力比内心的不适更大</strong>。" data-en="People with social anxiety often can't decide to leave when they're overwhelmed — not because they don't want to, but because <strong>social pressure outweighs their internal discomfort</strong>.">
+        People with social anxiety often can't decide to leave when they're overwhelmed — not because they don't want to, but because <strong>social pressure outweighs their internal discomfort</strong>.
+      </p>
+      <p class="overview-body" data-zh="SoftSignal 是一套 AI 辅助系统，通过智能手表监测生理压力信号（心率变异性），在用户到达崩溃边缘之前，以隐蔽、有尊严的方式提示：<strong>「现在离开是可以的。」</strong>" data-en="SoftSignal is an AI-assisted system that monitors physiological stress signals via a smartwatch — heart rate variability, tension patterns — and delivers a discreet, dignified prompt before overload: <strong>it's okay to leave now.</strong>">
+        SoftSignal is an AI-assisted system that monitors physiological stress signals via a smartwatch — heart rate variability, tension patterns — and delivers a discreet, dignified prompt before overload: <strong>it's okay to leave now.</strong>
+      </p>
+      <div class="hmw-block">
+        <span class="hmw-label">How Might We</span>
+        <p class="hmw-text">"How might we help people with social anxiety leave or reduce stimulation before overload through discreet AI cues that preserve autonomy and dignity?"</p>
+      </div>
+      <div class="phase-row" style="margin-top:2.5rem;">
+        <div class="phase-pill">
+          <span class="phase-num">01</span>
+          <span class="phase-name" data-zh="发现" data-en="Discover">Discover</span>
+        </div>
+        <div class="phase-pill">
+          <span class="phase-num">02</span>
+          <span class="phase-name" data-zh="定义" data-en="Define">Define</span>
+        </div>
+        <div class="phase-pill">
+          <span class="phase-num">03</span>
+          <span class="phase-name" data-zh="开发" data-en="Develop">Develop</span>
+        </div>
+        <div class="phase-pill">
+          <span class="phase-num">04</span>
+          <span class="phase-name" data-zh="测试" data-en="Test">Test</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── RESEARCH INSIGHTS ── -->
+  <section id="insights">
+    <div class="insights-grid">
+      <div>
+        <p class="section-label reveal" data-zh="研究发现" data-en="Research Insights">Research Insights</p>
+        <h2 class="section-title reveal">
+          <span data-zh="焦虑是<br><em>渐进</em>的" data-en="Anxiety<br>builds<br><em>gradually</em>">Anxiety<br>builds<br><em>gradually</em></span>
+        </h2>
+        <div class="quote-block reveal" style="margin-top:3rem;">
+          <p class="quote-text">"At the moment of overload, a clear, empathetic message is worth far more than complex data or a polished UI."</p>
+          <span class="quote-src">Prototyping insight</span>
+        </div>
+      </div>
+      <div>
+        <div class="obs-cards reveal">
+          <div class="obs-card">
+            <div class="obs-icon">📈</div>
+            <div>
+              <div class="obs-title" data-zh="社交焦虑是逐渐升级的过载过程" data-en="Social anxiety is a gradually escalating overload">Social anxiety is a gradually escalating overload</div>
+              <p class="obs-text" data-zh="在压力社交环境中，焦虑者倾向于聚焦于内心的紧张感，而非周围环境。<em>人群带来的是逐渐升级的失控感，而非突然崩溃</em>。认知与注意力的转变先于全面焦虑发作出现。" data-en="In stressful social situations, people focus on their own nervous feelings rather than their surroundings. <em>Crowds create escalating discomfort and loss of control, not sudden breakdown.</em> Cognitive and attentional shifts precede full anxiety episodes.">
+                In stressful social situations, people focus on their own nervous feelings rather than their surroundings. <em>Crowds create escalating discomfort and loss of control, not sudden breakdown.</em> Cognitive and attentional shifts precede full anxiety episodes.
+              </p>
+            </div>
+          </div>
+          <div class="obs-card">
+            <div class="obs-icon">🔔</div>
+            <div>
+              <div class="obs-title" data-zh="早期意识存在，但行动被延迟" data-en="Early awareness exists, but action is delayed">Early awareness exists, but action is delayed</div>
+              <p class="obs-text" data-zh="用户通常能感知到微妙的内部线索——紧张、疲惫、过度警觉——但这些信号往往被 <em>「我应该没事的」或「现在离开太失礼了」</em> 所压制和合理化。" data-en="Users notice subtle internal cues — tension, fatigue, increased vigilance — before social overload. These cues are frequently minimized: <em>'I should be fine'</em> or <em>'it would be rude to leave now.'</em>">
+                Users notice subtle internal cues — tension, fatigue, increased vigilance — before social overload. These cues are frequently minimized: <em>'I should be fine'</em> or <em>'it would be rude to leave now.'</em>
+              </p>
+            </div>
+          </div>
+          <div class="obs-card">
+            <div class="obs-icon">🔒</div>
+            <div>
+              <div class="obs-title" data-zh="可穿戴设备能检测压力，但用户担忧隐私与自主性" data-en="Wearables can detect stress, but privacy matters deeply">Wearables can detect stress, but privacy matters deeply</div>
+              <p class="obs-text" data-zh="心率变异性变化是情绪过载的有效信号。但用户明确表达了对 <em>误判、隐私暴露和被 AI「控制」</em> 的担忧——这揭示了一个关键机会：AI 的提示应是支持性信号，而非命令。" data-en="Heart rate variability changes are reliable signals of emotional overload. But users raised concerns about <em>misreadings, privacy, and feeling controlled by AI</em> — revealing the opportunity: AI support must feel like a suggestion, not a directive.">
+                Heart rate variability changes are reliable signals of emotional overload. But users raised concerns about <em>misreadings, privacy, and feeling controlled by AI</em> — revealing the opportunity: AI support must feel like a suggestion, not a directive.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── EMPATHY MAP ── -->
+  <section id="empathy">
+    <div class="empathy-layout">
+      <div>
+        <p class="section-label reveal" data-zh="共情地图" data-en="Empathy Map">Empathy Map</p>
+        <h2 class="section-title reveal">
+          <span data-zh="用户的<br><em>内心世界</em>" data-en="Inside the<br>user's<br><em>mind</em>">Inside the<br>user's<br><em>mind</em></span>
+        </h2>
+      </div>
+      <div class="reveal">
+        <!-- 4-quadrant empathy map -->
+        <div class="empathy-quadrants">
+          <div class="eq-card">
+            <span class="eq-label">Thinks</span>
+            <div class="eq-tags">
+              <span class="etag t">Signal uncertainty</span>
+              <span class="etag t">Anticipated judgment</span>
+              <span class="etag t">Self-regulation conflict</span>
+              <span class="etag t">Social cost</span>
+              <span class="etag t">Exit timing</span>
+            </div>
+          </div>
+          <div class="eq-card">
+            <span class="eq-label">Hears</span>
+            <div class="eq-tags">
+              <span class="etag s">"Stay a bit longer"</span>
+              <span class="etag s">Noise</span>
+              <span class="etag s">Group chatting</span>
+              <span class="etag s">Crowd density</span>
+              <span class="etag s">Implicit evaluation pressure</span>
+            </div>
+          </div>
+          <div class="eq-card">
+            <span class="eq-label">Says</span>
+            <div class="eq-tags">
+              <span class="etag h">Deflective responses</span>
+              <span class="etag h">Minimal disclosure</span>
+              <span class="etag h">Vague commitment</span>
+              <span class="etag h">Neutral reassurance</span>
+              <span class="etag h">Socially acceptable phrasing</span>
+            </div>
+          </div>
+          <div class="eq-card">
+            <span class="eq-label">Does</span>
+            <div class="eq-tags">
+              <span class="etag d">Check time regularly</span>
+              <span class="etag d">Gradual disengagement</span>
+              <span class="etag d">Distraction coping</span>
+              <span class="etag d">Withdrawal-in-place</span>
+              <span class="etag d">Delayed exit action</span>
+            </div>
+          </div>
+        </div>
+        <!-- Pains & Gains -->
+        <div class="pg-row" style="margin-top:1px;">
+          <div class="pg-card">
+            <div class="pg-title" style="color:var(--warn);">Pains</div>
+            <div class="pg-list">
+              <div class="pg-item"><div class="pg-dot pain"></div>Can't tell if feelings are "valid enough" to act on</div>
+              <div class="pg-item"><div class="pg-dot pain"></div>No sense of legitimate reason to leave when uncomfortable</div>
+              <div class="pg-item"><div class="pg-dot pain"></div>Cognitive resources reduced under stress, harder to decide</div>
+              <div class="pg-item"><div class="pg-dot pain"></div>Fear of being seen as rude, weak, or not fitting in</div>
+              <div class="pg-item"><div class="pg-dot pain"></div>Self-doubt — worrying about "overreacting"</div>
+            </div>
+          </div>
+          <div class="pg-card">
+            <div class="pg-title" style="color:var(--ok);">Gains</div>
+            <div class="pg-list">
+              <div class="pg-item"><div class="pg-dot gain"></div>Notice rising stress and act before overload</div>
+              <div class="pg-item"><div class="pg-dot gain"></div>Permission to leave without self-blame</div>
+              <div class="pg-item"><div class="pg-dot gain"></div>Exit without needing to explain or draw attention</div>
+              <div class="pg-item"><div class="pg-dot gain"></div>Feel like taking care of oneself, not avoiding</div>
+              <div class="pg-item"><div class="pg-dot gain"></div>Maintain dignity, social safety, and autonomy</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── JTBD ── -->
+  <section id="jtbd">
+    <div class="jtbd-layout">
+      <div>
+        <p class="section-label reveal" data-zh="JTBD 框架" data-en="Jobs-to-be-Done">Jobs-to-be-Done</p>
+        <h2 class="section-title reveal">
+          <span data-zh="用户真正<br>想完成的<em>事</em>" data-en="What users<br>really need<br>to <em>get done</em>">What users<br>really need<br>to <em>get done</em></span>
+        </h2>
+      </div>
+      <div class="reveal">
+        <div class="jtbd-scenario">
+          <span class="scenario-label">Scenario — Jack</span>
+          <p class="scenario-text">
+            <strong>Jack attends a friend's birthday party</strong> with loud music and ongoing conversations. After socializing for a while, he begins to notice rising tension and difficulty focusing. Although increasingly overwhelmed, he stays — held back by social expectations.
+          </p>
+        </div>
+        <div class="jtbd-cards">
+          <div class="jtbd-card">
+            <div class="jtbd-kind">Main Job</div>
+            <div class="jtbd-main">Regulate social overload early</div>
+            <div class="jtbd-dims">
+              <span class="jtbd-dim em">Emotional — Feel reassured to leave</span>
+              <span class="jtbd-dim fn">Functional — Detect early stress signals</span>
+              <span class="jtbd-dim pd">Personal — Trust internal signals</span>
+              <span class="jtbd-dim sd">Social — Leave without awkward explanations</span>
+            </div>
+            <div class="jtbd-card-accent"></div>
+          </div>
+          <div class="jtbd-card">
+            <div class="jtbd-kind">Related Job</div>
+            <div class="jtbd-main">Recover after leaving a social situation</div>
+            <div class="jtbd-dims">
+              <span class="jtbd-dim em">Emotional — Feel relief, not guilt</span>
+              <span class="jtbd-dim fn">Functional — Receive guidance to regulate stress</span>
+              <span class="jtbd-dim pd">Personal — Restore self-respect and boundaries</span>
+              <span class="jtbd-dim sd">Social — Re-engage socially later</span>
+            </div>
+            <div class="jtbd-card-accent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── STORYBOARD ── -->
+  <section id="storyboard" style="background:var(--bg2);">
+    <p class="section-label reveal" data-zh="用户旅程故事板" data-en="Userflow Storyboard">Userflow Storyboard</p>
+    <h2 class="section-title reveal" style="margin-bottom:0;">
+      <span data-zh="Jack 的<em>一夜</em>" data-en="Jack's <em>night out</em>">Jack's <em>night out</em></span>
+    </h2>
+    <div class="story-grid reveal">
+      <div class="story-card">
+        <div class="story-num">01</div>
+        <div class="story-title" data-zh="受邀参加派对" data-en="Invited to a party">Invited to a party</div>
+        <p class="story-text" data-zh="朋友邀请 Jack 参加今晚的派对，他戴上了智能手表。" data-en="A friend invites Jack to a party tonight. He dresses up and puts on his smartwatch before heading out.">A friend invites Jack to a party tonight. He dresses up and puts on his smartwatch before heading out.</p>
+        <div class="story-accent"></div>
+      </div>
+      <div class="story-card">
+        <div class="story-num">02</div>
+        <div class="story-title" data-zh="开始社交，状态良好" data-en="Socializing — all good">Socializing — all good</div>
+        <p class="story-text" data-zh="派对开始进展顺利，Jack 和朋友们聊得愉快。手表显示压力指数 12% — 一切正常。" data-en="The party starts well. Jack mingles and enjoys himself. His watch shows 12% pressure — all good.">The party starts well. Jack mingles and enjoys himself. His watch shows 12% pressure — all good.</p>
+        <div class="story-accent"></div>
+      </div>
+      <div class="story-card">
+        <div class="story-num">03</div>
+        <div class="story-title" data-zh="压力开始累积" data-en="Stress begins to build">Stress begins to build</div>
+        <p class="story-text" data-zh="随着时间推移，人越来越多，Jack 开始感到疲惫和被淹没。压力指数攀升至 70%，手表轻微震动。" data-en="As the night goes on, the crowd grows. Jack feels increasingly tired and overwhelmed. Pressure climbs to 70% — the watch vibrates gently.">As the night goes on, the crowd grows. Jack feels increasingly tired and overwhelmed. Pressure climbs to 70% — the watch vibrates gently.</p>
+        <div class="story-accent"></div>
+      </div>
+      <div class="story-card">
+        <div class="story-num">04</div>
+        <div class="story-title" data-zh="收到 SoftSignal 提示" data-en="SoftSignal nudge arrives">SoftSignal nudge arrives</div>
+        <p class="story-text" data-zh="手表以轻柔的震动模式提示：「你的信号显示现在可能是离开的好时机。」这是一个建议，而非命令。" data-en="The watch delivers a soft vibration pattern and a gentle prompt: 'Your signal says now might be a good time to leave.' A suggestion, not a command.">The watch delivers a soft vibration pattern and a gentle prompt: 'Your signal says now might be a good time to leave.' A suggestion, not a command.</p>
+        <div class="story-accent"></div>
+      </div>
+      <div class="story-card">
+        <div class="story-num">05</div>
+        <div class="story-title" data-zh="无压力地道别" data-en="A pressure-free goodbye">A pressure-free goodbye</div>
+        <p class="story-text" data-zh="Jack 平静地和朋友们道了别，「Sorry guys, I have to go.」没有过度解释，也没有内疚感。" data-en="Jack calmly says goodbye to his friends — 'Sorry guys, I have to go.' No over-explanation needed. No guilt.">Jack calmly says goodbye to his friends — 'Sorry guys, I have to go.' No over-explanation needed. No guilt.</p>
+        <div class="story-accent"></div>
+      </div>
+      <div class="story-card">
+        <div class="story-num">06</div>
+        <div class="story-title" data-zh="回家休息，完整自我" data-en="Home to rest — intact">Home to rest — intact</div>
+        <p class="story-text" data-zh="Jack 回到家，手机 App 记录了本次社交数据。他感到的是「照顾了自己」，而非「逃避了某事」。" data-en="Jack gets home. The app logs the session data. He feels like he took care of himself — not that he ran away from something.">Jack gets home. The app logs the session data. He feels like he took care of himself — not that he ran away from something.</p>
+        <div class="story-accent"></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── UI SCREENS ── -->
+  <section id="ui">
+    <div class="ui-intro">
+      <div>
+        <p class="section-label reveal" data-zh="用户界面" data-en="User Interface">User Interface</p>
+        <h2 class="section-title reveal">
+          <span data-zh="清晰、<br><em>安静</em>的界面" data-en="Calm,<br><em>quiet</em><br>interface">Calm,<br><em>quiet</em><br>interface</span>
+        </h2>
+      </div>
+      <div class="reveal">
+        <p class="ui-body" data-zh="原型测试验证了一个核心设计原则：在感官过载的瞬间，<strong>清晰、共情的信息比复杂的数据展示更有价值</strong>。SoftSignal 的界面刻意保持最小化——压力数值、简短提示、一个行动按钮。" data-en="Prototyping confirmed a core principle: at the moment of sensory overload, <strong>a clear and empathetic message is worth far more than complex data or a polished UI</strong>. SoftSignal's interface is deliberately minimal — a pressure reading, a short message, one action.">
+          Prototyping confirmed a core principle: at the moment of sensory overload, <strong>a clear and empathetic message is worth far more than complex data or a polished UI</strong>. SoftSignal's interface is deliberately minimal — a pressure reading, a short message, one action.
+        </p>
+      </div>
+    </div>
+
+    <!-- Screen cards grid -->
+    <div class="sc-grid reveal">
+
+      <!-- Watch: Low pressure -->
+      <div class="sc-card">
+        <div class="sc-label">Smartwatch · State 01</div>
+        <div class="sc-name" data-zh="压力正常" data-en="Low pressure">Low pressure</div>
+        <p class="sc-desc" data-zh="压力指数 12%，显示绿色环形与「All good」状态。用户无需任何操作，专注于社交即可。" data-en="Pressure at 12%, green ring, 'All good' status. No action needed — user stays present and social.">Pressure at 12%, green ring, 'All good' status. No action needed — user stays present and social.</p>
+        <span class="sc-status st-ok">All good</span>
+        <div class="sc-watch-preview">
+          <div class="mini-watch">
+            <div class="mini-watch-screen mw-ok">
+              <span style="font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:.08em;margin-bottom:2px;">9:55</span>
+              <svg width="72" height="72" viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/>
+                <circle cx="36" cy="36" r="28" fill="none" stroke="#29d6aa" stroke-width="5"
+                  stroke-dasharray="21.1 154.8" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 36 36)"/>
+                <text x="36" y="34" text-anchor="middle" font-size="18" font-weight="500" fill="#29d6aa">12</text>
+                <text x="36" y="44" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.3)">PRESSURE</text>
+              </svg>
+              <span class="mw-status mw-ok-c">All good</span>
+            </div>
+          </div>
+        </div>
+        <div class="sc-accent"></div>
+      </div>
+
+      <!-- Watch: High pressure -->
+      <div class="sc-card">
+        <div class="sc-label">Smartwatch · State 02</div>
+        <div class="sc-name" data-zh="压力升高" data-en="High pressure">High pressure</div>
+        <p class="sc-desc" data-zh="压力指数 70%，显示红色环形与「⚠ Take a break」提示。轻震动告知用户，无需解锁手机。" data-en="Pressure at 70%, red ring, '⚠ Take a break' prompt. A gentle vibration pattern — no need to unlock a phone.">Pressure at 70%, red ring, '⚠ Take a break' prompt. A gentle vibration pattern — no need to unlock a phone.</p>
+        <span class="sc-status st-warn">Take a break</span>
+        <div class="sc-watch-preview">
+          <div class="mini-watch">
+            <div class="mini-watch-screen mw-warn">
+              <span style="font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:.08em;margin-bottom:2px;">9:55</span>
+              <svg width="72" height="72" viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/>
+                <circle cx="36" cy="36" r="28" fill="none" stroke="#f87a6a" stroke-width="5"
+                  stroke-dasharray="123.2 52.8" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 36 36)"/>
+                <text x="36" y="34" text-anchor="middle" font-size="18" font-weight="500" fill="#f87a6a">70</text>
+                <text x="36" y="44" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.3)">PRESSURE</text>
+              </svg>
+              <span class="mw-status mw-warn-c">⚠ Take a break</span>
+            </div>
+          </div>
+        </div>
+        <div class="sc-accent"></div>
+      </div>
+
+      <!-- Watch: Settings — Social Mode -->
+      <div class="sc-card">
+        <div class="sc-label">Smartwatch · Settings</div>
+        <div class="sc-name" data-zh="社交模式设置" data-en="Social mode settings">Social mode settings</div>
+        <p class="sc-desc" data-zh="用户可开启「Social Mode」感知环境社交密度，并选择「Vibrate Mode」以无声方式接收提示。" data-en="Users toggle Social Mode for context-aware pressure sensing, and Vibrate Mode for silent alerts — no notification sounds in public.">Users toggle Social Mode for context-aware pressure sensing, and Vibrate Mode for silent alerts — no notification sounds in public.</p>
+        <span class="sc-status st-blue">Configurable</span>
+        <div class="sc-watch-preview">
+          <div class="mini-watch">
+            <div class="mini-watch-screen mw-set" style="justify-content:flex-start; padding:14px 12px; overflow:hidden; gap:0;">
+              <span style="font-size:10px;color:var(--accent);font-weight:500;margin-bottom:8px;flex-shrink:0;">Settings</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;">
+                <span style="font-size:9px;color:rgba(255,255,255,0.7);">Social Mode</span>
+                <div class="ws-toggle on" style="flex-shrink:0;"></div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;">
+                <span style="font-size:9px;color:rgba(255,255,255,0.7);">Vibrate</span>
+                <div class="ws-toggle off" style="flex-shrink:0;"></div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:7px 0;flex-shrink:0;">
+                <span style="font-size:9px;color:rgba(255,255,255,0.7);">AI Mode</span>
+                <div class="ws-toggle on" style="flex-shrink:0;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-accent"></div>
+      </div>
+
+      <!-- Watch: AI Mode -->
+      <div class="sc-card">
+        <div class="sc-label">Smartwatch · AI Mode</div>
+        <div class="sc-name" data-zh="AI 分析模式" data-en="AI analysis mode">AI analysis mode</div>
+        <p class="sc-desc" data-zh="AI Mode 实时分析周围对话内容，结合生理数据综合判断，帮助用户识别是否已到离场时机——保障更高准确率。" data-en="AI Mode analyzes real-time ambient conversations alongside biometric data to help users determine whether it might be a good time to leave — improving signal accuracy.">AI Mode analyzes real-time ambient conversations alongside biometric data to help users determine whether it might be a good time to leave — improving signal accuracy.</p>
+        <span class="sc-status st-blue">AI-assisted</span>
+        <div class="sc-watch-preview">
+          <div class="mini-watch">
+            <div class="mini-watch-screen mw-set" style="justify-content:flex-start; padding:14px 12px; overflow:hidden; gap:0;">
+              <span style="font-size:10px;color:var(--accent);font-weight:500;margin-bottom:8px;flex-shrink:0;">Settings</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;">
+                <span style="font-size:9px;color:rgba(255,255,255,0.7);">AI Mode</span>
+                <div class="ws-toggle on" style="flex-shrink:0;"></div>
+              </div>
+              <p style="font-size:7.5px;color:rgba(255,255,255,0.35);line-height:1.45;margin-top:8px;overflow:hidden;">Analyzes real-time conversations to help determine exit timing.</p>
+            </div>
+          </div>
+        </div>
+        <div class="sc-accent"></div>
+      </div>
+
+      <!-- Phone app: full width -->
+      <div class="sc-card wide">
+        <div>
+          <div class="sc-label">Mobile App</div>
+          <div class="sc-name" data-zh="手机配套 App" data-en="Companion mobile app">Companion mobile app</div>
+          <p class="sc-desc" style="margin-top:.5rem;" data-zh="手机 App 展示实时压力状态与历史社交活动记录——包含每次活动的时长与峰值压力指数。用户可以复盘数据，建立对自身压力模式的认知，而非依赖实时屏幕。" data-en="The mobile app shows live pressure status and a history of past social events — each with duration and peak pressure. Users review data after the fact to build self-awareness, not stare at a screen in the moment.">
+            The mobile app shows live pressure status and a history of past social events — each with duration and peak pressure. Users review data after the fact to build self-awareness, not stare at a screen in the moment.
+          </p>
+          <div style="margin-top:1.5rem; display:flex; flex-direction:column; gap:.7rem;">
+            <div style="display:flex; align-items:center; gap:.7rem;">
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--warn);flex-shrink:0;"></div>
+              <span style="font-size:.8rem;color:var(--cream3);" data-zh="实时展示当前社交事件的压力指数" data-en="Live pressure reading for the current social event">Live pressure reading for the current social event</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:.7rem;">
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--ok);flex-shrink:0;"></div>
+              <span style="font-size:.8rem;color:var(--cream3);" data-zh="历史活动记录：时长 + 峰值压力" data-en="Historical event log with duration and peak pressure">Historical event log with duration and peak pressure</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:.7rem;">
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>
+              <span style="font-size:.8rem;color:var(--cream3);" data-zh="Home + Settings 双标签导航" data-en="Home + Settings two-tab navigation">Home + Settings two-tab navigation</span>
+            </div>
+          </div>
+        </div>
+        <!-- Phone mockup centered -->
+        <div style="display:flex; justify-content:center; align-items:center; padding:1rem 0;">
+          <div class="phone" style="width:160px; height:320px;">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar">
+                <span class="phone-time">9:41</span>
+                <span class="phone-icons">▌▌ ▾ ▬</span>
+              </div>
+              <span class="phone-section-label">In Progress</span>
+              <div class="phone-card phone-card-warn" style="margin-bottom:4px;">
+                <div class="phone-card-label">⚠ Take a break</div>
+                <div class="phone-card-title">Birthday party</div>
+                <svg class="phone-card-ring" viewBox="0 0 28 28">
+                  <circle cx="14" cy="14" r="11" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
+                  <circle cx="14" cy="14" r="11" fill="none" stroke="#f87a6a" stroke-width="3"
+                    stroke-dasharray="48.4 20.7" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 14 14)"/>
+                  <text x="14" y="14" dominant-baseline="central" text-anchor="middle" font-size="7" font-weight="500" fill="#f87a6a">70%</text>
+                </svg>
+                <div class="phone-card-btn">View More</div>
+              </div>
+              <span class="phone-section-label">Event History</span>
+              <div class="phone-event" style="margin-bottom:3px;">
+                <div class="phone-event-icon">☑</div>
+                <div class="phone-event-info">
+                  <div class="phone-event-name">Team building</div>
+                  <div class="phone-event-time">164 min</div>
+                </div>
+                <svg class="phone-event-ring" viewBox="0 0 18 18">
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="#f87a6a" stroke-width="2"
+                    stroke-dasharray="31.7 12.3" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 9 9)"/>
+                  <text x="9" y="9" dominant-baseline="central" text-anchor="middle" font-size="4.5" fill="#f87a6a">72%</text>
+                </svg>
+              </div>
+              <div class="phone-event" style="margin-bottom:3px;">
+                <div class="phone-event-icon">☑</div>
+                <div class="phone-event-info">
+                  <div class="phone-event-name">Meeting</div>
+                  <div class="phone-event-time">57 min</div>
+                </div>
+                <svg class="phone-event-ring" viewBox="0 0 18 18">
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="#29d6aa" stroke-width="2"
+                    stroke-dasharray="11 33" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 9 9)"/>
+                  <text x="9" y="9" dominant-baseline="central" text-anchor="middle" font-size="4.5" fill="#29d6aa">25%</text>
+                </svg>
+              </div>
+              <div class="phone-event">
+                <div class="phone-event-icon">☑</div>
+                <div class="phone-event-info">
+                  <div class="phone-event-name">Birthday party</div>
+                  <div class="phone-event-time">215 min</div>
+                </div>
+                <svg class="phone-event-ring" viewBox="0 0 18 18">
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+                  <circle cx="9" cy="9" r="7" fill="none" stroke="#29d6aa" stroke-width="2"
+                    stroke-dasharray="14.5 29.5" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 9 9)"/>
+                  <text x="9" y="9" dominant-baseline="central" text-anchor="middle" font-size="4.5" fill="#29d6aa">33%</text>
+                </svg>
+              </div>
+              <div class="phone-nav">
+                <div class="phone-nav-tab active"><span class="phone-nav-icon">⌂</span>Home</div>
+                <div class="phone-nav-tab"><span class="phone-nav-icon">⚙</span>Settings</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-accent"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── PROTOTYPING INSIGHTS ── -->
+  <section id="prototyping">
+    <div class="proto-layout">
+      <div>
+        <p class="section-label reveal" data-zh="原型测试洞察" data-en="Prototyping Insights">Prototyping Insights</p>
+        <h2 class="section-title reveal">
+          <span data-zh="纸原型<br>揭示的<em>真相</em>" data-en="What the<br>paper prototype<br><em>revealed</em>">What the<br>paper prototype<br><em>revealed</em></span>
+        </h2>
+        <a href="https://youtu.be/tfy3Ol7rqrs" target="_blank" class="proto-cta reveal" style="margin-top:3rem;">
+          <span data-zh="观看 Wizard of Oz 视频" data-en="Watch Wizard of Oz Video">Watch Wizard of Oz Video</span>
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div>
+        <div class="proto-cards reveal">
+          <div class="proto-card">
+            <div class="proto-num">01</div>
+            <div>
+              <div class="proto-title" data-zh="UI 结构与信息层级" data-en="UI structure and hierarchy">UI structure and hierarchy</div>
+              <p class="proto-text" data-zh="原型测试证实了人在压力下更容易出错。在感官过载的瞬间，一条清晰、有共情感的信息远比复杂的数据展示或精美的视觉界面更有价值——这直接驱动了最终界面的极简设计决策。" data-en="Testing confirmed that people make more errors under pressure. At the moment of sensory overload, a clear, empathetic message is worth far more than complex data or a polished UI — driving the decision to keep the final interface radically minimal.">Testing confirmed that people make more errors under pressure. At the moment of sensory overload, a clear, empathetic message is worth far more than complex data or a polished UI — driving the decision to keep the final interface radically minimal.</p>
+            </div>
+            <div class="proto-card-accent"></div>
+          </div>
+          <div class="proto-card">
+            <div class="proto-num">02</div>
+            <div>
+              <div class="proto-title" data-zh="交互流程与隐私" data-en="Interaction flow and privacy">Interaction flow and privacy</div>
+              <p class="proto-text" data-zh="通过分析从手表震动模式到手机通知消息再到数据收集的完整交互流程，验证了隐私对目标用户群体的核心重要性。AI 的提示必须感觉像「一个建议」，而非监控或命令。" data-en="Analyzing the full interaction flow — from watch vibration patterns to notification messages to data collection — confirmed that privacy is paramount for this user group. AI prompts must feel like a gentle suggestion, never surveillance or control.">Analyzing the full interaction flow — from watch vibration patterns to notification messages to data collection — confirmed that privacy is paramount for this user group. AI prompts must feel like a gentle suggestion, never surveillance or control.</p>
+            </div>
+            <div class="proto-card-accent"></div>
+          </div>
+          <div class="proto-card">
+            <div class="proto-num">03</div>
+            <div>
+              <div class="proto-title" data-zh="功能范围与优先级" data-en="Feature scope and prioritization">Feature scope and prioritization</div>
+              <p class="proto-text" data-zh="原型揭示了一个关键洞察：情绪认可和语言语气比「压力详情」「解释说明」或「未来建议」等功能更重要。用户在高压时刻需要的是被接纳，而非被分析。" data-en="Testing revealed that emotional validation and tone matter far more than features like stress explanations or future recommendations. Users at high-pressure moments need to feel accepted — not analyzed.">Testing revealed that emotional validation and tone matter far more than features like stress explanations or future recommendations. Users at high-pressure moments need to feel accepted — not analyzed.</p>
+            </div>
+            <div class="proto-card-accent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <span data-zh="© 2026 Xu Wang. 保留所有权利." data-en="© 2026 Xu Wang. All rights reserved.">© 2026 Xu Wang. All rights reserved.</span>
+    <div class="footer-legal">
+      <a href="index.html#projects" data-zh="返回作品集" data-en="Back to Work">Back to Work</a>
+      <a href="index.html#contact" data-zh="联系" data-en="Contact">Contact</a>
+      <span>SoftSignal · HCI 2025</span>
+    </div>
+  </footer>
+
+  <script>
+    // Cursor
+    const cur = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    document.querySelectorAll('a,button,.sc-card,.obs-card,.proto-card,.jtbd-card,.story-card').forEach(el=>{
+      el.addEventListener('mouseenter',()=>ring.classList.add('hover'));
+      el.addEventListener('mouseleave',()=>ring.classList.remove('hover'));
+    });
+    (function loop(){
+      rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+      cur.style.left=mx+'px'; cur.style.top=my+'px';
+      ring.style.left=rx+'px'; ring.style.top=ry+'px';
+      requestAnimationFrame(loop);
+    })();
+
+    // Nav scroll
+    const nav=document.getElementById('nav');
+    window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+
+    // Reveal
+    const obs=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+    },{threshold:0.1});
+    document.querySelectorAll('.reveal').forEach((el,i)=>{
+      el.style.transitionDelay=(i%4)*.1+'s';
+      obs.observe(el);
+    });
+
+    // Language toggle
+    const btnEn=document.getElementById('btnEn');
+    const btnZh=document.getElementById('btnZh');
+    function applyLang(l){
+      btnEn.classList.toggle('active',l==='en');
+      btnZh.classList.toggle('active',l==='zh');
+      document.documentElement.lang=l==='zh'?'zh':'en';
+      document.querySelectorAll('[data-zh][data-en]').forEach(el=>{
+        const val=el.getAttribute('data-'+l);
+        if(!val) return;
+        const rich=['SPAN','P','H1','H2','H3','A','DIV'];
+        if(rich.includes(el.tagName)) el.innerHTML=val;
+        else el.textContent=val;
+      });
+    }
+    btnEn.addEventListener('click',()=>applyLang('en'));
+    btnZh.addEventListener('click',()=>applyLang('zh'));
+    applyLang('en');
+  </script>
+</body>
+</html>
