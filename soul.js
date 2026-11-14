@@ -100,21 +100,21 @@ function showInterestNudge() {
   interestNudge.classList.add('is-visible');
 }
 
-function scheduleFeedAutoNudge() {
+function scheduleFeedAutoNudge(delay = 3000) {
   window.clearTimeout(feedAutoNudgeTimer);
   feedAutoNudgeTimer = window.setTimeout(() => {
     const feedScreen = document.querySelector('[data-screen="feed"]');
     if (feedScreen.classList.contains('is-active') && interestNudge.hidden) {
       showInterestNudge();
     }
-  }, 5000);
+  }, delay);
 }
 
 function scheduleInterestNudge(button) {
   window.clearTimeout(nudgeRevealTimer);
   nudgeRevealTimer = window.setTimeout(() => {
     if (button.classList.contains('is-liked')) showInterestNudge();
-  }, 2000);
+  }, 3000);
 }
 
 function hideInterestNudge(immediate = false) {
@@ -224,6 +224,7 @@ document.getElementById('restartDemo').addEventListener('click', () => {
 
 document.querySelector('.dismiss-nudge').addEventListener('click', () => {
   hideInterestNudge();
+  scheduleFeedAutoNudge(3000);
 });
 
 document.querySelectorAll('[data-action="like"]').forEach((button) => {
