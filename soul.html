@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f5fb" />
+    <meta
+      name="description"
+      content="此刻同频：基于广场实时浏览兴趣与用户主动授权的社交匹配概念原型。"
+    />
+    <title>此刻同频 · 交互原型</title>
+    <link rel="stylesheet" href="soul.css?v=soul-files-2" />
+  </head>
+  <body>
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
+      <symbol id="icon-back" viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></symbol>
+      <symbol id="icon-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.3" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="icon-location" viewBox="0 0 24 24"><path d="M19 10c0 5-7 10-7 10S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+      <symbol id="icon-hi" viewBox="0 0 24 24"><path d="M4 5.5h16v11H9l-4.5 3v-3H4Z"/><path d="M8 9.5v3m3-3v3m3-3h2.5m-1.25 0v3"/></symbol>
+      <symbol id="icon-heart" viewBox="0 0 24 24"><path d="M20.8 5.9c-1.9-2-5-2-6.9 0L12 7.8l-1.9-1.9a4.8 4.8 0 0 0-6.9 6.7L12 21l8.8-8.4a4.8 4.8 0 0 0 0-6.7Z"/></symbol>
+      <symbol id="icon-comment" viewBox="0 0 24 24"><path d="M20 15.5a8.5 8.5 0 1 0-4.4 3.7L21 21l-1-5.5Z"/></symbol>
+      <symbol id="icon-share" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M11 6H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-6"/></symbol>
+      <symbol id="icon-planet" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5.5"/><path d="M2.8 14.8c1.2 2.4 6.2 2.6 11.1.3s7.9-6.1 6.7-8.5c-.6-1.2-2.2-1.7-4.2-1.5M7.5 18.8c-1.8.1-3.1-.4-3.6-1.4"/></symbol>
+      <symbol id="icon-plaza" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="6"/><ellipse cx="12" cy="12" rx="4.7" ry="8"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="icon-chat" viewBox="0 0 24 24"><path d="M20 15.5a8.5 8.5 0 1 0-4.4 3.7L21 21l-1-5.5Z"/><path d="M8 11.5h8M8 14.5h5"/></symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"/></symbol>
+      <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+      <symbol id="icon-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 1 1 3.2 2.3c-.9.4-1.1 1-1.1 1.8M12 17h.01"/></symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></symbol>
+      <symbol id="icon-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.4 5.2c.5-.1 1-.2 1.6-.2 6 0 9 7 9 7a15 15 0 0 1-2.4 3.5M6.1 6.1C4 7.7 3 10 3 12c0 0 3 7 9 7 1.5 0 2.8-.4 3.9-1.1M9.7 9.7a3.2 3.2 0 0 0 4.6 4.6"/></symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+      <symbol id="icon-spark" viewBox="0 0 24 24"><path d="m12 2 1.5 5.2L18 9l-4.5 1.8L12 16l-1.5-5.2L6 9l4.5-1.8L12 2Z"/><path d="m19 15 .7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15Z"/></symbol>
+      <symbol id="icon-lines" viewBox="0 0 24 24"><path d="M5 7h14M5 12h10M5 17h7"/><circle cx="18" cy="12" r="1.5" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="icon-route" viewBox="0 0 24 24"><circle cx="6" cy="17" r="2"/><circle cx="18" cy="7" r="2"/><path d="M8 17h3c4 0 2-10 5-10"/></symbol>
+      <symbol id="icon-users" viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.3"/><path d="M3.5 19c.6-3.3 2.4-5 5.5-5s4.9 1.7 5.5 5M15 15c3.3-.2 4.9 1.2 5.5 4"/></symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.3 8-8 10-4.7-2-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5"/></symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+      <symbol id="icon-add" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="icon-send" viewBox="0 0 24 24"><path d="m4 11 16-7-7 16-2-7-7-2Z"/><path d="m11 13 4-4"/></symbol>
+      <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M18.2 9A7 7 0 0 0 6.4 6.4L4 9m16 6-2.4 2.6A7 7 0 0 1 5.8 15"/></symbol>
+      <symbol id="icon-home" viewBox="0 0 24 24"><path d="m4 11 8-7 8 7v8a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-8Z"/></symbol>
+      <symbol id="icon-voice" viewBox="0 0 24 24"><path d="M9 8.5a4 4 0 0 0 0 7M6 5a8 8 0 0 0 0 14M12 6v12"/><path d="M15 9.5a3 3 0 0 1 0 5M18 7a7 7 0 0 1 0 10"/></symbol>
+      <symbol id="icon-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r=".8" fill="currentColor" stroke="none"/><path d="M8.5 14.5c1 1.3 2.1 2 3.5 2s2.5-.7 3.5-2"/></symbol>
+      <symbol id="icon-cell" viewBox="0 0 24 24"><rect x="3" y="15" width="3" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="8" y="11" width="3" height="10" rx="1" fill="currentColor" stroke="none"/><rect x="13" y="7" width="3" height="14" rx="1" fill="currentColor" stroke="none"/><rect x="18" y="3" width="3" height="18" rx="1" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="icon-wifi" viewBox="0 0 24 24"><path d="M3 9a14 14 0 0 1 18 0M6.5 12.5a9 9 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="icon-play" viewBox="0 0 24 24"><path d="M9 6.8v10.4L18 12 9 6.8Z" fill="currentColor" stroke="none"/></symbol>
+    </svg>
+    <main class="prototype-shell">
+      <aside class="brief-panel" aria-label="产品概念说明">
+        <div class="brief-top">
+          <span class="eyebrow"><span class="live-dot"></span> INTERACTIVE PROTOTYPE</span>
+          <div class="title-row">
+            <h1>此刻同频</h1>
+            <button class="story-play-button" id="openStoryVideo" type="button" aria-haspopup="dialog" aria-controls="storyVideoModal">
+              <span><svg class="ui-icon" aria-hidden="true"><use href="#icon-play"/></svg></span>
+              播放视频
+            </button>
+          </div>
+          <p class="one-liner">从一次广场浏览里理解你此刻想聊什么，并连接正在关注相似话题的人。</p>
+
+          <div class="hypothesis-card">
+            <span>核心假设</span>
+            <p>长期画像适合推荐内容，短期会话信号更适合发起当下的社交连接。</p>
+            <div class="ai-role"><strong>AI 的角色</strong><small>点击、停留与跳过 → 临时话题信号 → 用户召回与排序</small></div>
+          </div>
+
+          <nav class="journey" aria-label="原型流程">
+            <button class="journey-item is-active" data-jump="feed">
+              <span class="journey-index">01</span>
+              <span><strong>理解当下兴趣</strong><small>点击、停留与连续浏览</small></span>
+            </button>
+            <button class="journey-item" data-jump="consent">
+              <span class="journey-index">02</span>
+              <span><strong>用户确认</strong><small>只用本次会话，15 分钟失效</small></span>
+            </button>
+            <button class="journey-item" data-jump="intent">
+              <span class="journey-index">03</span>
+              <span><strong>补充社交意图</strong><small>区分聊天、交流与组队</small></span>
+            </button>
+            <button class="journey-item" data-jump="matching">
+              <span class="journey-index">04</span>
+              <span><strong>实时排序</strong><small>话题 × 意图 × 在线状态</small></span>
+            </button>
+            <button class="journey-item" data-jump="result">
+              <span class="journey-index">05</span>
+              <span><strong>解释后连接</strong><small>展示共同点，不暴露记录</small></span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="brief-bottom">
+          <div class="principle-row">
+            <span>用户自主</span><span>隐私最小化</span><span>即时兴趣</span>
+          </div>
+          <p>Concept prototype · 非 Soul 官方产品</p>
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="手机交互原型">
+        <div class="stage-glow glow-a"></div>
+        <div class="stage-glow glow-b"></div>
+        <div class="demo-caption">
+          <span>点击屏幕体验</span>
+          <button id="restartDemo" type="button" aria-label="重新开始原型"><svg class="mini-icon"><use href="#icon-refresh"/></svg>重新开始</button>
+        </div>
+
+        <div class="device-gallery">
+        <div class="phone primary-phone" role="application" aria-label="此刻同频手机原型">
+          <div class="phone-bezel">
+            <div class="dynamic-island" aria-hidden="true"></div>
+            <div class="status-bar" aria-hidden="true">
+              <span>22:16</span>
+              <div class="status-icons"><svg class="status-icon"><use href="#icon-cell"/></svg><svg class="status-icon"><use href="#icon-wifi"/></svg><span class="battery"></span></div>
+            </div>
+
+            <div class="app-screen">
+              <section class="screen is-active" data-screen="feed" aria-label="广场浏览">
+                <header class="app-header feed-header">
+                  <button class="avatar-mini soul-glyph" aria-label="Soul 功能入口"><svg class="ui-icon"><use href="#icon-plaza"/></svg></button>
+                  <nav class="top-tabs" aria-label="广场频道">
+                    <button>关注</button>
+                    <button class="is-active">推荐</button>
+                    <button>同城</button>
+                  </nav>
+                  <button class="icon-btn" aria-label="搜索"><svg class="ui-icon"><use href="#icon-search"/></svg></button>
+                </header>
+
+                <div class="feed-scroll">
+                  <article class="post-card" data-interest="城市夜骑">
+                    <div class="post-author">
+                      <img class="avatar" src="soulassets/avatars/cat-dandelion.png" alt="">
+                      <span><strong>猫形蒲公英</strong><small>12 分钟前</small></span>
+                      <button class="follow-pill" aria-label="关注">关注</button>
+                    </div>
+                    <p class="post-copy">下班后沿着苏州河慢慢骑，风比想象中温柔。有没有适合新手的安静路线？<em>#城市夜骑 #上海骑行</em></p>
+                    <div class="post-media night-ride-media">
+                      <img class="post-photo" src="soulassets/media/riverside-bike-v1.jpg" alt="傍晚停在上海河边步道的自行车">
+                      <div class="media-label"><span>今晚的苏州河</span><small>此刻的风刚刚好</small></div>
+                    </div>
+                    <button class="post-location"><svg class="inline-icon"><use href="#icon-location"/></svg>上海市<svg class="tiny-icon"><use href="#icon-chevron"/></svg></button>
+                    <div class="post-actions">
+                      <button class="action-btn private-chat"><svg><use href="#icon-hi"/></svg>私聊</button>
+                      <button class="action-btn" data-action="like" data-trigger-nudge="true" aria-label="点赞后查看同频推荐"><svg><use href="#icon-heart"/></svg>286</button>
+                      <button class="action-btn"><svg><use href="#icon-comment"/></svg>43</button>
+                      <button class="action-btn icon-only" aria-label="分享"><svg><use href="#icon-share"/></svg></button>
+                    </div>
+                  </article>
+
+                  <article class="post-card compact-card" data-interest="城市夜骑">
+                    <div class="post-author">
+                      <img class="avatar" src="soulassets/avatars/zoe.png" alt="">
+                      <span><strong>ZOE</strong><small>24 分钟前</small></span>
+                      <button class="follow-pill" aria-label="关注">关注</button>
+                    </div>
+                    <p class="post-copy">整理了一份徐汇滨江夜骑补给点，周末准备去踩线 🚲<em>#新手路线</em></p>
+                    <div class="topic-strip"><span>徐汇滨江</span><span>新手友好</span><span>夜间骑行</span></div>
+                    <div class="post-actions">
+                      <button class="action-btn private-chat"><svg><use href="#icon-hi"/></svg>私聊</button>
+                      <button class="action-btn"><svg><use href="#icon-heart"/></svg>102</button>
+                      <button class="action-btn"><svg><use href="#icon-comment"/></svg>18</button>
+                      <button class="action-btn icon-only" aria-label="分享"><svg><use href="#icon-share"/></svg></button>
+                    </div>
+                  </article>
+                </div>
+
+                <div class="interest-nudge" id="interestNudge" aria-hidden="true" hidden>
+                  <div class="nudge-icon">
+                    <span></span><span></span><span></span>
+                  </div>
+                  <div class="nudge-copy">
+                    <span class="privacy-kicker">基于本次浏览</span>
+                    <h2>你最近常看<br /><em>城市夜骑</em></h2>
+                    <p><strong>18 人</strong>也在关注相似话题</p>
+                  </div>
+                  <button class="primary-btn" data-next="consent">匹配同频 Souler <svg class="button-icon"><use href="#icon-arrow-right"/></svg></button>
+                  <button class="text-btn dismiss-nudge">暂时不用</button>
+                </div>
+
+                <nav class="bottom-nav" aria-label="主导航">
+                  <button data-nav="planet" aria-label="星球"><img class="nav-icon-img" src="soulassets/icons/planet.png" alt=""><small>星球</small></button>
+                  <button class="is-active" data-nav="plaza" aria-label="广场" aria-current="page"><img class="nav-icon-img" src="soulassets/icons/plaza.png" alt=""><small>广场</small></button>
+                  <button class="create-button" aria-label="发布"><b>发布</b><small>瞬间</small></button>
+                  <button data-nav="chat" aria-label="聊天"><img class="nav-icon-img" src="soulassets/icons/chat.png" alt=""><small>聊天</small></button>
+                  <button data-nav="me" aria-label="自己"><img class="nav-icon-img nav-avatar-img" src="soulassets/icons/me.png" alt=""><small>自己</small></button>
+                </nav>
+              </section>
+
+              <section class="screen detail-screen" data-screen="consent" aria-label="授权设置">
+                <header class="detail-header">
+                  <button class="back-btn" data-back="feed" aria-label="返回"><svg class="ui-icon"><use href="#icon-back"/></svg></button>
+                  <span>此刻同频</span>
+                  <button class="help-btn" aria-label="功能说明"><svg class="ui-icon"><use href="#icon-help"/></svg></button>
+                </header>
+                <div class="consent-visual" aria-hidden="true">
+                  <div class="orbit orbit-one"><i></i><i></i><i></i></div>
+                  <div class="orbit orbit-two"><i></i><i></i></div>
+                  <div class="center-pulse"><span>城市<br />夜骑</span></div>
+                </div>
+                <div class="detail-content consent-copy">
+                  <span class="section-kicker">由你确认</span>
+                  <h2>使用本次兴趣<br />寻找同好</h2>
+                  <p>只使用这次浏览形成的“城市夜骑”话题信号，寻找正在关注相似内容的人。</p>
+
+                  <div class="permission-card">
+                    <div class="permission-row">
+                      <span class="permission-icon"><svg><use href="#icon-clock"/></svg></span>
+                      <span><strong>15 分钟后自动失效</strong><small>不会加入长期兴趣档案</small></span>
+                    </div>
+                    <div class="permission-row">
+                      <span class="permission-icon"><svg><use href="#icon-eye-off"/></svg></span>
+                      <span><strong>只显示共同话题</strong><small>对方看不到你看过什么、停留多久</small></span>
+                    </div>
+                  </div>
+
+                  <label class="topic-consent">
+                    <input id="topicConsent" type="checkbox" checked />
+                    <span class="custom-check">✓</span>
+                    <span>本次用于匹配的话题：<strong>城市夜骑</strong></span>
+                  </label>
+                </div>
+                <div class="screen-actions">
+                  <button class="primary-btn" id="enableMatching" data-next="intent">继续 <svg class="button-icon"><use href="#icon-arrow-right"/></svg></button>
+                  <button class="text-btn" data-back="feed">返回广场</button>
+                </div>
+              </section>
+
+              <section class="screen detail-screen" data-screen="intent" aria-label="选择社交意图">
+                <header class="detail-header">
+                  <button class="back-btn" data-back="consent" aria-label="返回"><svg class="ui-icon"><use href="#icon-back"/></svg></button>
+                  <span>此刻同频</span>
+                  <span class="timer-pill">14:52</span>
+                </header>
+                <div class="detail-content intent-content">
+                  <span class="section-kicker">你现在更想…</span>
+                  <h2>聊聊、换路线，<br />还是找搭子？</h2>
+                  <p>选择一个就好，之后随时可以更换。</p>
+
+                  <div class="intent-list" role="radiogroup" aria-label="社交意图">
+                    <button class="intent-option is-selected" role="radio" aria-checked="true" data-intent="随便聊聊">
+                      <span class="intent-art art-chat"><svg><use href="#icon-lines"/></svg></span>
+                      <span><strong>随便聊聊</strong><small>先认识一下</small></span>
+                      <i><svg><use href="#icon-check"/></svg></i>
+                    </button>
+                    <button class="intent-option" role="radio" aria-checked="false" data-intent="交换路线">
+                      <span class="intent-art art-map"><svg><use href="#icon-route"/></svg></span>
+                      <span><strong>交换路线</strong><small>分享路线、装备和经验</small></span>
+                      <i><svg><use href="#icon-check"/></svg></i>
+                    </button>
+                    <button class="intent-option" role="radio" aria-checked="false" data-intent="周末组队">
+                      <span class="intent-art art-team"><svg><use href="#icon-users"/></svg></span>
+                      <span><strong>周末组队</strong><small>寻找时间合适的骑行搭子</small></span>
+                      <i><svg><use href="#icon-check"/></svg></i>
+                    </button>
+                  </div>
+
+                  <div class="generated-note"><svg class="inline-icon"><use href="#icon-spark"/></svg>选项根据当前话题生成，可随时更换</div>
+                </div>
+                <div class="screen-actions">
+                  <button class="primary-btn" id="startMatching" data-next="matching">开始寻找 <svg class="button-icon"><use href="#icon-arrow-right"/></svg></button>
+                </div>
+              </section>
+
+              <section class="screen matching-screen" data-screen="matching" aria-label="正在匹配">
+                <header class="detail-header transparent-header">
+                  <button class="back-btn" data-back="intent" aria-label="返回"><svg class="ui-icon"><use href="#icon-back"/></svg></button>
+                  <span>此刻同频</span>
+                  <span class="timer-pill">14:46</span>
+                </header>
+                <div class="matching-copy">
+                  <span class="section-kicker light-kicker">正在为你筛选</span>
+                  <h2>正在关注<br />城市夜骑的人</h2>
+                  <p id="matchingStatus">先看共同话题，再看交流意图和在线状态</p>
+                </div>
+                <div class="radar" aria-hidden="true">
+                  <span class="radar-ring ring-one"></span>
+                  <span class="radar-ring ring-two"></span>
+                  <span class="radar-ring ring-three"></span>
+                  <span class="radar-sweep"></span>
+                  <span class="radar-user radar-you">M</span>
+                  <img class="radar-person person-one" src="soulassets/avatars/cat-dandelion.png" alt="">
+                  <img class="radar-person person-two" src="soulassets/avatars/zoe.png" alt="">
+                  <img class="radar-person person-three" src="soulassets/avatars/lost-north.png" alt="">
+                  <img class="radar-person person-four" src="soulassets/icons/me.png" alt="">
+                </div>
+                <div class="matching-factors">
+                  <span class="factor is-done"><i></i>话题相近</span>
+                  <span class="factor is-done"><i></i>意图一致</span>
+                  <span class="factor" id="onlineFactor"><i></i>当前在线</span>
+                </div>
+                <button class="cancel-match" data-back="intent">取消匹配</button>
+              </section>
+
+              <section class="screen result-screen" data-screen="result" aria-label="匹配结果">
+                <header class="detail-header">
+                  <button class="back-btn" data-back="intent" aria-label="返回"><svg class="ui-icon"><use href="#icon-back"/></svg></button>
+                  <span>找到一位同好</span>
+                  <button class="icon-btn" aria-label="更多"><svg class="ui-icon"><use href="#icon-more"/></svg></button>
+                </header>
+                <div class="result-scroll">
+                  <div class="match-hero">
+                    <span class="halo halo-one"></span><span class="halo halo-two"></span>
+                    <div class="match-avatar"><img src="soulassets/avatars/lost-north.png" alt=""><span class="online-dot"></span></div>
+                    <span class="match-score">3 个匹配点</span>
+                    <h2>摸不着北</h2>
+                    <p>IP 上海 · 刚刚在线</p>
+                  </div>
+
+                  <div class="common-card">
+                    <div class="common-header"><svg class="inline-icon"><use href="#icon-spark"/></svg><strong>为什么推荐给你</strong></div>
+                    <div class="common-topic"><small>你们都在看</small><strong>城市夜骑</strong></div>
+                    <div class="common-tags"><span>新手路线</span><span>徐汇滨江</span><span id="intentTag">随便聊聊</span></div>
+                    <button class="why-link" id="whyMatch">查看匹配依据 <svg class="tiny-icon"><use href="#icon-chevron"/></svg></button>
+                  </div>
+
+                  <div class="privacy-reminder"><svg class="inline-icon"><use href="#icon-lock"/></svg><p><strong>你的浏览记录不会被分享</strong><small>对方只会看到共同话题和你选择的交流意图</small></p></div>
+
+                  <div class="icebreaker-card">
+                    <span class="section-kicker">可编辑的开场建议</span>
+                    <p>“你有试过徐汇滨江的新手路线吗？”</p>
+                    <small>根据共同话题生成，发送前可以修改</small>
+                  </div>
+                </div>
+                <div class="result-actions">
+                  <button class="secondary-btn" data-back="matching">换一位</button>
+                  <button class="primary-btn" data-next="chat">去聊聊 <svg class="button-icon"><use href="#icon-arrow-right"/></svg></button>
+                </div>
+              </section>
+
+              <section class="screen chat-screen" data-screen="chat" aria-label="聊天">
+                <header class="chat-header soul-chat-header">
+                  <button class="back-btn" data-back="result" aria-label="返回"><svg class="ui-icon"><use href="#icon-back"/></svg></button>
+                  <span class="chat-person"><strong>摸不着北</strong><small>刚刚在线</small></span>
+                  <span class="chat-follow-cluster"><button class="chat-follow-button" type="button">关注</button><small>关注后可邀请通话</small></span>
+                  <button class="icon-btn chat-more-button" aria-label="更多"><svg class="ui-icon"><use href="#icon-more"/></svg></button>
+                </header>
+
+                <section class="chat-profile-card" aria-label="匹配资料">
+                  <div class="chat-profile-top">
+                    <div class="chat-profile-avatars" aria-label="双方头像">
+                      <img class="profile-avatar-you" src="soulassets/icons/me.png" alt="我的头像">
+                      <img class="profile-avatar-match" src="soulassets/avatars/lost-north.png" alt="摸不着北的头像">
+                    </div>
+                    <div class="chat-match-summary">
+                      <strong>匹配度 93%</strong>
+                      <span>城市夜骑同频</span>
+                    </div>
+                    <button class="profile-home-button" type="button"><svg class="mini-icon"><use href="#icon-home"/></svg>查看主页</button>
+                  </div>
+
+                  <div class="chat-profile-row">
+                    <span class="profile-row-label"><i></i>Ta 的引力签：</span>
+                    <div class="profile-tag-list"><span>新手夜骑</span><span>徐汇滨江</span><span>周末骑行</span><span>路线交换</span></div>
+                  </div>
+                  <div class="chat-profile-row constellation-row">
+                    <span class="profile-row-label"><i></i>Ta 的星座：</span>
+                    <div class="profile-tag-list"><span>射手座</span></div>
+                  </div>
+                </section>
+
+                <div class="messages soul-chat-body" id="messages">
+                  <div class="chat-thread" id="chatThread" hidden></div>
+                </div>
+
+                <section class="suggestion-block soul-inspiration-panel" id="suggestionBlock" aria-label="灵感回复">
+                  <div class="inspiration-header">
+                    <span class="ai-orb" aria-hidden="true">AI</span>
+                    <strong>灵感回复可提升回复率哦</strong>
+                    <button id="refreshSuggestions" type="button" aria-label="换一组灵感回复"><svg class="ui-icon"><use href="#icon-refresh"/></svg></button>
+                  </div>
+                  <div class="inspiration-list">
+                    <button class="suggestion-chip" data-message="哈喽，今天天气还挺适合骑车">
+                      <span class="suggestion-main"><strong>哈喽</strong><i>/</i>今天天气还挺适合骑车</span>
+                      <small><b>✦</b>经典问候，安全不出错</small>
+                    </button>
+                    <button class="suggestion-chip" data-message="嗨，我也在找夜骑路线">
+                      <span class="suggestion-main"><strong>嗨</strong><i>/</i>我也在找夜骑路线</span>
+                      <small><b>✦</b>共同话题，更容易接住</small>
+                    </button>
+                  </div>
+                </section>
+
+                <div class="composer">
+                  <button class="voice-button" type="button" aria-label="语音"><svg class="ui-icon"><use href="#icon-voice"/></svg></button>
+                  <div class="chat-input-wrap">
+                    <input id="messageInput" aria-label="消息" placeholder="文明聊天，友善交友～" />
+                    <button class="send-btn ai-send-button" id="sendMessage" aria-label="发送"><span class="ai-orb" aria-hidden="true">AI</span></button>
+                    <button class="emoji-button" type="button" aria-label="表情"><svg class="ui-icon"><use href="#icon-smile"/></svg></button>
+                  </div>
+                  <button class="add-button" type="button" aria-label="添加"><svg class="ui-icon"><use href="#icon-add"/></svg></button>
+                </div>
+              </section>
+
+              <div class="bottom-sheet-backdrop" id="whyBackdrop" hidden>
+                <div class="bottom-sheet" role="dialog" aria-modal="true" aria-label="匹配原因">
+                  <span class="sheet-handle"></span>
+                  <button class="sheet-close" id="closeWhy" aria-label="关闭"><svg class="ui-icon"><use href="#icon-close"/></svg></button>
+                  <span class="section-kicker">推荐依据</span>
+                  <h2>为什么是这位用户？</h2>
+                  <div class="reason-list">
+                    <div><span>01</span><p><strong>最近关注相似话题</strong><small>只使用临时话题信号，不共享具体帖子。</small></p></div>
+                    <div><span>02</span><p><strong>当前社交意图一致</strong><small id="intentReason">你们都选择了“随便聊聊”。</small></p></div>
+                    <div><span>03</span><p><strong>现在都在线</strong><small>更有机会及时收到回应。</small></p></div>
+                  </div>
+                  <button class="primary-btn" id="understandWhy">知道了</button>
+                </div>
+              </div>
+
+              <div class="success-toast" id="successToast" role="status" aria-live="polite">
+                <span><svg class="ui-icon"><use href="#icon-check"/></svg></span>
+                <p><strong>消息已发送</strong><small>你可以随时结束对话</small></p>
+              </div>
+            </div>
+
+            <div class="home-indicator" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <div class="phone companion-phone" role="application" aria-label="考研备考 AI 动态选项示例" aria-hidden="true">
+          <div class="phone-bezel">
+            <div class="status-bar" aria-hidden="true">
+              <span>22:16</span>
+              <div class="status-icons"><svg class="status-icon"><use href="#icon-cell"/></svg><svg class="status-icon"><use href="#icon-wifi"/></svg><span class="battery"></span></div>
+            </div>
+
+            <div class="companion-app-screen">
+              <section class="exam-standalone" aria-label="考研备考社交意图">
+                <header class="detail-header">
+                  <button class="back-btn" type="button" aria-label="返回"><svg class="ui-icon"><use href="#icon-back"/></svg></button>
+                  <span>此刻同频</span>
+                  <span class="ai-example-pill"><svg class="tiny-icon"><use href="#icon-spark"/></svg> demo</span>
+                </header>
+
+                <div class="detail-content intent-content exam-intent-content">
+                  <span class="section-kicker">你现在更想…</span>
+                  <h2>备考这件事，<br />你更需要哪种陪伴？</h2>
+                  <p>话题不同，适合的连接方式也不同；选一个就好。</p>
+
+                  <div class="intent-list exam-intent-list" role="radiogroup" aria-label="考研备考社交意图">
+                    <button class="intent-option exam-intent-option" role="radio" aria-checked="false" data-exam-intent="互相监督">
+                      <span class="intent-art art-focus"><svg><use href="#icon-clock"/></svg></span>
+                      <span><strong>互相监督</strong><small>每日打卡，保持备考节奏</small></span>
+                      <i><svg><use href="#icon-check"/></svg></i>
+                    </button>
+                    <button class="intent-option exam-intent-option" role="radio" aria-checked="false" data-exam-intent="交换资料">
+                      <span class="intent-art art-material"><svg><use href="#icon-lines"/></svg></span>
+                      <span><strong>交换资料</strong><small>分享真题、笔记和备考信息</small></span>
+                      <i><svg><use href="#icon-check"/></svg></i>
+                    </button>
+                    <button class="intent-option exam-intent-option" role="radio" aria-checked="false" data-exam-intent="情绪支持">
+                      <span class="intent-art art-support"><svg><use href="#icon-heart"/></svg></span>
+                      <span><strong>情绪支持</strong><small>找人聊聊焦虑和压力</small></span>
+                      <i><svg><use href="#icon-check"/></svg></i>
+                    </button>
+                    <button class="intent-option exam-intent-option is-selected" role="radio" aria-checked="true" data-exam-intent="找同校研友">
+                      <span class="intent-art art-school"><svg><use href="#icon-users"/></svg></span>
+                      <span><strong>找同校研友</strong><small>按目标院校寻找研友</small></span>
+                      <i><svg><use href="#icon-check"/></svg></i>
+                    </button>
+                  </div>
+
+                  <div class="generated-note"><svg class="inline-icon"><use href="#icon-spark"/></svg>选项根据当前话题生成，可随时更换</div>
+                </div>
+
+                <div class="screen-actions">
+                  <button class="primary-btn" id="useExamIntent">按这个方向寻找 <svg class="button-icon"><use href="#icon-arrow-right"/></svg></button>
+                </div>
+
+                <div class="success-toast exam-success-toast" id="examSuccessToast" role="status" aria-live="polite">
+                  <span><svg class="ui-icon"><use href="#icon-check"/></svg></span>
+                  <p><strong>已选择「找同校研友」</strong><small>AI 会按这个方向寻找更合适的人</small></p>
+                </div>
+              </section>
+            </div>
+
+            <div class="home-indicator" aria-hidden="true"></div>
+          </div>
+        </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="video-modal" id="storyVideoModal" hidden>
+      <div class="video-dialog" role="dialog" aria-modal="true" aria-labelledby="storyVideoTitle">
+        <header class="video-dialog-header">
+          <div>
+            <span>功能演示</span>
+            <h2 id="storyVideoTitle">此刻同频 · 使用场景</h2>
+          </div>
+          <button class="video-close-button" id="closeStoryVideo" type="button" aria-label="关闭视频">
+            <svg class="ui-icon"><use href="#icon-close"/></svg>
+          </button>
+        </header>
+        <video id="storyVideo" controls preload="metadata" poster="soul-user-story-cover.png">
+          <source src="soul-user-story-video.mp4" type="video/mp4" />
+          你的浏览器暂不支持视频播放。
+        </video>
+      </div>
+    </div>
+
+    <script src="soul.js?v=soul-files-3"></script>
+  </body>
+</html>
