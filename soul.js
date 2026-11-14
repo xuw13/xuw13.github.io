@@ -17,10 +17,14 @@ const chatThread = document.getElementById('chatThread');
 const interestNudge = document.getElementById('interestNudge');
 const captureParams = new URLSearchParams(window.location.search);
 const captureMode = captureParams.get('capture') === '1';
-const openStoryVideoButton = document.getElementById('openStoryVideo');
+const openStoryVideoButtons = [...document.querySelectorAll('[data-open-story-video]')];
 const closeStoryVideoButton = document.getElementById('closeStoryVideo');
 const storyVideoModal = document.getElementById('storyVideoModal');
 const storyVideo = document.getElementById('storyVideo');
+const mobileIntro = document.querySelector('.mobile-intro');
+const prototypeStage = document.querySelector('.stage');
+const startMobilePrototypeButton = document.getElementById('startMobilePrototype');
+let storyVideoTrigger = openStoryVideoButtons[0];
 if (captureMode) {
   document.documentElement.classList.add('capture-mode');
   document.body.classList.add('capture-mode');
@@ -33,7 +37,8 @@ let nudgeHideTimer;
 let feedAutoNudgeTimer;
 let suggestionSetIndex = 0;
 
-function openStoryVideo() {
+function openStoryVideo(event) {
+  storyVideoTrigger = event?.currentTarget || openStoryVideoButtons[0];
   storyVideoModal.hidden = false;
   document.body.classList.add('video-open');
   storyVideo.currentTime = 0;
@@ -48,16 +53,41 @@ function closeStoryVideo() {
   storyVideo.pause();
   storyVideoModal.hidden = true;
   document.body.classList.remove('video-open');
-  openStoryVideoButton.focus();
+  storyVideoTrigger?.focus();
 }
 
-openStoryVideoButton.addEventListener('click', openStoryVideo);
+openStoryVideoButtons.forEach((button) => button.addEventListener('click', openStoryVideo));
 closeStoryVideoButton.addEventListener('click', closeStoryVideo);
 storyVideoModal.addEventListener('click', (event) => {
   if (event.target === storyVideoModal) closeStoryVideo();
 });
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && !storyVideoModal.hidden) closeStoryVideo();
+});
+
+function setMobilePrototypeActive(active) {
+  document.body.classList.toggle('mobile-prototype-started', active);
+  mobileIntro.setAttribute('aria-hidden', active ? 'true' : 'false');
+  prototypeStage.setAttribute('aria-hidden', active ? 'false' : 'true');
+
+  if (active) {
+    window.scrollTo(0, 0);
+    showScreen('feed');
+    return;
+  }
+
+  window.clearTimeout(feedAutoNudgeTimer);
+  hideInterestNudge(true);
+  window.scrollTo(0, 0);
+}
+
+startMobilePrototypeButton.addEventListener('click', () => {
+  window.history.pushState({ mobilePrototype: true }, '', '#prototype');
+  setMobilePrototypeActive(true);
+});
+
+window.addEventListener('popstate', () => {
+  setMobilePrototypeActive(window.location.hash === '#prototype');
 });
 
 function showInterestNudge() {
@@ -314,6 +344,10 @@ messageInput.addEventListener('keydown', (event) => {
 });
 
 showScreen('feed');
+
+if (!captureMode && window.matchMedia('(max-width: 800px)').matches) {
+  setMobilePrototypeActive(window.location.hash === '#prototype');
+}
 
 if (captureMode) {
   const captureState = captureParams.get('state') || 'feed';

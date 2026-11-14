@@ -9,7 +9,7 @@
       content="此刻同频：基于广场实时浏览兴趣与用户主动授权的社交匹配概念原型。"
     />
     <title>此刻同频 · 交互原型</title>
-    <link rel="stylesheet" href="soul.css?v=soul-files-2" />
+    <link rel="stylesheet" href="soul.css?v=soul-files-6" />
   </head>
   <body>
     <svg class="svg-sprite" aria-hidden="true">
@@ -54,7 +54,7 @@
           <span class="eyebrow"><span class="live-dot"></span> INTERACTIVE PROTOTYPE</span>
           <div class="title-row">
             <h1>此刻同频</h1>
-            <button class="story-play-button" id="openStoryVideo" type="button" aria-haspopup="dialog" aria-controls="storyVideoModal">
+            <button class="story-play-button" data-open-story-video type="button" aria-haspopup="dialog" aria-controls="storyVideoModal">
               <span><svg class="ui-icon" aria-hidden="true"><use href="#icon-play"/></svg></span>
               播放视频
             </button>
@@ -99,9 +99,66 @@
         </div>
       </aside>
 
+      <section class="mobile-intro" aria-labelledby="mobileIntroTitle">
+        <div class="mobile-intro-orb orb-one" aria-hidden="true"></div>
+        <div class="mobile-intro-orb orb-two" aria-hidden="true"></div>
+
+        <header class="mobile-intro-header">
+          <span class="mobile-intro-kicker"><i></i> AI MATCHING CONCEPT</span>
+          <button class="mobile-intro-video" data-open-story-video type="button" aria-haspopup="dialog" aria-controls="storyVideoModal">
+            <svg class="ui-icon" aria-hidden="true"><use href="#icon-play"/></svg>
+            用户故事
+          </button>
+        </header>
+
+        <div class="mobile-intro-content">
+          <div class="mobile-intro-title">
+            <p>Soul · 概念功能</p>
+            <h1 id="mobileIntroTitle">此刻同频</h1>
+            <span>把一次短暂兴趣，变成一场刚好发生的连接。</span>
+          </div>
+
+          <div class="mobile-signal-visual" aria-hidden="true">
+            <div class="signal-topic"><small>你此刻在关注</small><strong>城市夜骑</strong></div>
+            <div class="signal-line"></div>
+            <div class="signal-people">
+              <img src="soulassets/avatars/cat-dandelion.png" alt="" />
+              <img src="soulassets/avatars/zoe.png" alt="" />
+              <img src="soulassets/avatars/lost-north.png" alt="" />
+              <span>18 人在线</span>
+            </div>
+          </div>
+
+          <div class="mobile-how-card">
+            <div class="mobile-how-heading">
+              <span>AI 如何参与</span>
+              <small>只理解此刻，不定义长期的你</small>
+            </div>
+            <ol>
+              <li><i><svg class="ui-icon"><use href="#icon-spark"/></svg></i><span><strong>理解当下兴趣</strong><small>点击、停留与连续浏览</small></span></li>
+              <li><i><svg class="ui-icon"><use href="#icon-users"/></svg></i><span><strong>生成匹配目的</strong><small>根据话题提供合适选项</small></span></li>
+              <li><i><svg class="ui-icon"><use href="#icon-shield"/></svg></i><span><strong>连接在线同频用户</strong><small>话题 × 意图 × 在线状态</small></span></li>
+            </ol>
+            <div class="mobile-privacy-note"><svg class="ui-icon"><use href="#icon-clock"/></svg>本次浏览信号将在 15 分钟后失效</div>
+          </div>
+        </div>
+
+        <div class="mobile-intro-actions">
+          <button class="mobile-start-button" id="startMobilePrototype" type="button">
+            开始体验原型
+            <svg class="ui-icon" aria-hidden="true"><use href="#icon-arrow-right"/></svg>
+          </button>
+          <p>Concept prototype · 非 Soul 官方产品</p>
+        </div>
+      </section>
+
       <section class="stage" aria-label="手机交互原型">
         <div class="stage-glow glow-a"></div>
         <div class="stage-glow glow-b"></div>
+        <button class="mobile-story-play-button" data-open-story-video type="button" aria-haspopup="dialog" aria-controls="storyVideoModal">
+          <span><svg class="ui-icon" aria-hidden="true"><use href="#icon-play"/></svg></span>
+          <strong>观看故事</strong>
+        </button>
         <div class="demo-caption">
           <span>点击屏幕体验</span>
           <button id="restartDemo" type="button" aria-label="重新开始原型"><svg class="mini-icon"><use href="#icon-refresh"/></svg>重新开始</button>
@@ -493,13 +550,13 @@
             <svg class="ui-icon"><use href="#icon-close"/></svg>
           </button>
         </header>
-        <video id="storyVideo" controls preload="metadata" poster="soul-user-story-cover.png">
+        <video id="storyVideo" controls playsinline webkit-playsinline preload="metadata" poster="soul-user-story-cover.png">
           <source src="soul-user-story-video.mp4" type="video/mp4" />
           你的浏览器暂不支持视频播放。
         </video>
       </div>
     </div>
 
-    <script src="soul.js?v=soul-files-3"></script>
+    <script src="soul.js?v=soul-files-6"></script>
   </body>
 </html>
