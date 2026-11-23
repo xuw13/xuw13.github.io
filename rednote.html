@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>一起试试 · 高仿真交互原型</title>
+    <meta
+      name="description"
+      content="把看过同一篇笔记的陌生人，变成一起完成过一件事的人。"
+    />
+    <link rel="stylesheet" href="rednote-styles.css" />
+    <link rel="stylesheet" href="rednote-high-fidelity.css" />
+  </head>
+  <body>
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="icon-back" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></symbol>
+      <symbol id="icon-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4" /><circle cx="12" cy="12" r="1.4" /><circle cx="19" cy="12" r="1.4" /></symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4 4" /></symbol>
+      <symbol id="icon-heart" viewBox="0 0 24 24"><path d="M20.8 4.9a5.5 5.5 0 00-7.8 0L12 6l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.3a5.5 5.5 0 001-8.8z" /></symbol>
+      <symbol id="icon-comment" viewBox="0 0 24 24"><path d="M21.4 11.5c0 5.4-4.2 9.5-9.5 9.5-1.6 0-3.1-.3-4.3-.9L3 21l.9-4.5a9.8 9.8 0 01-1.1-4.6C2.8 6.7 7 2.5 12 2.5s9.4 4 9.4 9z"/><circle cx="8.2" cy="11.9" r=".5"/><circle cx="15.8" cy="11.9" r=".5"/></symbol>
+      <symbol id="icon-star" viewBox="0 0 24 24"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z" /></symbol>
+      <symbol id="icon-share" viewBox="0 0 24 24"><path d="M14 3l8 7-8 7v-5c-5 0-8.5 3-11 8C2.7 11.7 6.5 7.2 14 7z"/></symbol>
+      <symbol id="icon-pen" viewBox="0 0 24 24"><path d="M4 16L16.5 3.5a2.1 2.1 0 013 3L7 19H3zM3 22h18"/></symbol>
+      <symbol id="icon-mic" viewBox="0 0 24 24"><rect x="8.5" y="2" width="7" height="13" rx="3.5"/><path d="M5 10v2a7 7 0 0014 0v-2M12 19v3"/></symbol>
+      <symbol id="icon-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 17l6-6 4 4 3-3 5 5"/><circle cx="16" cy="8" r="1"/></symbol>
+      <symbol id="icon-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 15h8M7.5 8.5l1.5 1 1.5-1M13.5 8.5l1.5 1 1.5-1"/></symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="icon-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.3"/><path d="M2.5 21v-2a6.5 6.5 0 0113 0v2M17 4a3.4 3.4 0 010 6.6M18 14a5.5 5.5 0 013.5 5v2"/></symbol>
+      <symbol id="icon-leaf" viewBox="0 0 24 24"><path d="M5 20c0-8 4-14 15-16 0 10-3 16-10 16-3.5 0-6-3-4.5-6M5 20l9-9"/></symbol>
+      <symbol id="icon-bolt" viewBox="0 0 24 24"><path d="M14 2L4 14h7l-1 8 10-12h-7z"/></symbol>
+      <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 11.5L12 4l9 7.5V21h-6v-6H9v6H3z" /></symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0116 0" /></symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3" /><path d="M8 10V7a4 4 0 018 0v3" /></symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></symbol>
+      <symbol id="icon-spark" viewBox="0 0 24 24"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" /></symbol>
+      <symbol id="icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 11v6M12 7.5v.2" /></symbol>
+    </svg>
+
+    <section class="mobile-intro" id="mobileIntro">
+      <div class="mobile-intro__orb mobile-intro__orb--one"></div>
+      <div class="mobile-intro__orb mobile-intro__orb--two"></div>
+      <div class="mobile-intro__content">
+        <div class="concept-kicker"><span></span> INTERACTIVE PROTOTYPE</div>
+        <h1>一起试试</h1>
+        <p class="mobile-intro__lead">把看过同一篇笔记的陌生人，变成一起完成过一件事的人。</p>
+        <div class="mobile-intro__card">
+          <strong>核心机制</strong>
+          <ol>
+            <li><span>1</span>从一篇想实践的笔记出发</li>
+            <li><span>2</span>选择时间和行动目标</li>
+            <li><span>3</span>与同行者共同完成</li>
+          </ol>
+        </div>
+        <div class="mobile-intro__note">
+          <svg><use href="#icon-spark"></use></svg>
+          AI 只负责匹配节奏，不替任何人表达
+        </div>
+        <button class="button button--primary button--wide" id="mobileStart">开始体验原型</button>
+        <p class="mobile-start-help">进入笔记后，点击底部 ☆ 收藏开始体验</p>
+        <p class="prototype-disclaimer">概念原型 · 非小红书官方产品</p>
+      </div>
+    </section>
+
+    <main class="app-shell" id="appShell">
+      <aside class="concept-panel">
+        <div class="concept-panel__top">
+          <div class="concept-kicker"><span></span> INTERACTIVE PROTOTYPE</div>
+          <h1>一起试试</h1>
+          <p class="concept-lead">把看过同一篇笔记的陌生人，<br />变成一起完成过一件事的人。</p>
+
+          <div class="demo-start-guide" aria-label="原型体验指引">
+            <span class="demo-start-guide__icon"><svg><use href="#icon-star"></use></svg></span>
+            <div><strong>从「收藏」开始体验</strong><p>点击右侧底部的 ☆ 收藏，再选「一起试试」。</p></div>
+          </div>
+
+          <div class="relationship-shift" aria-label="互动前后的关系变化">
+            <div>
+              <small>互动前</small>
+              <strong>看过同一篇笔记</strong>
+            </div>
+            <div class="relationship-shift__line"><i></i></div>
+            <div>
+              <small>互动后</small>
+              <strong>一起完成过一件事</strong>
+            </div>
+          </div>
+
+          <div class="concept-insights">
+          <section class="concept-card">
+            <div class="concept-card__label">核心假设</div>
+            <p>人们不一定想认识陌生人，但愿意为了一个具体目标，与节奏相近的人并肩行动。</p>
+          </section>
+
+          <section class="concept-card concept-card--ai">
+            <div class="concept-card__label"><svg><use href="#icon-spark"></use></svg> AI 的角色</div>
+            <p>理解笔记中的行动目标，匹配开始时间、节奏与经验；不生成真人回复，不公开浏览轨迹。</p>
+          </section>
+          </div>
+
+          <div class="flow-heading"><h2>体验路径</h2><span>点击步骤，可直接跳转</span></div>
+          <nav class="prototype-flow" aria-label="原型流程">
+            <button data-jump="note" class="flow-step is-active"><span class="flow-step__icon"><svg><use href="#icon-star"></use></svg></span><b>发现行动</b><span>从笔记出发</span></button>
+            <button data-jump="goal" class="flow-step"><span class="flow-step__icon"><svg><use href="#icon-check"></use></svg></span><b>自主确认</b><span>选择行动节奏</span></button>
+            <button data-jump="matching" class="flow-step"><span class="flow-step__icon"><svg><use href="#icon-people"></use></svg></span><b>匹配同行</b><span>找到同行的人</span></button>
+            <button data-jump="day" class="flow-step"><span class="flow-step__icon"><svg><use href="#icon-heart"></use></svg></span><b>共同实践</b><span>打卡与鼓励</span></button>
+            <button data-jump="finish" class="flow-step"><span class="flow-step__icon"><svg><use href="#icon-spark"></use></svg></span><b>沉淀关系</b><span>留下共同经历</span></button>
+          </nav>
+        </div>
+
+        <div class="concept-panel__bottom">
+          <div class="principle-row">
+            <span>用户主动</span><span>轻量关系</span><span>隐私最小化</span>
+          </div>
+          <p>High-fidelity prototype · 参考所提供的小红书浅色界面</p>
+        </div>
+      </aside>
+
+      <section class="device-stage" aria-label="交互原型演示区">
+        <header class="stage-toolbar">
+          <div><i></i><span>高仿真 · 浅色模式</span></div>
+          <button id="restartDemo" class="restart-button">重新开始</button>
+        </header>
+        <nav class="preview-modes" aria-label="快速预览">
+          <button class="is-active" id="previewNote">笔记</button>
+          <button id="previewComments">评论</button>
+          <button id="previewInvitation">一起试试</button>
+        </nav>
+        <div class="phone-shadow"></div>
+        <div class="phone-holder">
+        <div class="phone" id="phone">
+          <div class="phone__notch"></div>
+          <div class="status-bar"><span>17:09</span><div class="status-icons" aria-label="信号、无线网络和电量"><svg class="signal" viewBox="0 0 24 20"><rect x="1" y="13" width="3.5" height="6" rx="1"/><rect x="6.5" y="9" width="3.5" height="10" rx="1"/><rect x="12" y="5" width="3.5" height="14" rx="1"/><rect x="17.5" y="1" width="3.5" height="18" rx="1" opacity=".35"/></svg><svg class="wifi" viewBox="0 0 24 20"><path d="M2 5a17 17 0 0120 0M6 9a10 10 0 0112 0M10 13a4 4 0 014 0"/><path d="M11 16l1 1 1-1"/></svg><svg class="battery" viewBox="0 0 30 16"><rect x="1" y="1" width="25" height="14" rx="4"/><path d="M29 6v4"/><rect class="battery-level" x="3.5" y="3.5" width="7" height="9" rx="2"/></svg></div></div>
+          <div class="phone__screen" id="phoneScreen" aria-live="polite">
+
+            <section class="screen screen--note is-active" data-screen="note" aria-label="笔记详情">
+              <header class="app-header app-header--note">
+                <button class="icon-button" aria-label="返回说明页" id="backToIntro"><svg><use href="#icon-back"></use></svg></button>
+                <div class="author-mini"><span class="avatar avatar--author" aria-label="作者头像"></span><b>金多多 rich</b></div>
+                <button class="follow-button">关注</button>
+                <button class="icon-button" aria-label="分享笔记" data-help="share"><svg><use href="#icon-share"></use></svg></button>
+              </header>
+
+              <div class="note-scroll" id="noteScroll">
+                <div class="note-cover reference-art">
+                  <img src="rednote-assets/rednote-note-reference.png" alt="参考笔记封面：体态改善，告别圆肩驼背，三个动作" />
+                </div>
+                <div class="carousel-dots" aria-label="当前为第 1 张图片，共 4 张"><i class="is-active"></i><i></i><i></i><i></i></div>
+                <article class="note-content">
+                  <h2>3 个动作，久坐党告别圆肩驼背</h2>
+                  <p>长期久坐、低头看手机，真的会悄悄变丑！😫<br />圆肩驼背、头前伸，不仅显胖 10 斤，还会导致脖子疼、富贵包！</p>
+                  <div class="note-tags"><span>#体态改善</span><span>#久坐党</span><span>#日常跟练</span></div>
+                  <div class="note-meta">04-12 · 编辑于上海</div>
+                  <button class="inline-invite" id="inlineInvite"><span class="inline-invite__icon"><svg><use href="#icon-people"></use></svg></span><span><b>收藏之后，要不要一起试试？</b><small>27 人也想从这篇笔记开始行动</small></span><svg class="invite-plus"><use href="#icon-plus"></use></svg></button>
+                </article>
+                <section class="comments-section" id="commentsSection" aria-label="笔记评论区">
+                  <div class="comments-heading"><span>共 <b id="commentCount">5</b> 条评论</span><svg viewBox="0 0 20 20"><path d="M2 5h16M2 10h12M2 15h7"/></svg></div>
+                  <div class="comment-composer"><span class="comment-avatar comment-avatar--self"></span><button data-compose="" class="composer-placeholder">让大家听到你的声音</button><button aria-label="语音评论" class="composer-icon" data-help="voice"><svg><use href="#icon-mic"></use></svg></button><button aria-label="图片评论" class="composer-icon" data-help="image"><svg><use href="#icon-image"></use></svg></button></div>
+                  <div id="commentsList">
+                    <article class="comment-row"><span class="comment-avatar comment-avatar--lili"></span><div class="comment-body"><div class="comment-name">抱走丽莉🍒</div><p>有效果吗😭</p><div class="comment-meta"><span>04-14</span><button data-compose="抱走丽莉">回复</button><button class="comment-like" aria-label="赞这条评论"><svg><use href="#icon-heart"></use></svg></button><button class="comment-reaction" aria-label="表情回应"><svg><use href="#icon-smile"></use></svg></button></div><span class="first-comment">首评</span><button class="expand-reply" id="expandReply"><i></i><span>展开 1 条回复</span></button><div class="nested-reply" id="nestedReply" hidden><b>金多多 rich <em>作者</em></b><p>我也在慢慢坚持，大家可以记录自己的感受～</p></div></div></article>
+                    <article class="comment-row"><span class="comment-avatar comment-avatar--green"></span><div class="comment-body"><div class="comment-name">健康养护老顾问</div><p>靠墙站是最好的方法</p><div class="comment-meta"><span>04-21</span><button data-compose="健康养护老顾问">回复</button><button class="comment-like" aria-label="赞这条评论"><svg><use href="#icon-heart"></use></svg></button><button class="comment-reaction" aria-label="表情回应"><svg><use href="#icon-smile"></use></svg></button></div></div></article>
+                    <article class="comment-row"><span class="comment-avatar comment-avatar--photo"></span><div class="comment-body"><div class="comment-name">团青麻麻</div><p>每个动作做 8 个拍可以吗？就是从 12345678</p><div class="comment-meta"><span>04-16</span><button data-compose="团青麻麻">回复</button><button class="comment-like" aria-label="赞这条评论"><svg><use href="#icon-heart"></use></svg><span>2</span></button><button class="comment-reaction" aria-label="表情回应"><svg><use href="#icon-smile"></use></svg></button></div></div></article>
+                    <article class="comment-row"><span class="comment-avatar comment-avatar--anime"></span><div class="comment-body"><div class="comment-name">鱿鱼还是忧郁</div><p>为啥有些说脚后跟不能靠墙，有些又说脚后跟要靠墙</p><div class="comment-meta"><span>04-22</span><button data-compose="鱿鱼还是忧郁">回复</button><button class="comment-like" aria-label="赞这条评论"><svg><use href="#icon-heart"></use></svg></button><button class="comment-reaction" aria-label="表情回应"><svg><use href="#icon-smile"></use></svg></button></div></div></article>
+                  </div>
+                  <div class="comments-end">- 到底了 -</div>
+                </section>
+              </div>
+
+              <div class="action-bar">
+                <button class="comment-input" data-compose=""><svg><use href="#icon-pen"></use></svg><span>说点什么...</span></button>
+                <button class="action-button" aria-label="点赞笔记" id="likeNote"><svg><use href="#icon-heart"></use></svg><span>969</span></button>
+                <button class="action-button" aria-label="收藏并体验一起试试" id="saveNote"><svg><use href="#icon-star"></use></svg><span>1064</span></button>
+                <button class="action-button" aria-label="查看评论" id="showComments"><svg><use href="#icon-comment"></use></svg><span id="footerCommentCount">5</span></button>
+              </div>
+
+              <button class="coachmark" id="saveCoachmark" aria-label="点击收藏开始体验">
+                <span>点这里收藏，开始体验</span>
+              </button>
+
+              <div class="sheet-backdrop" id="nudgeBackdrop"></div>
+              <section class="bottom-sheet" id="actionNudge" aria-label="一起试试邀请">
+                <div class="sheet-handle"></div>
+                <div class="nudge-illustration">
+                  <span class="avatar avatar--one" role="img" aria-label="慢慢来的头像"></span>
+                  <span class="avatar avatar--two" role="img" aria-label="橙子汽水的头像"></span>
+                  <span class="avatar avatar--three" role="img" aria-label="小禾同学的头像"></span>
+                  <div class="nudge-illustration__spark"><svg><use href="#icon-spark"></use></svg></div>
+                </div>
+                <div class="eyebrow">基于这篇笔记</div>
+                <h3>27 人也准备试试</h3>
+                <p>找到开始时间和节奏相近的人，把“收藏”变成一次真正的行动。</p>
+                <button class="button button--primary button--wide" id="joinAction">一起试试</button>
+                <button class="text-button" id="dismissNudge">这次先不了</button>
+              </section>
+            </section>
+
+            <section class="screen screen--goal" data-screen="goal" aria-label="确认行动目标">
+              <header class="app-header">
+                <button class="icon-button" data-back="note" aria-label="返回"><svg><use href="#icon-back"></use></svg></button>
+                <strong>一起试试</strong>
+                <button class="icon-button" aria-label="功能说明"><svg><use href="#icon-info"></use></svg></button>
+              </header>
+              <div class="screen-scroll screen-scroll--padded">
+                <div class="eyebrow">由你决定</div>
+                <h2 class="screen-title">这一次，你想<br />怎么开始？</h2>
+                <p class="screen-subtitle">选择只用于本次组队，计划结束后自动失效。</p>
+
+                <div class="source-note-card">
+                <span class="reference-thumb"><img src="rednote-assets/rednote-note-reference.png" alt="参考笔记封面" /></span>
+                  <div><small>来自这篇笔记</small><b>3 个动作，久坐党告别圆肩驼背</b><span>一起实践 · 7 天</span></div>
+                </div>
+
+                <fieldset class="choice-section">
+                  <legend>什么时候开始？</legend>
+                  <div class="choice-row" data-choice-group="start">
+                    <button class="choice-chip is-selected">今晚</button>
+                    <button class="choice-chip">明早</button>
+                    <button class="choice-chip">周末</button>
+                  </div>
+                </fieldset>
+
+                <fieldset class="choice-section">
+                  <legend>更适合你的节奏</legend>
+                  <div class="stacked-options" data-choice-group="pace">
+                    <button class="select-card is-selected" data-value="轻松完成"><span class="select-card__icon"><svg><use href="#icon-leaf"></use></svg></span><span><b>轻松完成</b><small>按自己的节奏，允许补卡</small></span><i></i></button>
+                    <button class="select-card" data-value="保持节奏"><span class="select-card__icon"><svg><use href="#icon-bolt"></use></svg></span><span><b>保持节奏</b><small>每天完整跟练，固定时间提醒</small></span><i></i></button>
+                  </div>
+                </fieldset>
+
+                <div class="privacy-note">
+                  <svg><use href="#icon-lock"></use></svg>
+                  <div><b>只共享你主动选择的目标</b><span>同行者看不到你的浏览历史和停留时长。</span></div>
+                </div>
+              </div>
+              <div class="sticky-cta"><button class="button button--primary button--wide" id="goalContinue">继续</button></div>
+            </section>
+
+            <section class="screen screen--intent" data-screen="intent" aria-label="选择参与方式">
+              <header class="app-header">
+                <button class="icon-button" data-back="goal" aria-label="返回"><svg><use href="#icon-back"></use></svg></button>
+                <strong>一起试试</strong>
+                <span class="step-count">2 / 2</span>
+              </header>
+              <div class="screen-scroll screen-scroll--padded">
+                <div class="eyebrow">让匹配更合适</div>
+                <h2 class="screen-title">你更希望以什么<br />方式参与？</h2>
+                <p class="screen-subtitle">没有必须聊天的压力，之后也可以随时更改。</p>
+
+                <div class="role-options" data-choice-group="role">
+                  <button class="role-card is-selected">
+                    <span class="role-card__emoji"><svg><use href="#icon-user"></use></svg></span>
+                    <span><b>我想一起开始</b><small>需要一点陪伴，帮助自己真正行动</small></span><i><svg><use href="#icon-check"></use></svg></i>
+                  </button>
+                  <button class="role-card">
+                    <span class="role-card__emoji"><svg><use href="#icon-spark"></use></svg></span>
+                    <span><b>我做过，愿意分享</b><small>可以提供动作经验和轻量鼓励</small></span><i><svg><use href="#icon-check"></use></svg></i>
+                  </button>
+                  <button class="role-card">
+                    <span class="role-card__emoji"><svg><use href="#icon-eye"></use></svg></span>
+                    <span><b>我想先看看</b><small>先观察小队节奏，不要求每天打卡</small></span><i><svg><use href="#icon-check"></use></svg></i>
+                  </button>
+                </div>
+
+                <div class="ai-boundary">
+                  <div><svg><use href="#icon-spark"></use></svg><b>AI 只做什么？</b></div>
+                  <p>根据开始时间、节奏和参与方式排序同行者；不会替你发送消息。</p>
+                </div>
+              </div>
+              <div class="sticky-cta"><button class="button button--primary button--wide" id="startMatching">寻找同行者</button></div>
+            </section>
+
+            <section class="screen screen--matching" data-screen="matching" aria-label="正在匹配同行者">
+              <header class="app-header app-header--transparent">
+                <button class="icon-button" data-back="intent" aria-label="返回"><svg><use href="#icon-back"></use></svg></button>
+                <strong>匹配同行者</strong>
+                <span></span>
+              </header>
+              <div class="matching-body">
+                <div class="matching-orbit">
+                  <div class="orbit orbit--one"></div><div class="orbit orbit--two"></div>
+                  <span class="avatar avatar--large avatar--self" role="img" aria-label="你的头像"></span>
+                  <span class="avatar avatar--float avatar--one" role="img" aria-label="慢慢来的头像"></span>
+                  <span class="avatar avatar--float avatar--two" role="img" aria-label="橙子汽水的头像"></span>
+                  <span class="avatar avatar--float avatar--three" role="img" aria-label="小禾同学的头像"></span>
+                  <span class="avatar avatar--float avatar--four" role="img" aria-label="同行者头像"></span>
+                </div>
+                <div class="matching-copy">
+                  <div class="matching-status"><i></i><span id="matchingStatus">正在寻找今晚开始的人</span></div>
+                  <h2>正在为你组成<br /><span id="matchingTitle">轻松练习小队</span></h2>
+                  <p>先看目标与节奏，再看当前是否方便参与。</p>
+                </div>
+                <div class="matching-factors"><span id="matchingTime">今晚开始</span><span id="matchingPace">轻松完成</span><span id="matchingRole">一起从今天开始</span></div>
+              </div>
+              <button class="text-button matching-cancel" data-back="intent">取消匹配</button>
+            </section>
+
+            <section class="screen screen--group" data-screen="group" aria-label="小队匹配结果">
+              <header class="app-header">
+                <button class="icon-button" data-back="intent" aria-label="返回"><svg><use href="#icon-back"></use></svg></button>
+                <strong>一起试试</strong>
+                <button class="icon-button" aria-label="更多"><svg><use href="#icon-more"></use></svg></button>
+              </header>
+              <div class="screen-scroll screen-scroll--padded group-result">
+                <div class="success-ring"><svg><use href="#icon-check"></use></svg></div>
+                <div class="eyebrow">匹配完成</div>
+                <h2 class="screen-title screen-title--center">你的小队已组成</h2>
+                <p class="screen-subtitle screen-subtitle--center">先一起做件小事，再决定要不要认识彼此。</p>
+
+                <div class="group-avatars">
+                  <div><span class="avatar avatar--one" role="img" aria-label="慢慢来的头像"></span><small>慢慢来</small></div>
+                  <div><span class="avatar avatar--two" role="img" aria-label="橙子汽水的头像"></span><small>橙子汽水</small></div>
+                  <div><span class="avatar avatar--self" role="img" aria-label="你的头像"></span><small>你</small></div>
+                  <div><span class="avatar avatar--three" role="img" aria-label="小禾同学的头像"></span><small>小禾同学</small></div>
+                </div>
+
+                <div class="match-reasons">
+                  <div><svg><use href="#icon-clock"></use></svg><span><b id="groupTime">都想今晚开始</b><small>4 人的时间相近</small></span></div>
+                  <div><svg><use href="#icon-heart"></use></svg><span><b id="groupPace">都选择轻松完成</b><small id="groupPaceNote">允许补卡，不制造压力</small></span></div>
+                  <div><svg><use href="#icon-lock"></use></svg><span><b>先行动，再开放交流</b><small>第 1 次打卡后开启小队回应</small></span></div>
+                </div>
+
+                <div class="group-rule"><span>小队约定</span><p>不催促、不评判；未打卡不会通知其他成员。</p></div>
+              </div>
+              <div class="sticky-cta sticky-cta--split">
+                <button class="secondary-button">换一组</button>
+                <button class="button button--primary" id="beginDay">开始第 1 天</button>
+              </div>
+            </section>
+
+            <section class="screen screen--day" data-screen="day" aria-label="第一天共同练习">
+              <header class="app-header">
+                <button class="icon-button" data-back="group" aria-label="返回"><svg><use href="#icon-back"></use></svg></button>
+                <div class="header-center"><strong>肩颈松一松</strong><small>4 人同行 · 第 1 天</small></div>
+                <button class="icon-button" aria-label="更多"><svg><use href="#icon-more"></use></svg></button>
+              </header>
+              <div class="screen-scroll screen-scroll--padded day-scroll">
+                <div class="week-progress" aria-label="七天计划进度">
+                  <div class="is-today"><span>1</span><small>今天</small></div><div><span>2</span><small>周二</small></div><div><span>3</span><small>周三</small></div><div><span>4</span><small>周四</small></div><div><span>5</span><small>周五</small></div><div><span>6</span><small>周六</small></div><div><span>7</span><small>周日</small></div>
+                </div>
+
+                <div class="today-card" id="todayCard">
+                  <div class="today-card__top"><span class="pill">今天 · 约 8 分钟</span><button class="icon-button"><svg><use href="#icon-info"></use></svg></button></div>
+                  <h3>从原笔记开始，留一点时间给自己</h3>
+                  <ul>
+                    <li><span>01</span><div><b>查看原笔记的动作说明</b><small>准备</small></div><i></i></li>
+                    <li><span>02</span><div><b>按自己的情况尝试</b><small>行动</small></div><i></i></li>
+                    <li><span>03</span><div><b>记录今天的真实感受</b><small>回顾</small></div><i></i></li>
+                  </ul>
+                  <button class="complete-button" id="completeDay"><svg><use href="#icon-check"></use></svg><span>我完成了</span></button>
+                </div>
+
+                <section class="team-presence">
+                  <div class="section-heading"><h3>同行的人</h3><span id="teamCompletedCount">1 / 4 已完成</span></div>
+                  <div class="presence-row">
+                    <span class="avatar avatar--one" role="img" aria-label="慢慢来的头像"></span>
+                    <div><b>慢慢来</b><p>今天也给自己留了几分钟，完成！</p></div>
+                    <button class="cheer-button">送鼓励</button>
+                  </div>
+                  <div class="waiting-row"><div class="mini-avatar-stack"><span class="avatar avatar--two" role="img" aria-label="橙子汽水的头像"></span><span class="avatar avatar--three" role="img" aria-label="小禾同学的头像"></span></div><span>另外 2 位正在按自己的节奏进行</span></div>
+                </section>
+
+                <div class="my-team-update" id="myTeamUpdate" hidden><span class="avatar avatar--self" role="img" aria-label="你的头像"></span><div><b>你 <small>刚刚</small></b><p>第 1 天完成。很高兴和你们一起开始。</p></div></div>
+                <div class="completed-state" id="completedState">
+                  <div class="completed-state__icon"><svg><use href="#icon-check"></use></svg></div>
+                  <div><b>第 1 天，完成</b><span>你们不需要聊天，也已经一起前进了一步。</span></div>
+                </div>
+
+                <button class="preview-finish" id="previewFinish">预览第 7 天的关系变化</button>
+              </div>
+            </section>
+
+            <section class="screen screen--finish" data-screen="finish" aria-label="七天计划完成">
+              <div class="finish-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <header class="app-header app-header--transparent">
+                <button class="icon-button" data-back="day" aria-label="返回"><svg><use href="#icon-back"></use></svg></button>
+                <strong>计划完成</strong>
+                <button class="icon-button" aria-label="分享"><svg><use href="#icon-share"></use></svg></button>
+              </header>
+              <div class="screen-scroll screen-scroll--padded finish-scroll">
+                <div class="finish-medal"><svg><use href="#icon-spark"></use></svg></div>
+                <div class="eyebrow">互动后的新关系</div>
+                <h2>你们成为了<br /><em>一起练过的人</em></h2>
+                <p>7 天前，你们只是看过同一篇笔记的陌生人。</p>
+
+                <div class="finish-stats">
+                  <div><b>7</b><span>共同经历的天数</span></div>
+                  <div><b>23</b><span>彼此送出的鼓励</span></div>
+                  <div><b>4</b><span>真实经验补充</span></div>
+                </div>
+
+                <div class="relation-card">
+                  <div class="relation-card__title"><span>关系记录</span><small>仅你们可见</small></div>
+                  <div class="relation-members">
+                    <div><span class="avatar avatar--one" role="img" aria-label="慢慢来的头像"></span><span><b>慢慢来</b><small>共同完成 6 天</small></span><button class="follow-toggle">关注</button></div>
+                    <div><span class="avatar avatar--two" role="img" aria-label="橙子汽水的头像"></span><span><b>橙子汽水</b><small>共同完成 7 天</small></span><button class="follow-toggle">关注</button></div>
+                    <div><span class="avatar avatar--three" role="img" aria-label="小禾同学的头像"></span><span><b>小禾同学</b><small>共同完成 5 天</small></span><button class="follow-toggle">关注</button></div>
+                  </div>
+                </div>
+
+                <div class="human-note"><svg><use href="#icon-heart"></use></svg><p><b>关系不是系统宣布的</b><span>只有双方都愿意，才会继续关注或交流。</span></p></div>
+              </div>
+              <div class="sticky-cta"><button class="button button--primary button--wide" id="finishRestart">回到原笔记</button></div>
+            </section>
+          </div>
+          <div class="utility-overlay" id="utilityOverlay" hidden>
+            <div class="utility-dismiss" data-close-dialog></div>
+            <section class="utility-sheet" role="dialog" aria-modal="true" aria-labelledby="utilityTitle">
+              <div class="sheet-handle"></div>
+              <div class="utility-heading"><h3 id="utilityTitle"></h3><button class="icon-button" aria-label="关闭" data-close-dialog><svg><use href="#icon-close"></use></svg></button></div>
+              <div id="utilityContent"></div>
+            </section>
+          </div>
+          <div class="demo-toast" id="demoToast" role="status" hidden></div>
+          <div class="phone__home-indicator"></div>
+        </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="rednote-app.js"></script>
+  </body>
+</html>
